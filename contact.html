@@ -210,5 +210,42 @@
     <footer>
         <p>&copy; 2023 Logan's Lawncare Services. All rights reserved.</p>
     </footer>
+    
+    <script>
+        // Save contact form submissions to localStorage for dashboard tracking
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const formData = new FormData(this);
+            
+            const submission = {
+                id: 'sub_' + Date.now(),
+                name: formData.get('name'),
+                email: formData.get('email'),
+                phone: formData.get('phone') || '',
+                address: formData.get('address') || '',
+                service: formData.get('service') || '',
+                message: formData.get('message'),
+                date: new Date().toISOString(),
+                source: 'website_form',
+                status: 'new'
+            };
+            
+            // Load existing submissions or create new array
+            let submissions = [];
+            try {
+                const stored = localStorage.getItem('bd_submissions');
+                submissions = stored ? JSON.parse(stored) : [];
+            } catch (e) {
+                submissions = [];
+            }
+            
+            // Add new submission
+            submissions.push(submission);
+            
+            // Save back to localStorage
+            localStorage.setItem('bd_submissions', JSON.stringify(submissions));
+            
+            console.log('Submission saved to dashboard:', submission);
+        });
+    </script>
 </body>
 </html>

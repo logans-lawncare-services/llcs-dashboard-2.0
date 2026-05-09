@@ -745,6 +745,7 @@
         </li>
         <li><a href="#" class="nav-link" data-tab="kanbanTab" id="kanbanNav">Jobs columned</a></li>
         <li><a href="#" class="nav-link" data-tab="customersTab" id="customersNav">Customers</a></li>
+        <li><a href="#" class="nav-link" data-tab="submissionsTab" id="submissionsNav">Contact Submissions</a></li>
         <li><a href="#" class="nav-link" data-tab="chartsTab" id="chartsNav">Charts</a></li>
         <li><a href="#" class="nav-link" data-tab="adminTab" id="adminNav" style="display:none;">Admin</a></li>
       </ul>
@@ -1160,6 +1161,92 @@
         </div>
       </section>
 
+      <!-- CONTACT SUBMISSIONS TAB -->
+      <section class="tab" id="submissionsTab">
+        <div class="card">
+          <div class="card-header">Contact Form Submissions</div>
+          <div class="card-subtitle">Customer inquiries from the website contact form.</div>
+          <div class="form-actions" style="margin-bottom:0.8rem;">
+            <a href="https://formspree.io/f/xeenpqwj" target="_blank" class="btn secondary small">View on Formspree</a>
+            <button type="button" class="btn secondary small" id="refreshSubmissionsBtn">Refresh from Formspree</button>
+            <button type="button" class="btn secondary small" id="exportSubmissionsCsvBtn">Export CSV</button>
+          </div>
+          <div id="submissionsStatus" style="font-size:0.84rem;color:#9ca3af;margin-bottom:0.5rem;">
+            Submissions are fetched from Formspree. To import them automatically, save your Formspree API key in the Admin tab.
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">Log Manual Inquiry</div>
+          <div class="card-subtitle">Track inquiries received via phone or other methods.</div>
+          <form id="manualSubmissionForm" onsubmit="return false;">
+            <div class="form-group">
+              <label for="manualName">Name</label>
+              <input id="manualName" type="text" placeholder="Customer name" required />
+            </div>
+            <div class="form-group-inline">
+              <div class="form-group">
+                <label for="manualEmail">Email</label>
+                <input id="manualEmail" type="email" placeholder="Email address" />
+              </div>
+              <div class="form-group">
+                <label for="manualPhone">Phone</label>
+                <input id="manualPhone" type="tel" placeholder="Phone number" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="manualService">Service Interested In</label>
+              <select id="manualService">
+                <option value="">Select a service</option>
+                <option value="mowing">Lawn Mowing</option>
+                <option value="aeration">Lawn Aeration</option>
+                <option value="fertilization">Fertilization</option>
+                <option value="weed-control">Weed Control</option>
+                <option value="cleanup">Yard Cleanup</option>
+                <option value="leaf-removal">Leaf Removal</option>
+                <option value="cleaning">Outdoor Cleaning</option>
+                <option value="pressure-washing">Pressure Washing</option>
+                <option value="trimming">Hedge Trimming</option>
+                <option value="tree-trimming">Small Tree Trimming</option>
+                <option value="weed-pulling">Weed Pulling</option>
+                <option value="gutter-cleaning">Gutter Cleaning</option>
+                <option value="package">Service Package</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="manualMessage">Message</label>
+              <textarea id="manualMessage" placeholder="Customer inquiry details..."></textarea>
+            </div>
+            <div class="form-actions">
+              <button type="button" class="btn" id="addManualSubmissionBtn">Log Inquiry</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="card">
+          <div class="card-header">All Submissions</div>
+          <div class="card-subtitle">All contact inquiries, including those logged manually.</div>
+          <div class="table-container">
+            <table id="submissionsTable">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Phone</th>
+                  <th>Service</th>
+                  <th>Message</th>
+                  <th>Date</th>
+                  <th>Source</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="submissionsBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
       <!-- CHARTS TAB -->
       <section class="tab" id="chartsTab">
         <div class="card">
@@ -1478,7 +1565,8 @@
       prefs: 'bd_prefs',
       customers: 'bd_customers',
       permissions: 'bd_role_permissions',
-      auditLog: 'bd_audit_log'
+      auditLog: 'bd_audit_log',
+      submissions: 'bd_submissions'
     };
     const DEFAULT_META = { version: 4 };
     const ROLES = { FOUNDER: 'founder', ADMIN: 'admin', EMPLOYEE: 'employee' };
@@ -4226,12 +4314,138 @@
         setActiveTab(lastTab in tabs ? lastTab : 'homeTab');
         refreshAllUI();
         refreshUsersTable();
+        renderSubmissionsTable();
       } else {
         showLogin();
       }
       initSorting();
       initChartFullscreen();
+
+      // Contact Submissions Event Listeners
+      document.getElementById('addManualSubmissionBtn').addEventListener('click', addManualSubmission);
+      document.getElementById('exportSubmissionsCsvBtn').addEventListener('click', exportSubmissionsCSV);
+      document.getElementById('refreshSubmissionsBtn').addEventListener('click', () => {
+        showToast('Formspree API integration requires setup. For now, use Formspree dashboard or manually log inquiries.');
+      });
     });
+
+    // CONTACT SUBMISSIONS FUNCTIONS
+    function getSubmissions() {
+      return readJSON(STORAGE_KEYS.submissions, []);
+    }
+
+    function saveSubmissions(submissions) {
+      localStorage.setItem(STORAGE_KEYS.submissions, JSON.stringify(submissions));
+    }
+
+    function addManualSubmission() {
+      const name = document.getElementById('manualName').value.trim();
+      const email = document.getElementById('manualEmail').value.trim();
+      const phone = document.getElementById('manualPhone').value.trim();
+      const service = document.getElementById('manualService').value;
+      const message = document.getElementById('manualMessage').value.trim();
+
+      if (!name) {
+        showToast('Please enter a name', 'error');
+        return;
+      }
+
+      const submission = {
+        id: 'sub_' + Date.now(),
+        name,
+        email,
+        phone,
+        service,
+        message,
+        date: new Date().toISOString(),
+        source: 'manual',
+        status: 'new'
+      };
+
+      const submissions = getSubmissions();
+      submissions.push(submission);
+      saveSubmissions(submissions);
+
+      // Clear form
+      document.getElementById('manualSubmissionForm').reset();
+      renderSubmissionsTable();
+      showToast('Inquiry logged successfully');
+
+      // Add to audit log
+      addAuditEntry('submission_added', `New inquiry from ${name}`);
+    }
+
+    function renderSubmissionsTable() {
+      const submissions = getSubmissions().sort((a, b) => new Date(b.date) - new Date(a.date));
+      const tbody = document.getElementById('submissionsBody');
+      tbody.innerHTML = '';
+
+      if (submissions.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:#9ca3af;padding:1rem;">No submissions yet</td></tr>';
+        return;
+      }
+
+      submissions.forEach(sub => {
+        const row = document.createElement('tr');
+        const dateStr = new Date(sub.date).toLocaleDateString() + ' ' + new Date(sub.date).toLocaleTimeString();
+        const serviceName = sub.service ? sub.service.replace(/-/g, ' ').charAt(0).toUpperCase() + sub.service.slice(1).replace(/-/g, ' ').substring(1) : 'Not specified';
+        
+        row.innerHTML = `
+          <td>${escapeHtml(sub.name)}</td>
+          <td><a href="mailto:${sub.email}" style="color:#60a5fa;">${escapeHtml(sub.email)}</a></td>
+          <td>${escapeHtml(sub.phone || '—')}</td>
+          <td>${serviceName}</td>
+          <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(sub.message || '—')}</td>
+          <td>${dateStr}</td>
+          <td><span style="font-size:0.75rem;color:#9ca3af;">${sub.source}</span></td>
+          <td>
+            <button type="button" class="btn small secondary" onclick="deleteSubmission('${sub.id}')">Delete</button>
+          </td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    function deleteSubmission(id) {
+      if (confirm('Delete this submission?')) {
+        let submissions = getSubmissions();
+        submissions = submissions.filter(s => s.id !== id);
+        saveSubmissions(submissions);
+        renderSubmissionsTable();
+        showToast('Submission deleted');
+      }
+    }
+
+    function exportSubmissionsCSV() {
+      const submissions = getSubmissions();
+      if (submissions.length === 0) {
+        showToast('No submissions to export');
+        return;
+      }
+
+      const headers = ['Name', 'Email', 'Phone', 'Service', 'Message', 'Date', 'Source'];
+      const rows = [headers.join(',')];
+
+      submissions.forEach(sub => {
+        rows.push([
+          `"${sub.name}"`,
+          `"${sub.email || ''}"`,
+          `"${sub.phone || ''}"`,
+          `"${sub.service || ''}"`,
+          `"${(sub.message || '').replace(/"/g, '""')}"`,
+          `"${new Date(sub.date).toLocaleString()}"`,
+          `"${sub.source}"`
+        ].join(','));
+      });
+
+      downloadCsv(rows, 'contact-submissions.csv');
+    }
+
+    function escapeHtml(text) {
+      if (!text) return '';
+      const map = {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'};
+      return text.replace(/[&<>"']/g, m => map[m]);
+    }
   </script>
 </body>
 </html>
