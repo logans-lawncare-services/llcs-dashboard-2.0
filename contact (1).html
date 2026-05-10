@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact - Logan's Lawncare Services</title>
+  <link rel="icon" type="image/png" href="https://i.postimg.cc/3RJNmCnN/Untitled-removebg-preview.png" />
+  <style>
+    :root {
+      --primary: #66b96a;
+      --primary-dark: #3b8d41;
+      --primary-light: #aee2b2;
+      --bg: #0b1728;
+      --card: #142239;
+      --card-elevated: #1b2940;
+      --text: #e5e7eb;
+      --text-muted: #9ca3af;
+      --border: #233554;
+      --shadow: 0 4px 12px rgba(0,0,0,0.6);
+      --shadow-hover: 0 8px 24px rgba(0,0,0,0.7);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    /* ── Header ── */
+    header {
+      background: linear-gradient(120deg, #1d4ed8 0%, #0f172a 45%, #22c55e 100%);
+      color: #fff;
+      padding: 2rem 1rem 1.8rem;
+      text-align: center;
+      box-shadow: 0 3px 14px rgba(0,0,0,0.6);
+      position: relative;
+      overflow: hidden;
+    }
+    header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 60% 50%, rgba(102,185,106,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .header-logo {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      object-fit: contain;
+      background: rgba(255,255,255,0.15);
+      padding: 4px;
+      margin-bottom: 0.6rem;
+      border: 2px solid rgba(174,226,178,0.4);
+      animation: fadeInDown 0.5s ease-out;
+    }
+    header h1 {
+      font-size: clamp(1.6rem, 5vw, 2.4rem);
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      animation: fadeInDown 0.5s ease-out 0.1s both;
+    }
+    header p {
+      font-size: clamp(0.9rem, 2.5vw, 1.05rem);
+      opacity: 0.85;
+      margin-top: 0.3rem;
+      animation: fadeInDown 0.5s ease-out 0.2s both;
+    }
+
+    /* ── Nav ── */
+    .nav-container {
+      background-color: rgba(11,23,40,0.95);
+      backdrop-filter: blur(8px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 1px solid var(--border);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    }
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem 1.25rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .menu-toggle {
+      display: none;
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-size: 1.3rem;
+      cursor: pointer;
+      padding: 0.4rem 0.7rem;
+      border-radius: 8px;
+      transition: background 0.2s;
+    }
+    .menu-toggle:hover { background: var(--card); }
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 0.25rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      flex: 1;
+    }
+    nav ul li a {
+      color: var(--text-muted);
+      text-decoration: none;
+      padding: 0.5rem 1rem;
+      display: inline-block;
+      font-size: 0.92rem;
+      border-radius: 999px;
+      transition: background 0.2s, color 0.2s;
+    }
+    nav ul li a:hover, nav ul li a.active {
+      background: rgba(102,185,106,0.15);
+      color: var(--primary-light);
+    }
+
+    /* ── File warning ── */
+    #fileWarning {
+      max-width: 900px;
+      margin: 1rem auto;
+      padding: 0.9rem 1.1rem;
+      background: rgba(249,115,22,0.1);
+      border-left: 3px solid #f97316;
+      border-radius: 12px;
+      color: #fed7aa;
+      font-size: 0.88rem;
+      display: none;
+    }
+    #fileWarning code { background: rgba(255,255,255,0.1); padding: 0.1rem 0.35rem; border-radius: 4px; }
+
+    /* ── Main ── */
+    main {
+      max-width: 900px;
+      margin: 2rem auto;
+      padding: 0 1rem 3rem;
+    }
+
+    /* Contact info strip */
+    .info-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      animation: fadeIn 0.35s ease-out;
+    }
+    .info-tile {
+      flex: 1 1 200px;
+      background: var(--card-elevated);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1rem 1.1rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+    .info-tile:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-hover);
+      border-color: rgba(102,185,106,0.3);
+    }
+    .info-tile .tile-icon {
+      font-size: 1.4rem;
+      flex-shrink: 0;
+      margin-top: 0.1rem;
+    }
+    .info-tile .tile-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      margin-bottom: 0.2rem;
+    }
+    .info-tile .tile-value {
+      font-size: 0.92rem;
+      color: var(--text);
+      font-weight: 500;
+    }
+    .info-tile a { color: var(--primary-light); text-decoration: none; }
+    .info-tile a:hover { text-decoration: underline; }
+
+    /* Contact form card */
+    .form-card {
+      background: var(--card-elevated);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 2rem 1.75rem;
+      box-shadow: var(--shadow);
+      animation: fadeIn 0.4s ease-out 0.1s both;
+    }
+    .form-card .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: rgba(102,185,106,0.15);
+      color: var(--primary-light);
+      border: 1px solid rgba(102,185,106,0.3);
+      border-radius: 999px;
+      padding: 0.25rem 0.9rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 0.85rem;
+    }
+    .form-card h2 {
+      color: var(--primary-light);
+      font-size: clamp(1.4rem, 4vw, 1.8rem);
+      margin-bottom: 0.4rem;
+    }
+    .form-card .subtitle {
+      color: var(--text-muted);
+      font-size: 0.92rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.85rem;
+    }
+    .form-group { margin-bottom: 0; }
+    .form-group.full { grid-column: 1 / -1; }
+    .form-group label {
+      display: block;
+      font-size: 0.83rem;
+      font-weight: 600;
+      color: #cbd5e1;
+      margin-bottom: 0.35rem;
+      letter-spacing: 0.02em;
+    }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 0.6rem 0.9rem;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      font-size: 0.92rem;
+      font-family: inherit;
+      background: #111827;
+      color: var(--text);
+      transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.08s ease, background 0.15s ease;
+    }
+    .form-group textarea {
+      border-radius: 14px;
+      min-height: 130px;
+      resize: vertical;
+    }
+    .form-group input::placeholder,
+    .form-group textarea::placeholder { color: #6b7280; }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: rgba(102,185,106,0.7);
+      box-shadow: 0 0 0 3px rgba(102,185,106,0.2);
+      background: #020617;
+      transform: translateY(-1px);
+    }
+    /* Fix select on dark backgrounds */
+    .form-group select option { background: #111827; color: var(--text); }
+
+    .submit-btn {
+      width: 100%;
+      margin-top: 1.1rem;
+      padding: 0.75rem 1rem;
+      background: linear-gradient(135deg, var(--primary) 0%, #4aa556 100%);
+      color: #fff;
+      border: none;
+      border-radius: 999px;
+      font-size: 1rem;
+      font-family: inherit;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.4);
+      transition: transform 0.12s ease, box-shadow 0.15s ease, filter 0.15s ease;
+      letter-spacing: 0.02em;
+    }
+    .submit-btn:hover { transform: translateY(-2px); box-shadow: var(--shadow-hover); filter: brightness(1.08); }
+    .submit-btn:active { transform: translateY(0); filter: brightness(0.96); }
+
+    .form-note {
+      margin-top: 0.75rem;
+      font-size: 0.8rem;
+      color: #6b7280;
+      text-align: center;
+    }
+
+    /* Employee sign-in link */
+    .employee-link {
+      margin-top: 1.5rem;
+      text-align: center;
+      padding: 1rem;
+      border-top: 1px solid var(--border);
+    }
+    .btn-secondary-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.88rem;
+      padding: 0.5rem 1.1rem;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      transition: background 0.2s, color 0.2s, border-color 0.2s;
+    }
+    .btn-secondary-link:hover {
+      background: rgba(102,185,106,0.1);
+      color: var(--primary-light);
+      border-color: rgba(102,185,106,0.35);
+    }
+
+    /* ── Footer ── */
+    footer {
+      background: var(--card);
+      border-top: 1px solid var(--border);
+      color: var(--text-muted);
+      text-align: center;
+      padding: 1.5rem 1rem;
+      font-size: 0.88rem;
+    }
+
+    /* ── Animations ── */
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeInDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* ── Mobile ── */
+    @media (max-width: 768px) {
+      .menu-toggle { display: block; }
+      nav ul {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0; right: 0;
+        background: rgba(11,23,40,0.98);
+        flex-direction: column;
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid var(--border);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+      }
+      nav ul.active { display: flex; }
+      nav ul li { width: 100%; }
+      nav ul li a { display: block; border-radius: 10px; padding: 0.7rem 1rem; }
+      .form-card { padding: 1.5rem 1.1rem; }
+      .form-grid { grid-template-columns: 1fr; }
+      .form-group.full { grid-column: 1; }
+    }
+    @media (max-width: 480px) {
+      .info-tile { flex: 1 1 100%; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img class="header-logo" src="https://i.postimg.cc/3RJNmCnN/Untitled-removebg-preview.png" alt="LLCS Logo" />
+    <h1>Logan's Lawncare Services</h1>
+    <p>Your Local Lawn Care Experts</p>
+  </header>
+
+  <div class="nav-container">
+    <nav>
+      <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+      <ul id="navMenu">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="services.html">Services</a></li>
+        <li><a href="contact.html" class="active">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+
+  <div id="fileWarning">
+    For local testing, open these pages through a local HTTP server instead of <code>file://</code>. Example: <code>python -m http.server 8000</code>.
+  </div>
+
+  <main>
+
+    <!-- Info tiles -->
+    <div class="info-strip">
+      <div class="info-tile">
+        <span class="tile-icon">📞</span>
+        <div>
+          <div class="tile-label">Phone</div>
+          <div class="tile-value"><a href="tel:4103715470">(410) 371-5470</a></div>
+        </div>
+      </div>
+      <div class="info-tile">
+        <span class="tile-icon">✉️</span>
+        <div>
+          <div class="tile-label">Email</div>
+          <div class="tile-value"><a href="mailto:loganslawnservices17@gmail.com">loganslawnservices17@gmail.com</a></div>
+        </div>
+      </div>
+      <div class="info-tile">
+        <span class="tile-icon">📍</span>
+        <div>
+          <div class="tile-label">Address</div>
+          <div class="tile-value">1500 Greenspring Dr, Lutherville Timonium, MD 21093</div>
+        </div>
+      </div>
+      <div class="info-tile">
+        <span class="tile-icon">🗺️</span>
+        <div>
+          <div class="tile-label">Service Area</div>
+          <div class="tile-value">Local community & surrounding areas</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Form card -->
+    <div class="form-card">
+      <div class="tag">📬 Get in Touch</div>
+      <h2>Send a Message</h2>
+      <p class="subtitle">We'd love to hear from you! Contact us for quotes, scheduling, or any questions. We'll get back to you within 24 hours.</p>
+
+      <form action="https://formspree.io/f/xeenpqwj" method="POST" id="contactForm">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="name">Full Name *</label>
+            <input type="text" id="name" name="name" placeholder="Your name" required />
+          </div>
+          <div class="form-group">
+            <label for="email">Email Address *</label>
+            <input type="email" id="email" name="email" placeholder="you@example.com" required />
+          </div>
+          <div class="form-group">
+            <label for="phone">Phone Number</label>
+            <input type="tel" id="phone" name="phone" placeholder="(555) 000-0000" />
+          </div>
+          <div class="form-group">
+            <label for="service">Service Interested In</label>
+            <select id="service" name="service">
+              <option value="">Select a service</option>
+              <option value="mowing">Lawn Mowing</option>
+              <option value="aeration">Lawn Aeration</option>
+              <option value="fertilization">Fertilization</option>
+              <option value="weed-control">Weed Control</option>
+              <option value="cleanup">Yard Cleanup</option>
+              <option value="leaf-removal">Leaf Removal</option>
+              <option value="cleaning">Outdoor Cleaning</option>
+              <option value="pressure-washing">Pressure Washing</option>
+              <option value="trimming">Hedge Trimming</option>
+              <option value="tree-trimming">Small Tree Trimming</option>
+              <option value="weed-pulling">Weed Pulling</option>
+              <option value="gutter-cleaning">Gutter Cleaning</option>
+              <option value="package">Service Package</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div class="form-group full">
+            <label for="address">Property Address</label>
+            <input type="text" id="address" name="address" placeholder="Street address, city, state, zip" />
+          </div>
+          <div class="form-group full">
+            <label for="message">Message *</label>
+            <textarea id="message" name="message" placeholder="Tell us about your lawn care needs, preferred dates, or any questions..." required></textarea>
+          </div>
+        </div>
+        <button type="submit" class="submit-btn">Send Message →</button>
+        <p class="form-note">* Required fields. We typically respond within 24 hours.</p>
+      </form>
+
+      <div class="employee-link">
+        <a href="dashboard.html" class="btn-secondary-link">🔐 Employee Sign In</a>
+      </div>
+    </div>
+
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Logan's Lawncare Services. All rights reserved.</p>
+  </footer>
+
+  <script>
+    function toggleMenu() {
+      document.getElementById('navMenu').classList.toggle('active');
+    }
+    document.querySelectorAll('#navMenu a').forEach(link => {
+      link.addEventListener('click', () => document.getElementById('navMenu').classList.remove('active'));
+    });
+    document.addEventListener('click', e => {
+      if (!document.querySelector('.nav-container').contains(e.target)) {
+        document.getElementById('navMenu').classList.remove('active');
+      }
+    });
+
+    // Save contact form submissions to localStorage for dashboard tracking
+    document.getElementById('contactForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const form = this;
+      const formData = new FormData(form);
+      const submission = {
+        id: 'sub_' + Date.now(),
+        name: formData.get('name'),
+        email: formData.get('email'),
+        phone: formData.get('phone') || '',
+        address: formData.get('address') || '',
+        service: formData.get('service') || '',
+        message: formData.get('message'),
+        date: new Date().toISOString(),
+        source: 'website_form',
+        status: 'new'
+      };
+      let submissions = [];
+      try {
+        const stored = localStorage.getItem('bd_submissions');
+        submissions = stored ? JSON.parse(stored) : [];
+      } catch(e) { submissions = []; }
+      submissions.push(submission);
+      localStorage.setItem('bd_submissions', JSON.stringify(submissions));
+      form.submit();
+    });
+
+    if (location.protocol === 'file:') {
+      document.getElementById('fileWarning').style.display = 'block';
+    }
+  </script>
+</body>
+</html>

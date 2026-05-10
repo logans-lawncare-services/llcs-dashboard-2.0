@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Services - Logan's Lawncare Services</title>
+  <link rel="icon" type="image/png" href="https://i.postimg.cc/3RJNmCnN/Untitled-removebg-preview.png" />
+  <style>
+    :root {
+      --primary: #66b96a;
+      --primary-dark: #3b8d41;
+      --primary-light: #aee2b2;
+      --accent-orange: #e67e22;
+      --bg: #0b1728;
+      --card: #142239;
+      --card-elevated: #1b2940;
+      --text: #e5e7eb;
+      --text-muted: #9ca3af;
+      --border: #233554;
+      --shadow: 0 4px 12px rgba(0,0,0,0.6);
+      --shadow-hover: 0 8px 24px rgba(0,0,0,0.7);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    /* ── Header ── */
+    header {
+      background: linear-gradient(120deg, #1d4ed8 0%, #0f172a 45%, #22c55e 100%);
+      color: #fff;
+      padding: 2rem 1rem 1.8rem;
+      text-align: center;
+      box-shadow: 0 3px 14px rgba(0,0,0,0.6);
+      position: relative;
+      overflow: hidden;
+    }
+    header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 60% 50%, rgba(102,185,106,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .header-logo {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      object-fit: contain;
+      background: rgba(255,255,255,0.15);
+      padding: 4px;
+      margin-bottom: 0.6rem;
+      border: 2px solid rgba(174,226,178,0.4);
+      animation: fadeInDown 0.5s ease-out;
+    }
+    header h1 {
+      font-size: clamp(1.6rem, 5vw, 2.4rem);
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      animation: fadeInDown 0.5s ease-out 0.1s both;
+    }
+    header p {
+      font-size: clamp(0.9rem, 2.5vw, 1.05rem);
+      opacity: 0.85;
+      margin-top: 0.3rem;
+      animation: fadeInDown 0.5s ease-out 0.2s both;
+    }
+
+    /* ── Nav ── */
+    .nav-container {
+      background-color: rgba(11,23,40,0.95);
+      backdrop-filter: blur(8px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 1px solid var(--border);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    }
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem 1.25rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .menu-toggle {
+      display: none;
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-size: 1.3rem;
+      cursor: pointer;
+      padding: 0.4rem 0.7rem;
+      border-radius: 8px;
+      transition: background 0.2s;
+    }
+    .menu-toggle:hover { background: var(--card); }
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 0.25rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      flex: 1;
+    }
+    nav ul li a {
+      color: var(--text-muted);
+      text-decoration: none;
+      padding: 0.5rem 1rem;
+      display: inline-block;
+      font-size: 0.92rem;
+      border-radius: 999px;
+      transition: background 0.2s, color 0.2s;
+    }
+    nav ul li a:hover, nav ul li a.active {
+      background: rgba(102,185,106,0.15);
+      color: var(--primary-light);
+    }
+
+    /* ── Main ── */
+    main {
+      max-width: 1160px;
+      margin: 2rem auto;
+      padding: 0 1rem 3rem;
+    }
+
+    .intro-block {
+      text-align: center;
+      margin-bottom: 2rem;
+      animation: fadeIn 0.4s ease-out;
+    }
+    .intro-block .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: rgba(102,185,106,0.15);
+      color: var(--primary-light);
+      border: 1px solid rgba(102,185,106,0.3);
+      border-radius: 999px;
+      padding: 0.25rem 0.9rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+    }
+    .intro-block h2 {
+      color: var(--primary-light);
+      font-size: clamp(1.6rem, 4vw, 2.2rem);
+      margin-bottom: 0.5rem;
+    }
+    .intro-block p {
+      color: var(--text-muted);
+      font-size: 0.97rem;
+      max-width: 680px;
+      margin: 0 auto 0.3rem;
+    }
+    .intro-block .size-guide {
+      font-size: 0.82rem;
+      color: #6b7280;
+      margin-top: 0.4rem;
+    }
+
+    /* ── Section Labels ── */
+    .section-label {
+      color: var(--primary-light);
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin: 2.25rem 0 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+      margin-left: 0.5rem;
+    }
+
+    /* ── Service Grid ── */
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+      gap: 1.1rem;
+    }
+
+    .service-card {
+      background: var(--card-elevated);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.25rem;
+      box-shadow: var(--shadow);
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+      animation: fadeIn 0.35s ease-out both;
+    }
+    .service-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-hover);
+      border-color: rgba(102,185,106,0.35);
+    }
+    .service-card h3 {
+      color: var(--primary-light);
+      font-size: 1.05rem;
+      margin-bottom: 0.5rem;
+    }
+    .service-card .desc {
+      color: var(--text-muted);
+      font-size: 0.86rem;
+      margin-bottom: 0.9rem;
+      line-height: 1.55;
+    }
+    .service-card table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+    }
+    .service-card td {
+      padding: 0.45rem 0.4rem;
+      border-bottom: 1px solid var(--border);
+      color: #cbd5e1;
+    }
+    .service-card tr:last-child td { border-bottom: none; }
+    .service-card td:nth-child(2) { text-align: right; color: var(--primary-light); font-weight: 700; white-space: nowrap; }
+    .service-card td:nth-child(3) { text-align: center; color: var(--text-muted); font-size: 0.82rem; white-space: nowrap; }
+    .service-card .note {
+      margin-top: 0.75rem;
+      color: #6b7280;
+      font-size: 0.8rem;
+      font-style: italic;
+    }
+
+    /* ── Package Cards (full-width rows) ── */
+    .package-card {
+      background: var(--card-elevated);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.4rem 1.25rem;
+      margin-bottom: 1rem;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.25rem;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+      animation: fadeIn 0.4s ease-out both;
+    }
+    .package-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-hover);
+      border-color: rgba(102,185,106,0.35);
+    }
+    .package-card.orange:hover { border-color: rgba(230,126,34,0.4); }
+    .package-info { flex: 1 1 260px; }
+    .package-info h4 {
+      font-size: 1.05rem;
+      margin-bottom: 0.4rem;
+      color: var(--primary-light);
+    }
+    .package-card.orange .package-info h4 { color: #f0a855; }
+    .package-info .desc {
+      color: var(--text-muted);
+      font-size: 0.86rem;
+      margin-bottom: 0.6rem;
+      line-height: 1.5;
+    }
+    .package-info .meta {
+      font-size: 0.82rem;
+      color: #6b7280;
+      margin-bottom: 0.25rem;
+    }
+    .package-info .meta strong { color: #94a3b8; font-weight: 600; }
+    .package-table-wrap { flex: 1 1 260px; }
+    .package-table-wrap table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+    }
+    .package-table-wrap th {
+      text-align: left;
+      padding: 0.4rem;
+      border-bottom: 1px solid var(--border);
+      color: #64748b;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .package-table-wrap th:nth-child(2) { text-align: right; }
+    .package-table-wrap th:nth-child(3) { text-align: center; }
+    .package-table-wrap td {
+      padding: 0.45rem 0.4rem;
+      border-bottom: 1px solid var(--border);
+      color: #cbd5e1;
+    }
+    .package-table-wrap tr:last-child td { border-bottom: none; }
+    .package-table-wrap td:nth-child(2) { text-align: right; color: var(--primary-light); font-weight: 700; white-space: nowrap; }
+    .package-table-wrap td:nth-child(3) { text-align: center; color: var(--text-muted); font-size: 0.82rem; white-space: nowrap; }
+    .package-card.orange .package-table-wrap td:nth-child(2) { color: #f0a855; }
+
+    /* ── CTA ── */
+    .cta-bar {
+      background: linear-gradient(135deg, rgba(102,185,106,0.12) 0%, rgba(29,78,216,0.12) 100%);
+      border: 1px solid rgba(102,185,106,0.25);
+      border-radius: 16px;
+      padding: 1.5rem 1.25rem;
+      text-align: center;
+      margin-top: 2.5rem;
+      animation: fadeIn 0.5s ease-out;
+    }
+    .cta-bar p { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1rem; }
+    .cta-bar strong { color: var(--primary-light); }
+    .btn {
+      background: linear-gradient(135deg, var(--primary) 0%, #4aa556 100%);
+      color: #fff;
+      border: none;
+      border-radius: 999px;
+      padding: 0.65rem 1.5rem;
+      font-size: 0.95rem;
+      font-family: inherit;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+      transition: transform 0.12s ease, box-shadow 0.15s ease, filter 0.15s ease;
+      margin: 0.25rem;
+    }
+    .btn:hover { transform: translateY(-2px); box-shadow: var(--shadow-hover); filter: brightness(1.08); }
+    .btn:active { transform: translateY(0); filter: brightness(0.96); }
+    .btn.secondary {
+      background: transparent;
+      color: var(--primary-light);
+      border: 1px solid rgba(102,185,106,0.45);
+      box-shadow: none;
+    }
+    .btn.secondary:hover { background: rgba(102,185,106,0.1); box-shadow: none; filter: none; }
+
+    /* ── Footer ── */
+    footer {
+      background: var(--card);
+      border-top: 1px solid var(--border);
+      color: var(--text-muted);
+      text-align: center;
+      padding: 1.5rem 1rem;
+      font-size: 0.88rem;
+    }
+
+    /* ── Animations ── */
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeInDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* Stagger animation for cards */
+    .services-grid .service-card:nth-child(1) { animation-delay: 0.05s; }
+    .services-grid .service-card:nth-child(2) { animation-delay: 0.10s; }
+    .services-grid .service-card:nth-child(3) { animation-delay: 0.15s; }
+    .services-grid .service-card:nth-child(4) { animation-delay: 0.20s; }
+    .services-grid .service-card:nth-child(5) { animation-delay: 0.25s; }
+    .services-grid .service-card:nth-child(6) { animation-delay: 0.30s; }
+    .services-grid .service-card:nth-child(7) { animation-delay: 0.35s; }
+    .services-grid .service-card:nth-child(8) { animation-delay: 0.40s; }
+    .services-grid .service-card:nth-child(9) { animation-delay: 0.45s; }
+    .services-grid .service-card:nth-child(10) { animation-delay: 0.50s; }
+    .services-grid .service-card:nth-child(11) { animation-delay: 0.55s; }
+    .services-grid .service-card:nth-child(12) { animation-delay: 0.60s; }
+
+    /* ── Mobile ── */
+    @media (max-width: 768px) {
+      .menu-toggle { display: block; }
+      nav ul {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0; right: 0;
+        background: rgba(11,23,40,0.98);
+        flex-direction: column;
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid var(--border);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+      }
+      nav ul.active { display: flex; }
+      nav ul li { width: 100%; }
+      nav ul li a { display: block; border-radius: 10px; padding: 0.7rem 1rem; }
+      .package-card { flex-direction: column; gap: 1rem; }
+    }
+    @media (max-width: 480px) {
+      .services-grid { grid-template-columns: 1fr; }
+      .cta-bar .btn { width: 100%; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img class="header-logo" src="https://i.postimg.cc/3RJNmCnN/Untitled-removebg-preview.png" alt="LLCS Logo" />
+    <h1>Logan's Lawncare Services</h1>
+    <p>Your Local Lawn Care Experts</p>
+  </header>
+
+  <div class="nav-container">
+    <nav>
+      <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+      <ul id="navMenu">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="services.html" class="active">Services</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+
+  <main>
+    <div class="intro-block">
+      <div class="tag">🌿 Pricing</div>
+      <h2>Services & Pricing</h2>
+      <p>One‑time, seasonal, and recurring lawn & yard services to keep your property looking its best.</p>
+      <p class="size-guide">Size guide: Small – up to ~0.25 acre &nbsp;•&nbsp; Medium – ~0.25–0.5 acre &nbsp;•&nbsp; Large – over ~0.5 acre</p>
+    </div>
+
+    <div class="section-label">✂️ Individual Services</div>
+
+    <div class="services-grid">
+
+      <!-- Lawn Mowing -->
+      <div class="service-card">
+        <h3>🌾 Lawn Mowing</h3>
+        <p class="desc">Recurring or one‑time mowing with edging, trimming, and blowing for a clean, even lawn.</p>
+        <table>
+          <tr><td>Small (up to ~0.25 acre)</td><td>$40</td><td>0.5–1 hr</td></tr>
+          <tr><td>Medium (~0.25–0.5 acre)</td><td>$60</td><td>1–1.5 hrs</td></tr>
+          <tr><td>Large (over ~0.5 acre)</td><td>$100</td><td>1.5–2.5 hrs</td></tr>
+        </table>
+        <p class="note">Suggested: weekly or bi‑weekly during the growing season.</p>
+      </div>
+
+      <!-- Lawn Aeration -->
+      <div class="service-card">
+        <h3>🌬️ Lawn Aeration</h3>
+        <p class="desc">Core aeration to relieve compaction and help water, air, and nutrients reach the roots.</p>
+        <table>
+          <tr><td>Small (up to ~0.25 acre)</td><td>$90</td><td>1 hr</td></tr>
+          <tr><td>Medium (~0.25–0.5 acre)</td><td>$130</td><td>1–1.5 hrs</td></tr>
+          <tr><td>Large (over ~0.5 acre)</td><td>$190</td><td>1.5–2 hrs</td></tr>
+        </table>
+        <p class="note">Suggested: once per year in spring or fall.</p>
+      </div>
+
+      <!-- Fertilization -->
+      <div class="service-card">
+        <h3>🌿 Fertilization</h3>
+        <p class="desc">Balanced fertilizer applications for thicker, greener turf with fewer bare spots.</p>
+        <table>
+          <tr><td>Small (up to ~0.25 acre)</td><td>$70</td><td>0.5–1 hr</td></tr>
+          <tr><td>Medium (~0.25–0.5 acre)</td><td>$110</td><td>0.5–1 hr</td></tr>
+          <tr><td>Large (over ~0.5 acre)</td><td>$170</td><td>1–1.5 hrs</td></tr>
+        </table>
+        <p class="note">Suggested: 3–4 applications per year for best results.</p>
+      </div>
+
+      <!-- Weed Control -->
+      <div class="service-card">
+        <h3>🚫 Weed Control Treatment</h3>
+        <p class="desc">Targeted weed treatments in lawns and beds with selective products that protect your grass.</p>
+        <table>
+          <tr><td>Small (up to ~0.25 acre)</td><td>$80</td><td>0.5–1 hr</td></tr>
+          <tr><td>Medium (~0.25–0.5 acre)</td><td>$130</td><td>1–1.5 hrs</td></tr>
+          <tr><td>Large (over ~0.5 acre)</td><td>$190</td><td>1.5–2 hrs</td></tr>
+        </table>
+        <p class="note">Works best paired with fertilization and mowing on a regular schedule.</p>
+      </div>
+
+      <!-- Yard Cleanup -->
+      <div class="service-card">
+        <h3>🧹 Yard Cleanup</h3>
+        <p class="desc">General yard cleanup including light debris, sticks, branches, and surface clutter.</p>
+        <table>
+          <tr><td>Small yard</td><td>$100</td><td>1–2 hrs</td></tr>
+          <tr><td>Medium yard</td><td>$160</td><td>2–3 hrs</td></tr>
+          <tr><td>Large yard</td><td>$260</td><td>3–5 hrs</td></tr>
+        </table>
+        <p class="note">Great before listing your home or after storms and heavy weather.</p>
+      </div>
+
+      <!-- Leaf Removal -->
+      <div class="service-card">
+        <h3>🍂 Leaf Removal</h3>
+        <p class="desc">Seasonal leaf cleanup with blowing, raking, bagging, and optional hauling.</p>
+        <table>
+          <tr><td>Small yard</td><td>$90</td><td>1–2 hrs</td></tr>
+          <tr><td>Medium yard</td><td>$150</td><td>2–3 hrs</td></tr>
+          <tr><td>Large yard</td><td>$240</td><td>3–5 hrs</td></tr>
+        </table>
+        <p class="note">Ideal for fall cleanup and heavily treed properties.</p>
+      </div>
+
+      <!-- Outdoor Cleaning -->
+      <div class="service-card">
+        <h3>🏡 Outdoor Cleaning</h3>
+        <p class="desc">Clean patios, decks, furniture, and outdoor living areas so everything is ready to use.</p>
+        <table>
+          <tr><td>Small area</td><td>$90</td><td>1–2 hrs</td></tr>
+          <tr><td>Medium area</td><td>$150</td><td>2–3 hrs</td></tr>
+          <tr><td>Large area</td><td>$240</td><td>3–4 hrs</td></tr>
+        </table>
+        <p class="note">Perfect before parties, backyard events, or move‑in/move‑out.</p>
+      </div>
+
+      <!-- Pressure Washing -->
+      <div class="service-card">
+        <h3>💧 Pressure Washing</h3>
+        <p class="desc">Pressure wash driveways, walkways, patios, siding, and decks to remove dirt and stains.</p>
+        <table>
+          <tr><td>Small surfaces</td><td>$120</td><td>1–2 hrs</td></tr>
+          <tr><td>Medium surfaces</td><td>$190</td><td>2–3 hrs</td></tr>
+          <tr><td>Large / multi‑surface</td><td>$300</td><td>3–4 hrs</td></tr>
+        </table>
+        <p class="note">Best combined with Outdoor Cleaning or a Curb Appeal package.</p>
+      </div>
+
+      <!-- Hedge Trimming -->
+      <div class="service-card">
+        <h3>✂️ Hedge Trimming</h3>
+        <p class="desc">Shape and maintain hedges, from neat low borders to tall, overgrown screens.</p>
+        <table>
+          <tr><td>Small (under 4 ft)</td><td>$60</td><td>0.5–1 hr</td></tr>
+          <tr><td>Medium (4–8 ft)</td><td>$100</td><td>1–1.5 hrs</td></tr>
+          <tr><td>Large (over 8 ft)</td><td>$180</td><td>1.5–3 hrs</td></tr>
+        </table>
+        <p class="note">Includes full debris collection and haul‑away if needed.</p>
+      </div>
+
+      <!-- Small Tree Trimming -->
+      <div class="service-card">
+        <h3>🌳 Small Tree Trimming</h3>
+        <p class="desc">Trim small trees, remove low branches, and open up canopies for better light and shape.</p>
+        <table>
+          <tr><td>Small (under 10 ft)</td><td>$90</td><td>1–1.5 hrs</td></tr>
+          <tr><td>Medium</td><td>$150</td><td>1.5–2.5 hrs</td></tr>
+          <tr><td>Large / multiple</td><td>$240</td><td>2.5–4 hrs</td></tr>
+        </table>
+        <p class="note">Great for overgrown ornamentals, driveway clearance, and shaping.</p>
+      </div>
+
+      <!-- Weed Pulling -->
+      <div class="service-card">
+        <h3>🌱 Weed Pulling (Beds)</h3>
+        <p class="desc">Hand‑pull weeds from beds and walkways, removing roots to slow regrowth.</p>
+        <table>
+          <tr><td>Small beds</td><td>$45</td><td>0.5–1 hr</td></tr>
+          <tr><td>Medium beds</td><td>$75</td><td>1–1.5 hrs</td></tr>
+          <tr><td>Large / overgrown beds</td><td>$130</td><td>1.5–3 hrs</td></tr>
+        </table>
+        <p class="note">Great before mulch installation or seasonal cleanups.</p>
+      </div>
+
+      <!-- Gutter Cleaning -->
+      <div class="service-card">
+        <h3>🏠 Gutter Cleaning</h3>
+        <p class="desc">Clear gutters and downspouts to prevent clogs, overflow, and water damage.</p>
+        <table>
+          <tr><td>Small (single story)</td><td>$90</td><td>1–1.5 hrs</td></tr>
+          <tr><td>Medium home</td><td>$140</td><td>1.5–2 hrs</td></tr>
+          <tr><td>Large / multi‑story</td><td>$220</td><td>2–3 hrs</td></tr>
+        </table>
+        <p class="note">Recommended at least once a year, or more for heavily treed lots.</p>
+      </div>
+
+    </div><!-- end grid -->
+
+    <!-- ── Packages ── -->
+    <div class="section-label">📦 Packages & Bundles</div>
+
+    <!-- Basic Lawn Package -->
+    <div class="package-card">
+      <div class="package-info">
+        <h4>Basic Lawn Package</h4>
+        <p class="desc">Simple, reliable lawn care focused on mowing and edges.</p>
+        <p class="meta"><strong>Frequency:</strong> Weekly mowing during the growing season (~4 visits/month).</p>
+        <p class="meta"><strong>Includes:</strong> Lawn mowing, trimming, edging, and blowing off hard surfaces each visit.</p>
+      </div>
+      <div class="package-table-wrap">
+        <table>
+          <tr><th>Size</th><th>Price (monthly)</th><th>Time / visit</th></tr>
+          <tr><td>Small (≤ ~0.25 acre)</td><td>$120/mo</td><td>1–1.5 hrs</td></tr>
+          <tr><td>Medium (~0.25–0.5 acre)</td><td>$160/mo</td><td>1.5–2 hrs</td></tr>
+          <tr><td>Large (&gt; 0.5 acre)</td><td>$220/mo</td><td>2–2.5 hrs</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- Premium Lawn Package -->
+    <div class="package-card">
+      <div class="package-info">
+        <h4>Premium Lawn Package</h4>
+        <p class="desc">Full‑service lawn care with mowing, fertilization, weed control, and aeration.</p>
+        <p class="meta"><strong>Frequency:</strong> Weekly mowing, plus treatment visits every 4–6 weeks.</p>
+        <p class="meta"><strong>Includes:</strong> Weekly mowing & cleanup, 3–4 fertilization visits/yr, 2–3 weed control visits, and 1 aeration visit annually.</p>
+      </div>
+      <div class="package-table-wrap">
+        <table>
+          <tr><th>Size</th><th>Price (monthly)</th><th>Time / visit</th></tr>
+          <tr><td>Small (~0.25 acre)</td><td>$220/mo</td><td>~1.5 hrs</td></tr>
+          <tr><td>Medium (~0.25–0.5 acre)</td><td>$280/mo</td><td>~2 hrs</td></tr>
+          <tr><td>Large (&gt; 0.5 acre)</td><td>$350/mo</td><td>2–2.5 hrs</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- Curb Appeal Cleanup -->
+    <div class="package-card orange">
+      <div class="package-info">
+        <h4>Curb Appeal Cleanup</h4>
+        <p class="desc">One‑time makeover: yard cleanup, hedge trimming, and leaf removal bundled together.</p>
+        <p class="meta"><strong>Frequency:</strong> Single detailed visit (extra time may be needed for severely overgrown yards).</p>
+        <p class="meta"><strong>Includes:</strong> Yard cleanup, hedge trimming (size‑matched), leaf removal, and debris hauling.</p>
+      </div>
+      <div class="package-table-wrap">
+        <table>
+          <tr><th>Bundle size</th><th>Price</th><th>Est. time</th></tr>
+          <tr><td>Small property</td><td>$230</td><td>2–3 hrs</td></tr>
+          <tr><td>Medium property</td><td>$320</td><td>3–4 hrs</td></tr>
+          <tr><td>Large property</td><td>$440</td><td>4–6 hrs</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- Seasonal Cleanup Package -->
+    <div class="package-card orange">
+      <div class="package-info">
+        <h4>Seasonal Cleanup Package</h4>
+        <p class="desc">Spring or fall cleanup including yard cleanup, leaf removal, and basic bed touch‑ups.</p>
+        <p class="meta"><strong>Frequency:</strong> One intensive visit per season (spring and/or fall).</p>
+        <p class="meta"><strong>Includes:</strong> Yard cleanup, leaf removal, light pruning, bed clean‑out, and debris haul‑off.</p>
+      </div>
+      <div class="package-table-wrap">
+        <table>
+          <tr><th>Property size</th><th>Price</th><th>Est. time</th></tr>
+          <tr><td>Small (up to ~0.25 acre)</td><td>$260</td><td>3–4 hrs</td></tr>
+          <tr><td>Medium (~0.25–0.5 acre)</td><td>$360</td><td>4–5 hrs</td></tr>
+          <tr><td>Large (&gt; 0.5 acre)</td><td>$480</td><td>5–7 hrs</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- Bed & Border Package -->
+    <div class="package-card orange">
+      <div class="package-info">
+        <h4>Bed & Border Package</h4>
+        <p class="desc">A focused refresh for flower beds and borders: weed pulling, crisp edging, and new mulch.</p>
+        <p class="meta"><strong>Frequency:</strong> One detailed visit (can be repeated seasonally as needed).</p>
+        <p class="meta"><strong>Includes:</strong> Bed cleanup, hand‑weeding, edge reshaping, and mulch install.</p>
+      </div>
+      <div class="package-table-wrap">
+        <table>
+          <tr><th>Bed scope</th><th>Price</th><th>Est. time</th></tr>
+          <tr><td>Small beds</td><td>$210</td><td>2–3 hrs</td></tr>
+          <tr><td>Medium beds</td><td>$320</td><td>3–4 hrs</td></tr>
+          <tr><td>Large / full‑property beds</td><td>$450</td><td>4–6 hrs</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- Total Lawn Health Plan -->
+    <div class="package-card">
+      <div class="package-info">
+        <h4>Total Lawn Health Plan</h4>
+        <p class="desc">Year‑round care combining mowing, fertilization, weed control, and aeration into one custom plan.</p>
+        <p class="meta"><strong>Frequency:</strong> Weekly mowing visits plus scheduled treatment visits across the season.</p>
+        <p class="meta"><strong>Includes:</strong> Weekly mowing, multiple fertilization & weed control applications, and one aeration per year.</p>
+      </div>
+      <div class="package-table-wrap">
+        <table>
+          <tr><th>Lawn size</th><th>Starting at (monthly)</th><th>Season</th></tr>
+          <tr><td>Small (up to ~0.25 acre)</td><td>$260/mo</td><td>In‑season</td></tr>
+          <tr><td>Medium (~0.25–0.5 acre)</td><td>$320/mo</td><td>In‑season</td></tr>
+          <tr><td>Large (&gt; 0.5 acre)</td><td>$390/mo</td><td>In‑season</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="cta-bar">
+      <p>Not sure which service fits? <strong>Reach out and I'll help you pick the right option.</strong></p>
+      <a href="contact.html" class="btn">Get a Free Quote</a>
+      <a href="about.html" class="btn secondary">About Logan</a>
+    </div>
+
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Logan's Lawncare Services. All rights reserved.</p>
+  </footer>
+
+  <script>
+    function toggleMenu() {
+      document.getElementById('navMenu').classList.toggle('active');
+    }
+    document.querySelectorAll('#navMenu a').forEach(link => {
+      link.addEventListener('click', () => document.getElementById('navMenu').classList.remove('active'));
+    });
+    document.addEventListener('click', e => {
+      if (!document.querySelector('.nav-container').contains(e.target)) {
+        document.getElementById('navMenu').classList.remove('active');
+      }
+    });
+  </script>
+</body>
+</html>
