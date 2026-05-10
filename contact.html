@@ -260,6 +260,9 @@
             </ul>
         </nav>
     </div>
+    <div id="fileWarning" style="display:none; max-width:900px; margin:1rem auto; padding:1rem 1rem; background:#fff7ed; border-left:4px solid #f97316; border-radius:12px; color:#92400e; font-size:0.95rem;">
+        For local testing, open these pages through a local HTTP server instead of using <code>file://</code>. This ensures browser storage works correctly across pages. Example: <code>python -m http.server 8000</code>.
+    </div>
     <section class="section">
         <h2>Contact Us</h2>
         <div class="contact-info">
@@ -352,7 +355,9 @@
 
         // Save contact form submissions to localStorage for dashboard tracking
         document.querySelector('form').addEventListener('submit', function(e) {
-            const formData = new FormData(this);
+            e.preventDefault();
+            const form = this;
+            const formData = new FormData(form);
             
             const submission = {
                 id: 'sub_' + Date.now(),
@@ -383,7 +388,17 @@
             localStorage.setItem('bd_submissions', JSON.stringify(submissions));
             
             console.log('Submission saved to dashboard:', submission);
+            form.submit();
         });
+
+        function showFileProtocolWarning() {
+            const warning = document.getElementById('fileWarning');
+            if (!warning) return;
+            if (location.protocol === 'file:') {
+                warning.style.display = 'block';
+            }
+        }
+        showFileProtocolWarning();
     </script>
 </body>
 </html>

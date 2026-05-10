@@ -752,6 +752,9 @@
     </nav>
 
     <main class="main">
+      <div id="fileWarning" style="display:none; margin-bottom:0.8rem; padding:0.95rem 1rem; background:#f8f0d8; border-left:4px solid #f59e0b; border-radius:14px; color:#92400e; font-size:0.92rem;">
+        Browser local storage only works consistently across pages when the site is opened through a local HTTP server, not via <code>file://</code> URLs.
+      </div>
       <!-- HOME TAB -->
       <section class="tab" id="homeTab">
         <div class="card">
@@ -4327,7 +4330,17 @@
       document.getElementById('refreshSubmissionsBtn').addEventListener('click', () => {
         showToast('Formspree API integration requires setup. For now, use Formspree dashboard or manually log inquiries.');
       });
+
+      showFileProtocolWarning();
     });
+
+    function showFileProtocolWarning() {
+      const warning = document.getElementById('fileWarning');
+      if (!warning) return;
+      if (location.protocol === 'file:') {
+        warning.style.display = 'block';
+      }
+    }
 
     // CONTACT SUBMISSIONS FUNCTIONS
     function getSubmissions() {
