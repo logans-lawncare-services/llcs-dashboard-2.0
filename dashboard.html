@@ -2002,6 +2002,8 @@
         textInput.addEventListener('keydown', onKeydown);
       });
     }
+
+    function getPrefs() {
       return readJSON(STORAGE_KEYS.prefs, {
         theme: 'light',
         lastTab: 'homeTab',
