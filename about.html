@@ -6,53 +6,185 @@
     <title>About - Logan's Lawncare Services</title>
     <link rel="icon" type="image/png" href="https://i.postimg.cc/3RJNmCnN/Untitled-removebg-preview.png" />
     <style>
-        body {
-            font-family: Arial, sans-serif;
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f4f4f4;
             color: #333;
+            line-height: 1.6;
         }
         header {
             background-color: #4CAF50;
             color: white;
-            padding: 1rem 0;
+            padding: 1.5rem 1rem;
             text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        header h1 {
+            font-size: clamp(1.5rem, 5vw, 2.5rem);
+            margin-bottom: 0.5rem;
+        }
+        header p {
+            font-size: clamp(0.9rem, 3vw, 1.1rem);
+            opacity: 0.95;
+        }
+        .nav-container {
+            background-color: #333;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
         nav {
-            background-color: #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 1rem;
+        }
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
             color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
             padding: 0.5rem;
         }
         nav ul {
             list-style: none;
-            padding: 0;
-            margin: 0;
             display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
             justify-content: center;
-        }
-        nav ul li {
-            margin: 0 1rem;
+            flex: 1;
         }
         nav ul li a {
             color: white;
             text-decoration: none;
+            padding: 0.6rem 1rem;
+            display: inline-block;
+            font-size: 0.95rem;
+            transition: background-color 0.3s;
+            border-radius: 4px;
+        }
+        nav ul li a:hover {
+            background-color: #4CAF50;
         }
         .section {
-            padding: 2rem;
-            max-width: 800px;
+            padding: 1.5rem 1rem;
+            max-width: 900px;
             margin: 0 auto;
             background-color: white;
-            margin-top: 2rem;
+            margin-top: 1rem;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .section h2 {
+            color: #4CAF50;
+            font-size: clamp(1.5rem, 5vw, 2rem);
+            margin-bottom: 1rem;
+        }
+        .section p {
+            font-size: clamp(0.95rem, 2vw, 1rem);
+            line-height: 1.8;
+            margin-bottom: 1rem;
+            color: #555;
+        }
+        .btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            text-decoration: none;
+            border-radius: 5px;
+            display: inline-block;
+            font-size: 1rem;
+            transition: background-color 0.3s, transform 0.2s;
+            border: none;
+            cursor: pointer;
+            margin-top: 1rem;
+        }
+        .btn:hover {
+            background-color: #45a049;
+            transform: translateY(-2px);
         }
         footer {
             background-color: #333;
             color: white;
             text-align: center;
-            padding: 1rem 0;
+            padding: 1.5rem 1rem;
             margin-top: 2rem;
+            font-size: 0.9rem;
+        }
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
+            nav ul {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background-color: #333;
+                flex-direction: column;
+                width: 100%;
+                padding: 1rem 0;
+                box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            }
+            nav ul.active {
+                display: flex;
+            }
+            nav ul li {
+                width: 100%;
+                text-align: center;
+            }
+            nav ul li a {
+                display: block;
+                padding: 0.8rem 1rem;
+                border-radius: 0;
+            }
+            nav {
+                justify-content: space-between;
+                padding: 0.5rem 1rem;
+            }
+            .section {
+                padding: 1.5rem 1rem;
+                margin: 0.5rem 0.5rem;
+            }
+            .section h2 {
+                font-size: 1.5rem;
+            }
+            .section p {
+                font-size: 0.95rem;
+            }
+        }
+        @media (max-width: 480px) {
+            header h1 {
+                font-size: 1.5rem;
+            }
+            header p {
+                font-size: 0.9rem;
+            }
+            .section {
+                padding: 1rem;
+                margin: 0.5rem 0.5rem;
+            }
+            .section h2 {
+                font-size: 1.3rem;
+            }
+            .section p {
+                font-size: 0.9rem;
+            }
+            .btn {
+                padding: 0.6rem 1.2rem;
+                font-size: 0.95rem;
+                width: 100%;
+                text-align: center;
+            }
         }
     </style>
 </head>
@@ -61,14 +193,17 @@
         <h1>Logan's Lawncare Services</h1>
         <p>Your Local Lawn Care Experts</p>
     </header>
-    <nav>
-        <ul>
-            <li><a href="index.html">Home</a></li>
-            <li><a href="about.html">About</a></li>
-            <li><a href="services.html">Services</a></li>
-            <li><a href="contact.html">Contact</a></li>
-        </ul>
-    </nav>
+    <div class="nav-container">
+        <nav>
+            <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+            <ul id="navMenu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="services.html">Services</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </nav>
+    </div>
     <section class="section">
         <h2>About Me</h2>
         <p>Hi, I'm Logan, the 13‑year‑old owner of Logan's Lawncare Services, a local lawn care business built to help neighbors keep their yards looking clean, healthy, and taken care of. I started this business because I enjoy working outside and wanted to offer a reliable, affordable option for people right here in my community instead of them having to call a big company.</p>
@@ -77,5 +212,22 @@
     <footer>
         <p>&copy; 2023 Logan's Lawncare Services. All rights reserved.</p>
     </footer>
+    <script>
+        function toggleMenu() {
+            const menu = document.getElementById('navMenu');
+            menu.classList.toggle('active');
+        }
+        document.querySelectorAll('#navMenu a').forEach(link => {
+            link.addEventListener('click', () => {
+                document.getElementById('navMenu').classList.remove('active');
+            });
+        });
+        document.addEventListener('click', (e) => {
+            const nav = document.querySelector('.nav-container');
+            if (!nav.contains(e.target)) {
+                document.getElementById('navMenu').classList.remove('active');
+            }
+        });
+    </script>
 </body>
 </html>
