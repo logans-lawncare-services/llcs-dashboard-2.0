@@ -1165,44 +1165,61 @@
       <section class="tab" id="quotesTab">
         <div class="card">
           <div class="card-header">Quote Generator</div>
-          <div class="card-subtitle">Create customer quotes and estimates.</div>
+          <div class="card-subtitle">Create and export customer quotes. Price auto-fills based on service and size.</div>
 
           <form onsubmit="return false;">
-            <div class="form-group">
-              <label>Customer Name</label>
-              <input type="text" id="quoteCustomerName" placeholder="Customer name" />
+            <div class="form-group-inline">
+              <div class="form-group">
+                <label>Customer Name</label>
+                <input type="text" id="quoteCustomerName" placeholder="Customer name" />
+              </div>
+              <div class="form-group">
+                <label>Customer Email (optional)</label>
+                <input type="email" id="quoteCustomerEmail" placeholder="customer@email.com" />
+              </div>
             </div>
 
             <div class="form-group">
-              <label>Service</label>
-              <select id="quoteService">
-                <option value="Mulch Installation">🌱 Mulch Installation</option>
-                <option value="Lawn Mowing">🌿 Lawn Mowing</option>
-                <option value="Weed Pulling">🌾 Weed Pulling</option>
-                <option value="Weed Control">🧴 Weed Control</option>
-              </select>
+              <label>Customer Address (optional)</label>
+              <input type="text" id="quoteCustomerAddress" placeholder="Street, city, ZIP" />
             </div>
 
-            <div id="quoteServiceInfo" style="background:#020617;padding:0.8rem;border-radius:14px;margin-bottom:0.8rem;font-size:0.84rem;line-height:1.7;"></div>
+            <div class="form-group-inline">
+              <div class="form-group">
+                <label>Service</label>
+                <select id="quoteService"></select>
+              </div>
+              <div class="form-group">
+                <label>Size</label>
+                <select id="quoteSize">
+                  <option value="small">Small</option>
+                  <option value="medium">Medium</option>
+                  <option value="large">Large</option>
+                </select>
+              </div>
+            </div>
+
+            <div id="quoteServiceInfo" style="background:#020617;padding:0.8rem;border-radius:14px;margin-bottom:0.8rem;font-size:0.84rem;line-height:1.7;display:none;"></div>
 
             <div class="form-group">
-              <label>Estimated Price</label>
-              <input type="number" id="quotePrice" />
+              <label>Estimated Price ($)</label>
+              <input type="number" id="quotePrice" min="0" step="0.01" placeholder="Auto-filled by service + size" />
             </div>
 
             <div class="form-group">
-              <label>Notes</label>
-              <textarea id="quoteNotes"></textarea>
+              <label>Notes / Extra Details</label>
+              <textarea id="quoteNotes" placeholder="Any special instructions, property notes, or add-ons..."></textarea>
             </div>
 
             <div class="form-actions">
-              <button type="button" class="btn" id="generateQuoteBtn">Save Quote</button>
+              <button type="button" class="btn" id="generateQuoteBtn">💾 Save Quote</button>
             </div>
           </form>
         </div>
 
         <div class="card">
           <div class="card-header">Saved Quotes</div>
+          <div class="card-subtitle">Click "Export" to open a print-ready quote you can send to the customer.</div>
 
           <div class="table-container">
             <table>
@@ -1210,13 +1227,13 @@
                 <tr>
                   <th>Customer</th>
                   <th>Service</th>
+                  <th>Size</th>
                   <th>Price</th>
                   <th>Notes</th>
                   <th>Date</th>
                   <th>Actions</th>
                 </tr>
               </thead>
-
               <tbody id="quotesBody"></tbody>
             </table>
           </div>
@@ -4923,61 +4940,389 @@
     });
   }
 
-  const SERVICE_INFO = {
-    'Mulch Installation': {
-      icon: '🌱',
-      lines: [
-        'Small Area — $65–$95 — 1–1.5 hrs',
-        'Medium Area — $95–$150 — 1.5–2 hrs',
-        'Large / Multi-Area — $150–$200 — 2–3 hrs'
-      ],
-      note: 'Recommended at least once a year in spring for a brand new look. Also recommended with Weed Pulling and Weed Control.'
+  // ── QUOTES MODULE ──────────────────────────────────────────────
+  const QUOTE_SERVICES = [
+    {
+      key: 'Lawn Mowing',
+      label: '🌾 Lawn Mowing',
+      desc: 'Recurring or one‑time mowing with edging, trimming, and blowing for a clean, even lawn.',
+      sizes: {
+        small:  { label: 'Small (up to ~0.25 acre)',   price: 40,  time: '0.5–1 hr',   priceLabel: '$40' },
+        medium: { label: 'Medium (~0.25–0.5 acre)',     price: 60,  time: '1–1.5 hrs',  priceLabel: '$60' },
+        large:  { label: 'Large (over ~0.5 acre)',      price: 100, time: '1.5–2.5 hrs',priceLabel: '$100' }
+      },
+      note: 'Suggested: weekly or bi‑weekly during the growing season.'
     },
-    'Lawn Mowing': {
-      icon: '🌿',
-      lines: [
-        'Small Lawn — $35–$55 — 30–45 min',
-        'Medium Lawn — $55–$85 — 45–75 min',
-        'Large Lawn — $85–$130 — 1.5–2 hrs'
-      ],
-      note: 'Includes mowing, trimming edges, and blowing clippings. Recommended weekly or bi-weekly during growing season.'
+    {
+      key: 'Lawn Aeration',
+      label: '🌬️ Lawn Aeration',
+      desc: 'Core aeration to relieve compaction and help water, air, and nutrients reach the roots.',
+      sizes: {
+        small:  { label: 'Small (up to ~0.25 acre)',   price: 90,  time: '1 hr',        priceLabel: '$90' },
+        medium: { label: 'Medium (~0.25–0.5 acre)',     price: 130, time: '1–1.5 hrs',   priceLabel: '$130' },
+        large:  { label: 'Large (over ~0.5 acre)',      price: 190, time: '1.5–2 hrs',   priceLabel: '$190' }
+      },
+      note: 'Suggested: once per year in spring or fall.'
     },
-    'Weed Pulling': {
-      icon: '🌾',
-      lines: [
-        'Small Bed — $30–$55 — 30–60 min',
-        'Medium Bed — $55–$95 — 1–1.5 hrs',
-        'Large / Multiple Beds — $95–$150 — 1.5–2.5 hrs'
-      ],
-      note: 'Manual removal of weeds by hand. Best paired with Weed Control for longer-lasting results.'
+    {
+      key: 'Fertilization',
+      label: '🌿 Fertilization',
+      desc: 'Balanced fertilizer applications for thicker, greener turf with fewer bare spots.',
+      sizes: {
+        small:  { label: 'Small (up to ~0.25 acre)',   price: 70,  time: '0.5–1 hr',    priceLabel: '$70' },
+        medium: { label: 'Medium (~0.25–0.5 acre)',     price: 110, time: '0.5–1 hr',    priceLabel: '$110' },
+        large:  { label: 'Large (over ~0.5 acre)',      price: 170, time: '1–1.5 hrs',   priceLabel: '$170' }
+      },
+      note: 'Suggested: 3–4 applications per year for best results.'
     },
-    'Weed Control': {
-      icon: '🧴',
-      lines: [
-        'Small Area — $40–$65 — 20–40 min',
-        'Medium Area — $65–$100 — 40–60 min',
-        'Large Area — $100–$160 — 1–1.5 hrs'
-      ],
-      note: 'Application of pre- or post-emergent herbicide. Recommended in combination with Weed Pulling for best results.'
+    {
+      key: 'Weed Control Treatment',
+      label: '🚫 Weed Control Treatment',
+      desc: 'Targeted weed treatments in lawns and beds with selective products that protect your grass.',
+      sizes: {
+        small:  { label: 'Small (up to ~0.25 acre)',   price: 80,  time: '0.5–1 hr',    priceLabel: '$80' },
+        medium: { label: 'Medium (~0.25–0.5 acre)',     price: 130, time: '1–1.5 hrs',   priceLabel: '$130' },
+        large:  { label: 'Large (over ~0.5 acre)',      price: 190, time: '1.5–2 hrs',   priceLabel: '$190' }
+      },
+      note: 'Works best paired with fertilization and mowing on a regular schedule.'
+    },
+    {
+      key: 'Yard Cleanup',
+      label: '🧹 Yard Cleanup',
+      desc: 'General yard cleanup including light debris, sticks, branches, and surface clutter.',
+      sizes: {
+        small:  { label: 'Small yard',   price: 100, time: '1–2 hrs', priceLabel: '$100' },
+        medium: { label: 'Medium yard',  price: 160, time: '2–3 hrs', priceLabel: '$160' },
+        large:  { label: 'Large yard',   price: 260, time: '3–5 hrs', priceLabel: '$260' }
+      },
+      note: 'Great before listing your home or after storms and heavy weather.'
+    },
+    {
+      key: 'Leaf Removal',
+      label: '🍂 Leaf Removal',
+      desc: 'Seasonal leaf cleanup with blowing, raking, bagging, and optional hauling.',
+      sizes: {
+        small:  { label: 'Small yard',  price: 90,  time: '1–2 hrs', priceLabel: '$90' },
+        medium: { label: 'Medium yard', price: 150, time: '2–3 hrs', priceLabel: '$150' },
+        large:  { label: 'Large yard',  price: 240, time: '3–5 hrs', priceLabel: '$240' }
+      },
+      note: 'Ideal for fall cleanup and heavily treed properties.'
+    },
+    {
+      key: 'Outdoor Cleaning',
+      label: '🏡 Outdoor Cleaning',
+      desc: 'Clean patios, decks, furniture, and outdoor living areas so everything is ready to use.',
+      sizes: {
+        small:  { label: 'Small area',  price: 90,  time: '1–2 hrs', priceLabel: '$90' },
+        medium: { label: 'Medium area', price: 150, time: '2–3 hrs', priceLabel: '$150' },
+        large:  { label: 'Large area',  price: 240, time: '3–4 hrs', priceLabel: '$240' }
+      },
+      note: 'Perfect before parties, backyard events, or move‑in/move‑out.'
+    },
+    {
+      key: 'Pressure Washing',
+      label: '💧 Pressure Washing',
+      desc: 'Pressure wash driveways, walkways, patios, siding, and decks to remove dirt and stains.',
+      sizes: {
+        small:  { label: 'Small surfaces',          price: 120, time: '1–2 hrs', priceLabel: '$120' },
+        medium: { label: 'Medium surfaces',          price: 190, time: '2–3 hrs', priceLabel: '$190' },
+        large:  { label: 'Large / multi‑surface',    price: 300, time: '3–4 hrs', priceLabel: '$300' }
+      },
+      note: 'Best combined with Outdoor Cleaning or a Curb Appeal package.'
+    },
+    {
+      key: 'Hedge Trimming',
+      label: '✂️ Hedge Trimming',
+      desc: 'Shape and maintain hedges, from neat low borders to tall, overgrown screens.',
+      sizes: {
+        small:  { label: 'Small (under 4 ft)', price: 60,  time: '0.5–1 hr',  priceLabel: '$60' },
+        medium: { label: 'Medium (4–8 ft)',    price: 100, time: '1–1.5 hrs', priceLabel: '$100' },
+        large:  { label: 'Large (over 8 ft)',  price: 180, time: '1.5–3 hrs', priceLabel: '$180' }
+      },
+      note: 'Includes full debris collection and haul‑away if needed.'
+    },
+    {
+      key: 'Small Tree Trimming',
+      label: '🌳 Small Tree Trimming',
+      desc: 'Trim small trees, remove low branches, and open up canopies for better light and shape.',
+      sizes: {
+        small:  { label: 'Small (under 10 ft)', price: 90,  time: '1–1.5 hrs', priceLabel: '$90' },
+        medium: { label: 'Medium',              price: 150, time: '1.5–2.5 hrs',priceLabel: '$150' },
+        large:  { label: 'Large / multiple',    price: 240, time: '2.5–4 hrs', priceLabel: '$240' }
+      },
+      note: 'Great for overgrown ornamentals, driveway clearance, and shaping.'
+    },
+    {
+      key: 'Weed Pulling (Beds)',
+      label: '🌱 Weed Pulling (Beds)',
+      desc: 'Hand‑pull weeds from beds and walkways, removing roots to slow regrowth.',
+      sizes: {
+        small:  { label: 'Small beds',               price: 45,  time: '0.5–1 hr',  priceLabel: '$45' },
+        medium: { label: 'Medium beds',              price: 75,  time: '1–1.5 hrs', priceLabel: '$75' },
+        large:  { label: 'Large / overgrown beds',   price: 130, time: '1.5–3 hrs', priceLabel: '$130' }
+      },
+      note: 'Great before mulch installation or seasonal cleanups.'
+    },
+    {
+      key: 'Gutter Cleaning',
+      label: '🏠 Gutter Cleaning',
+      desc: 'Clear gutters and downspouts to prevent clogs, overflow, and water damage.',
+      sizes: {
+        small:  { label: 'Small (single story)', price: 90,  time: '1–1.5 hrs', priceLabel: '$90' },
+        medium: { label: 'Medium home',          price: 140, time: '1.5–2 hrs', priceLabel: '$140' },
+        large:  { label: 'Large / multi‑story',  price: 220, time: '2–3 hrs',   priceLabel: '$220' }
+      },
+      note: 'Recommended at least once a year, or more for heavily treed lots.'
+    },
+    {
+      key: 'Mulch Installation',
+      label: '🌱 Mulch Installation',
+      desc: 'Install mulch into your beds or anywhere else needed. Price varies depending on selected mulch type.',
+      sizes: {
+        small:  { label: 'Small Area',            price: 80,  time: '1–1.5 hrs', priceLabel: '$65–$95' },
+        medium: { label: 'Medium Area',            price: 123, time: '1.5–2 hrs', priceLabel: '$95–$150' },
+        large:  { label: 'Large / Multi‑Area',     price: 175, time: '2–3 hrs',   priceLabel: '$150–$200' }
+      },
+      note: 'Recommended at least once a year in spring. Also recommended with Weed Pulling and Weed Control.'
+    },
+    {
+      key: 'Basic Lawn Package',
+      label: '📦 Basic Lawn Package (Monthly)',
+      desc: 'Simple, reliable lawn care — weekly mowing, trimming, edging, and blowing each visit.',
+      sizes: {
+        small:  { label: 'Small (≤ ~0.25 acre)',   price: 120, time: '1–1.5 hrs/visit',  priceLabel: '$120/mo' },
+        medium: { label: 'Medium (~0.25–0.5 acre)', price: 160, time: '1.5–2 hrs/visit',  priceLabel: '$160/mo' },
+        large:  { label: 'Large (> 0.5 acre)',      price: 220, time: '2–2.5 hrs/visit',  priceLabel: '$220/mo' }
+      },
+      note: 'Frequency: ~4 mowing visits/month during the growing season.'
+    },
+    {
+      key: 'Premium Lawn Package',
+      label: '📦 Premium Lawn Package (Monthly)',
+      desc: 'Full‑service lawn care: weekly mowing + fertilization, weed control, and aeration visits.',
+      sizes: {
+        small:  { label: 'Small (~0.25 acre)',      price: 220, time: '~1.5 hrs/visit',   priceLabel: '$220/mo' },
+        medium: { label: 'Medium (~0.25–0.5 acre)', price: 280, time: '~2 hrs/visit',     priceLabel: '$280/mo' },
+        large:  { label: 'Large (> 0.5 acre)',      price: 350, time: '2–2.5 hrs/visit',  priceLabel: '$350/mo' }
+      },
+      note: 'Includes 3–4 fertilization visits/yr, 2–3 weed control visits, and 1 aeration visit annually.'
+    },
+    {
+      key: 'Curb Appeal Cleanup',
+      label: '📦 Curb Appeal Cleanup (One‑Time)',
+      desc: 'One‑time makeover: yard cleanup, hedge trimming, and leaf removal bundled together.',
+      sizes: {
+        small:  { label: 'Small property',  price: 230, time: '2–3 hrs', priceLabel: '$230' },
+        medium: { label: 'Medium property', price: 320, time: '3–4 hrs', priceLabel: '$320' },
+        large:  { label: 'Large property',  price: 440, time: '4–6 hrs', priceLabel: '$440' }
+      },
+      note: 'Single detailed visit. Extra time may be needed for severely overgrown yards.'
+    },
+    {
+      key: 'Seasonal Cleanup Package',
+      label: '📦 Seasonal Cleanup Package',
+      desc: 'Spring or fall cleanup: yard cleanup, leaf removal, and basic bed touch‑ups.',
+      sizes: {
+        small:  { label: 'Small (up to ~0.25 acre)',   price: 260, time: '3–4 hrs', priceLabel: '$260' },
+        medium: { label: 'Medium (~0.25–0.5 acre)',    price: 360, time: '4–5 hrs', priceLabel: '$360' },
+        large:  { label: 'Large (> 0.5 acre)',         price: 480, time: '5–7 hrs', priceLabel: '$480' }
+      },
+      note: 'Includes yard cleanup, leaf removal, light pruning, bed clean‑out, and debris haul‑off.'
+    },
+    {
+      key: 'Bed & Border Package',
+      label: '📦 Bed & Border Package',
+      desc: 'A focused refresh for flower beds and borders: weed pulling, crisp edging, and new mulch.',
+      sizes: {
+        small:  { label: 'Small beds',                price: 210, time: '2–3 hrs', priceLabel: '$210' },
+        medium: { label: 'Medium beds',               price: 320, time: '3–4 hrs', priceLabel: '$320' },
+        large:  { label: 'Large / full‑property beds',price: 450, time: '4–6 hrs', priceLabel: '$450' }
+      },
+      note: 'Includes bed cleanup, hand‑weeding, edge reshaping, and mulch install.'
+    },
+    {
+      key: 'Total Lawn Health Plan',
+      label: '📦 Total Lawn Health Plan (Monthly)',
+      desc: 'Year‑round care combining mowing, fertilization, weed control, and aeration into one custom plan.',
+      sizes: {
+        small:  { label: 'Small (up to ~0.25 acre)',   price: 260, time: 'In‑season', priceLabel: '$260/mo' },
+        medium: { label: 'Medium (~0.25–0.5 acre)',    price: 320, time: 'In‑season', priceLabel: '$320/mo' },
+        large:  { label: 'Large (> 0.5 acre)',         price: 390, time: 'In‑season', priceLabel: '$390/mo' }
+      },
+      note: 'Includes weekly mowing, multiple fertilization & weed control applications, and one aeration per year.'
     }
-  };
+  ];
 
-  function updateServiceInfo() {
+  // Build service dropdown
+  (function buildServiceDropdown() {
     const sel = document.getElementById('quoteService');
+    if (!sel) return;
+    sel.innerHTML = '';
+    QUOTE_SERVICES.forEach(function(s) {
+      const opt = document.createElement('option');
+      opt.value = s.key;
+      opt.textContent = s.label;
+      sel.appendChild(opt);
+    });
+  })();
+
+  function getServiceData(key) {
+    return QUOTE_SERVICES.find(function(s) { return s.key === key; }) || null;
+  }
+
+  function updateServiceInfoAndPrice() {
+    const sel = document.getElementById('quoteService');
+    const sizeSel = document.getElementById('quoteSize');
     const box = document.getElementById('quoteServiceInfo');
-    if (!sel || !box) return;
-    const info = SERVICE_INFO[sel.value];
-    if (!info) { box.innerHTML = ''; return; }
+    const priceInput = document.getElementById('quotePrice');
+    if (!sel || !sizeSel || !box) return;
+
+    const svc = getServiceData(sel.value);
+    if (!svc) { box.style.display = 'none'; return; }
+
+    const sz = sizeSel.value || 'small';
+    const sizeData = svc.sizes[sz];
+
+    // Update price auto-fill
+    if (priceInput && sizeData) {
+      priceInput.value = sizeData.price;
+    }
+
+    // Update info box rows
+    const rows = ['small', 'medium', 'large'].map(function(sk) {
+      const sd = svc.sizes[sk];
+      const isCurrent = sk === sz;
+      return '<div style="display:flex;justify-content:space-between;align-items:center;padding:0.2rem 0.4rem;border-radius:8px;' +
+        (isCurrent ? 'background:rgba(102,185,106,0.15);border:1px solid rgba(102,185,106,0.35);' : '') + '">' +
+        '<span style="color:' + (isCurrent ? '#aee2b2' : '#e5e7eb') + ';font-weight:' + (isCurrent ? '600' : '400') + ';">' +
+        sd.label + '</span>' +
+        '<span style="color:#9bd3ff;font-size:0.8rem;">' + sd.priceLabel + ' &nbsp;·&nbsp; ' + sd.time + '</span>' +
+        '</div>';
+    }).join('');
+
+    box.style.display = 'block';
     box.innerHTML =
-      '<strong>' + info.icon + ' ' + sel.value + '</strong><br><br>' +
-      info.lines.join('<br>') +
-      '<br><br><span style="color:#9ca3af;">' + info.note + '</span>';
+      '<div style="font-weight:600;margin-bottom:0.5rem;color:#bfdbfe;">' + svc.label + '</div>' +
+      '<div style="color:#9ca3af;font-size:0.8rem;margin-bottom:0.55rem;">' + svc.desc + '</div>' +
+      rows +
+      '<div style="margin-top:0.55rem;font-size:0.78rem;color:#9ca3af;">' + svc.note + '</div>';
   }
 
   let quotes = JSON.parse(localStorage.getItem('llcs_quotes') || localStorage.getItem('quotes') || '[]');
 
   function saveQuotes() {
     localStorage.setItem('llcs_quotes', JSON.stringify(quotes));
+  }
+
+  function exportQuote(q) {
+    const svc = getServiceData(q.service);
+    const sizeLabels = { small: 'Small', medium: 'Medium', large: 'Large' };
+    const sizeLabel = sizeLabels[q.size] || q.size || '—';
+    const sizeDesc = svc && svc.sizes[q.size] ? svc.sizes[q.size].label : sizeLabel;
+    const priceLabel = svc && svc.sizes[q.size] ? svc.sizes[q.size].priceLabel : ('$' + Number(q.price).toFixed(2));
+    const timeEst = svc && svc.sizes[q.size] ? svc.sizes[q.size].time : '—';
+
+    const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Service Quote – ${q.customer}</title>
+  <style>
+    @media print { body { margin: 0; } .no-print { display: none !important; } }
+    body { font-family: system-ui, -apple-system, sans-serif; background: #f8fafc; color: #1e293b; margin: 0; padding: 2rem; }
+    .page { max-width: 680px; margin: 0 auto; background: #fff; border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,0.10); overflow: hidden; }
+    .header { background: linear-gradient(120deg, #1d4ed8 0%, #0f172a 50%, #22c55e 100%); color: #fff; padding: 2rem 2.5rem; display: flex; justify-content: space-between; align-items: center; }
+    .brand { font-size: 1.5rem; font-weight: 700; letter-spacing: 0.04em; }
+    .brand-sub { font-size: 0.82rem; opacity: 0.75; margin-top: 0.15rem; }
+    .quote-title { font-size: 0.9rem; text-align: right; opacity: 0.85; }
+    .quote-no { font-size: 1.2rem; font-weight: 700; color: #86efac; }
+    .body { padding: 2rem 2.5rem; }
+    .section-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #64748b; margin-bottom: 0.4rem; }
+    .customer-block { background: #f1f5f9; border-radius: 12px; padding: 1rem 1.25rem; margin-bottom: 1.5rem; }
+    .customer-name { font-size: 1.15rem; font-weight: 700; color: #0f172a; }
+    .customer-detail { font-size: 0.85rem; color: #475569; margin-top: 0.2rem; }
+    .service-card { border: 2px solid #22c55e; border-radius: 14px; overflow: hidden; margin-bottom: 1.5rem; }
+    .service-header { background: #f0fdf4; padding: 0.9rem 1.25rem; display: flex; justify-content: space-between; align-items: center; }
+    .service-name { font-size: 1rem; font-weight: 700; color: #15803d; }
+    .service-size-badge { background: #dcfce7; color: #166534; font-size: 0.78rem; font-weight: 600; border-radius: 999px; padding: 0.15rem 0.7rem; }
+    .service-body { padding: 0.9rem 1.25rem; }
+    .service-desc { font-size: 0.85rem; color: #475569; margin-bottom: 0.7rem; }
+    .detail-row { display: flex; justify-content: space-between; font-size: 0.84rem; padding: 0.3rem 0; border-bottom: 1px solid #f1f5f9; color: #1e293b; }
+    .detail-row:last-child { border-bottom: none; }
+    .detail-key { color: #64748b; }
+    .detail-val { font-weight: 600; }
+    .price-block { background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%); border-radius: 14px; padding: 1.25rem 1.5rem; display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+    .price-label { color: #94a3b8; font-size: 0.85rem; }
+    .price-amount { font-size: 2rem; font-weight: 800; color: #4ade80; letter-spacing: -0.02em; }
+    .notes-block { background: #fefce8; border: 1px solid #fde68a; border-radius: 10px; padding: 0.9rem 1.1rem; margin-bottom: 1.5rem; }
+    .notes-text { font-size: 0.85rem; color: #78350f; white-space: pre-wrap; }
+    .footer { border-top: 1px solid #e2e8f0; padding: 1.25rem 2.5rem; display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; color: #94a3b8; }
+    .validity { color: #64748b; }
+    .print-btn { background: #16a34a; color: #fff; border: none; border-radius: 999px; padding: 0.5rem 1.4rem; font-size: 0.9rem; cursor: pointer; font-family: inherit; margin-bottom: 1rem; display: block; }
+    .print-btn:hover { background: #15803d; }
+  </style>
+</head>
+<body>
+  <div class="no-print" style="text-align:center;margin-bottom:1rem;">
+    <button class="print-btn" onclick="window.print()">🖨️ Print / Save as PDF</button>
+  </div>
+  <div class="page">
+    <div class="header">
+      <div>
+        <div class="brand">LLCS</div>
+        <div class="brand-sub">Lawn &amp; Landscape Care Services</div>
+      </div>
+      <div class="quote-title">
+        <div>SERVICE QUOTE</div>
+        <div class="quote-no">#${String(q.id || Date.now()).slice(-6)}</div>
+        <div style="font-size:0.78rem;margin-top:0.2rem;">${q.date}</div>
+      </div>
+    </div>
+    <div class="body">
+      <div class="section-label">Prepared for</div>
+      <div class="customer-block">
+        <div class="customer-name">${q.customer || 'Valued Customer'}</div>
+        ${q.email ? '<div class="customer-detail">📧 ' + q.email + '</div>' : ''}
+        ${q.address ? '<div class="customer-detail">📍 ' + q.address + '</div>' : ''}
+      </div>
+
+      <div class="section-label">Service Details</div>
+      <div class="service-card">
+        <div class="service-header">
+          <div class="service-name">${q.service}</div>
+          <div class="service-size-badge">${sizeLabel}</div>
+        </div>
+        <div class="service-body">
+          ${svc ? '<div class="service-desc">' + svc.desc + '</div>' : ''}
+          <div class="detail-row"><span class="detail-key">Property size</span><span class="detail-val">${sizeDesc}</span></div>
+          <div class="detail-row"><span class="detail-key">Estimated time</span><span class="detail-val">${timeEst}</span></div>
+          ${svc ? '<div class="detail-row"><span class="detail-key">Recommendation</span><span class="detail-val" style="max-width:300px;text-align:right;font-weight:400;color:#475569;">' + svc.note + '</span></div>' : ''}
+        </div>
+      </div>
+
+      <div class="price-block">
+        <div>
+          <div class="price-label">Estimated Price</div>
+          <div style="color:#94a3b8;font-size:0.78rem;margin-top:0.1rem;">Final price may vary based on property conditions</div>
+        </div>
+        <div class="price-amount">${priceLabel}</div>
+      </div>
+
+      ${q.notes ? '<div class="section-label">Additional Notes</div><div class="notes-block"><div class="notes-text">' + q.notes + '</div></div>' : ''}
+    </div>
+    <div class="footer">
+      <div class="validity">This quote is valid for 30 days from the date issued.</div>
+      <div>Thank you for your business!</div>
+    </div>
+  </div>
+</body>
+</html>`;
+
+    const win = window.open('', '_blank');
+    if (win) {
+      win.document.write(html);
+      win.document.close();
+    }
   }
 
   function renderQuotes() {
@@ -4987,10 +5332,8 @@
     if (!quotes.length) {
       const tr = document.createElement('tr');
       const td = document.createElement('td');
-      td.colSpan = 6;
-      td.style.textAlign = 'center';
-      td.style.color = '#6b7280';
-      td.style.padding = '1rem';
+      td.colSpan = 7;
+      td.style.cssText = 'text-align:center;color:#6b7280;padding:1.2rem;';
       td.textContent = 'No quotes saved yet.';
       tr.appendChild(td);
       body.appendChild(tr);
@@ -4998,20 +5341,32 @@
     }
     quotes.forEach(function(q, idx) {
       const row = document.createElement('tr');
-      const custTd = document.createElement('td');
-      custTd.textContent = q.customer;
-      const svcTd = document.createElement('td');
-      svcTd.textContent = q.service;
-      const priceTd = document.createElement('td');
-      priceTd.textContent = '$' + Number(q.price).toFixed(2);
-      const notesTd = document.createElement('td');
-      notesTd.textContent = q.notes || '—';
-      notesTd.style.maxWidth = '180px';
-      notesTd.style.whiteSpace = 'pre-wrap';
-      notesTd.style.fontSize = '0.78rem';
-      const dateTd = document.createElement('td');
-      dateTd.textContent = q.date;
+      function cell(text, style) {
+        const td = document.createElement('td');
+        td.textContent = text || '—';
+        if (style) td.style.cssText = style;
+        return td;
+      }
+      const svc = getServiceData(q.service);
+      const sizeLabels = { small: 'Small', medium: 'Medium', large: 'Large' };
+      const priceLabel = svc && svc.sizes[q.size] ? svc.sizes[q.size].priceLabel : ('$' + Number(q.price).toFixed(2));
+      row.appendChild(cell(q.customer));
+      row.appendChild(cell(q.service));
+      row.appendChild(cell(sizeLabels[q.size] || q.size || '—'));
+      row.appendChild(cell(priceLabel));
+      const notesTd = cell(q.notes || '—', 'max-width:160px;white-space:pre-wrap;font-size:0.78rem;');
+      row.appendChild(notesTd);
+      row.appendChild(cell(q.date));
+
       const actTd = document.createElement('td');
+      actTd.style.whiteSpace = 'nowrap';
+
+      const expBtn = document.createElement('button');
+      expBtn.className = 'btn small secondary';
+      expBtn.textContent = '📄 Export';
+      expBtn.style.marginRight = '4px';
+      expBtn.addEventListener('click', function() { exportQuote(q); });
+
       const delBtn = document.createElement('button');
       delBtn.className = 'btn small danger';
       delBtn.textContent = 'Delete';
@@ -5020,45 +5375,51 @@
         saveQuotes();
         renderQuotes();
       });
+
+      actTd.appendChild(expBtn);
       actTd.appendChild(delBtn);
-      row.appendChild(custTd);
-      row.appendChild(svcTd);
-      row.appendChild(priceTd);
-      row.appendChild(notesTd);
-      row.appendChild(dateTd);
       row.appendChild(actTd);
       body.appendChild(row);
     });
   }
 
   const quoteServiceSel = document.getElementById('quoteService');
+  const quoteSizeSel = document.getElementById('quoteSize');
   if (quoteServiceSel) {
-    quoteServiceSel.addEventListener('change', updateServiceInfo);
-    updateServiceInfo();
+    quoteServiceSel.addEventListener('change', updateServiceInfoAndPrice);
   }
+  if (quoteSizeSel) {
+    quoteSizeSel.addEventListener('change', updateServiceInfoAndPrice);
+  }
+  updateServiceInfoAndPrice();
 
   const quoteBtn = document.getElementById('generateQuoteBtn');
   if (quoteBtn) {
     quoteBtn.addEventListener('click', function() {
       const customerName = (document.getElementById('quoteCustomerName').value || '').trim();
+      const email = (document.getElementById('quoteCustomerEmail').value || '').trim();
+      const address = (document.getElementById('quoteCustomerAddress').value || '').trim();
       const service = document.getElementById('quoteService').value;
+      const size = document.getElementById('quoteSize').value;
       const price = document.getElementById('quotePrice').value;
       const notes = (document.getElementById('quoteNotes').value || '').trim();
 
       if (!customerName) {
         if (typeof showToast === 'function') showToast('Please enter a customer name.', false, 'error');
-        else alert('Please enter a customer name.');
         return;
       }
       if (!price || isNaN(Number(price)) || Number(price) < 0) {
-        if (typeof showToast === 'function') showToast('Please enter a valid estimated price.', false, 'error');
-        else alert('Please enter a valid estimated price.');
+        if (typeof showToast === 'function') showToast('Please enter a valid price.', false, 'error');
         return;
       }
 
       const quote = {
+        id: Date.now(),
         customer: customerName,
+        email: email,
+        address: address,
         service: service,
+        size: size,
         price: Number(price),
         notes: notes,
         date: new Date().toLocaleDateString()
@@ -5069,11 +5430,13 @@
       renderQuotes();
 
       document.getElementById('quoteCustomerName').value = '';
-      document.getElementById('quotePrice').value = '';
+      document.getElementById('quoteCustomerEmail').value = '';
+      document.getElementById('quoteCustomerAddress').value = '';
       document.getElementById('quoteNotes').value = '';
+      document.getElementById('quoteSize').value = 'small';
+      updateServiceInfoAndPrice();
 
       if (typeof showToast === 'function') showToast('Quote saved.');
-      else alert('Quote saved.');
     });
   }
 
