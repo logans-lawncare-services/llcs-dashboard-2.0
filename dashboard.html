@@ -745,7 +745,7 @@
         </li>
         <li><a href="#" class="nav-link" data-tab="kanbanTab" id="kanbanNav">Jobs columned</a></li>
         <li><a href="#" class="nav-link" data-tab="customersTab" id="customersNav">Customers</a></li>
-        <li><a href="#" class="nav-link" data-tab="submissionsTab" id="submissionsNav">Contact Submissions</a></li>
+        <li><a href="#" class="nav-link" data-tab="submissionsTab" id="submissionsNav">Contact Submissions <span id="submissionsBadge" style="margin-left:4px;font-size:0.75rem;display:none;"></span></a></li>
         <li><a href="#" class="nav-link" data-tab="chartsTab" id="chartsNav">Charts</a></li>
         <li><a href="#" class="nav-link" data-tab="adminTab" id="adminNav" style="display:none;">Admin</a></li>
       </ul>
@@ -1428,8 +1428,8 @@
         </div>
 
         <div class="card">
-          <div class="card-header">Role permissions</div>
-          <div class="card-subtitle">Founder can choose what each role can see and do. Admins always retain admin-tab access when their account role is Admin/Founder.</div>
+          <div class="card-header">Role permissions & page visibility</div>
+          <div class="card-subtitle">Control which pages each role can see, and what actions they can perform. Founder always has full access.</div>
           <div id="rolePermissionsEditor"></div>
         </div>
 
@@ -1538,21 +1538,57 @@
 
   <!-- CUSTOM CONFIRM OVERLAY -->
   <div class="global-overlay" id="confirmOverlay">
-    <div style="max-width:320px;width:100%;background:#020617;border-radius:16px;padding:0.9rem 1rem;box-shadow:0 12px 40px rgba(0,0,0,0.9);border:1px solid rgba(248,113,113,0.6);">
-      <div style="font-size:0.95rem;font-weight:600;margin-bottom:0.35rem;color:#fecaca;">
-        Are you sure?
+    <div id="confirmDialog" style="max-width:340px;width:100%;background:#0f172a;border-radius:18px;padding:1.2rem 1.25rem 1rem;box-shadow:0 16px 48px rgba(0,0,0,0.95);border:1px solid rgba(248,113,113,0.5);">
+      <div style="display:flex;align-items:center;gap:0.55rem;margin-bottom:0.45rem;">
+        <span id="confirmIcon" style="font-size:1.3rem;">🗑️</span>
+        <div id="confirmTitle" style="font-size:0.97rem;font-weight:700;color:#fecaca;">Are you sure?</div>
       </div>
-      <div id="confirmMessage" style="font-size:0.85rem;color:#e5e7eb;margin-bottom:0.75rem;">
+      <div id="confirmMessage" style="font-size:0.85rem;color:#cbd5e1;margin-bottom:1rem;padding-left:1.85rem;">
         This action cannot be undone.
       </div>
-      <div style="display:flex;justify-content:flex-end;gap:0.4rem;">
+      <div style="display:flex;justify-content:flex-end;gap:0.5rem;">
         <button type="button" class="btn small secondary" id="confirmCancelBtn">Cancel</button>
-        <button type="button" class="btn small danger" id="confirmOkBtn">Yes, do it</button>
+        <button type="button" class="btn small danger" id="confirmOkBtn">Yes, delete</button>
       </div>
     </div>
   </div>
 
-  <!-- TOAST -->
+  <!-- ALERT OVERLAY (replaces native alert()) -->
+  <div class="global-overlay" id="alertOverlay">
+    <div style="max-width:340px;width:100%;background:#0f172a;border-radius:18px;padding:1.2rem 1.25rem 1rem;box-shadow:0 16px 48px rgba(0,0,0,0.95);border:1px solid var(--border);">
+      <div style="display:flex;align-items:center;gap:0.55rem;margin-bottom:0.45rem;">
+        <span id="alertIcon" style="font-size:1.3rem;">ℹ️</span>
+        <div id="alertTitle" style="font-size:0.97rem;font-weight:700;color:#bfdbfe;">Notice</div>
+      </div>
+      <div id="alertMessage" style="font-size:0.85rem;color:#cbd5e1;margin-bottom:1rem;padding-left:1.85rem;"></div>
+      <div style="display:flex;justify-content:flex-end;">
+        <button type="button" class="btn small" id="alertOkBtn">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- INPUT MODAL (replaces native prompt()) -->
+  <div class="global-overlay" id="inputOverlay">
+    <div style="max-width:360px;width:100%;background:#0f172a;border-radius:18px;padding:1.2rem 1.25rem 1rem;box-shadow:0 16px 48px rgba(0,0,0,0.95);border:1px solid var(--border);">
+      <div style="display:flex;align-items:center;gap:0.55rem;margin-bottom:0.45rem;">
+        <span id="inputIcon" style="font-size:1.3rem;">✏️</span>
+        <div id="inputTitle" style="font-size:0.97rem;font-weight:700;color:#bfdbfe;">Enter value</div>
+      </div>
+      <div id="inputSubtitle" style="font-size:0.82rem;color:#9ca3af;margin-bottom:0.6rem;padding-left:1.85rem;"></div>
+      <!-- text input mode -->
+      <div id="inputTextWrap" style="padding-left:1.85rem;margin-bottom:0.85rem;">
+        <input id="inputValue" type="text" style="width:100%;padding:0.55rem 0.8rem;border-radius:999px;border:1px solid var(--border);font-size:0.92rem;background:#111827;color:#e5e7eb;" />
+      </div>
+      <!-- select mode -->
+      <div id="inputSelectWrap" style="padding-left:1.85rem;margin-bottom:0.85rem;display:none;">
+        <select id="inputSelectValue" style="width:100%;padding:0.55rem 0.8rem;border-radius:999px;border:1px solid var(--border);font-size:0.92rem;background:#111827;color:#e5e7eb;"></select>
+      </div>
+      <div style="display:flex;justify-content:flex-end;gap:0.5rem;">
+        <button type="button" class="btn small secondary" id="inputCancelBtn">Cancel</button>
+        <button type="button" class="btn small" id="inputOkBtn">OK</button>
+      </div>
+    </div>
+  </div>
   <div class="toast" id="toast">
     <span id="toastMessage">Action completed</span>
     <button type="button" class="btn secondary small" id="toastUndoBtn" style="display:none;">Undo</button>
@@ -1581,6 +1617,7 @@
         viewJobs: true,
         viewExpenses: true,
         viewKanban: true,
+        viewSubmissions: true,
         manageCustomers: true,
         manageUsers: true,
         editRolePermissions: true,
@@ -1594,6 +1631,7 @@
         viewJobs: true,
         viewExpenses: true,
         viewKanban: true,
+        viewSubmissions: true,
         manageCustomers: true,
         manageUsers: true,
         editRolePermissions: false,
@@ -1607,6 +1645,7 @@
         viewJobs: true,
         viewExpenses: true,
         viewKanban: true,
+        viewSubmissions: false,
         manageCustomers: false,
         manageUsers: false,
         editRolePermissions: false,
@@ -1695,6 +1734,7 @@
       showNav('jobsNav', hasPermission(u, 'viewJobs'));
       showNav('expensesNav', hasPermission(u, 'viewExpenses'));
       showNav('kanbanNav', hasPermission(u, 'viewKanban'));
+      showNav('submissionsNav', hasPermission(u, 'viewSubmissions'));
     }
 
     function jobTotalPayment(j) {
@@ -1776,29 +1816,62 @@
       setTimeout(() => o.classList.remove('show'), 250);
     }
 
-    function showToast(msg, undo = false) {
+    function showToast(msg, undo = false, type = 'success') {
       const toast = document.getElementById('toast');
       document.getElementById('toastMessage').textContent = msg;
       document.getElementById('toastUndoBtn').style.display = undo ? 'inline-flex' : 'none';
+      toast.style.background = type === 'error'
+        ? 'linear-gradient(135deg,#b91c1c,#7f1d1d)'
+        : type === 'warn'
+          ? 'linear-gradient(135deg,#b45309,#78350f)'
+          : 'linear-gradient(135deg,var(--primary),#4aa556)';
       toast.classList.add('show');
       clearTimeout(showToast._t);
       showToast._t = setTimeout(() => toast.classList.remove('show'), 3500);
     }
 
     // Custom confirm dialog (Promise-based)
-    function showConfirm(message) {
+    // opts: { title, message, okLabel, icon, danger }  OR just a plain string message
+    function showConfirm(optsOrMessage) {
+      const opts = (typeof optsOrMessage === 'string')
+        ? { message: optsOrMessage }
+        : optsOrMessage;
+      const {
+        title   = 'Are you sure?',
+        message = 'This action cannot be undone.',
+        okLabel = 'Yes, delete',
+        icon    = '🗑️',
+        danger  = true
+      } = opts;
+
       return new Promise(resolve => {
-        const overlay = document.getElementById('confirmOverlay');
-        const msgEl = document.getElementById('confirmMessage');
-        const okBtn = document.getElementById('confirmOkBtn');
-        const cancelBtn = document.getElementById('confirmCancelBtn');
+        const overlay    = document.getElementById('confirmOverlay');
+        const dialog     = document.getElementById('confirmDialog');
+        const titleEl    = document.getElementById('confirmTitle');
+        const msgEl      = document.getElementById('confirmMessage');
+        const iconEl     = document.getElementById('confirmIcon');
+        const okBtn      = document.getElementById('confirmOkBtn');
+        const cancelBtn  = document.getElementById('confirmCancelBtn');
 
         if (!overlay || !msgEl || !okBtn || !cancelBtn) {
           resolve(window.confirm(message));
           return;
         }
 
+        if (titleEl)  titleEl.textContent  = title;
+        if (iconEl)   iconEl.textContent   = icon;
         msgEl.textContent = message;
+        okBtn.textContent = okLabel;
+
+        // Swap border & button color for non-danger confirmations
+        if (dialog) {
+          dialog.style.borderColor = danger
+            ? 'rgba(248,113,113,0.5)'
+            : 'rgba(102,185,106,0.4)';
+        }
+        if (titleEl) titleEl.style.color = danger ? '#fecaca' : '#aee2b2';
+        okBtn.className = danger ? 'btn small danger' : 'btn small';
+
         overlay.classList.add('show');
 
         function cleanup(result) {
@@ -1808,22 +1881,125 @@
           overlay.removeEventListener('click', onOverlay);
           resolve(result);
         }
-
-        function onOk(e) {
-          e.stopPropagation();
-          cleanup(true);
-        }
-        function onCancel(e) {
-          e.stopPropagation();
-          cleanup(false);
-        }
-        function onOverlay(e) {
-          if (e.target === overlay) cleanup(false);
-        }
+        function onOk(e)      { e.stopPropagation(); cleanup(true);  }
+        function onCancel(e)  { e.stopPropagation(); cleanup(false); }
+        function onOverlay(e) { if (e.target === overlay) cleanup(false); }
 
         okBtn.addEventListener('click', onOk);
         cancelBtn.addEventListener('click', onCancel);
         overlay.addEventListener('click', onOverlay);
+      });
+    }
+
+    // Non-blocking alert modal (replaces native alert())
+    // opts: { title, message, icon }  OR just a plain string message
+    function showAlert(optsOrMessage) {
+      const opts = (typeof optsOrMessage === 'string')
+        ? { message: optsOrMessage }
+        : optsOrMessage;
+      const {
+        title   = 'Notice',
+        message = '',
+        icon    = 'ℹ️'
+      } = opts;
+
+      return new Promise(resolve => {
+        const overlay = document.getElementById('alertOverlay');
+        const titleEl = document.getElementById('alertTitle');
+        const msgEl   = document.getElementById('alertMessage');
+        const iconEl  = document.getElementById('alertIcon');
+        const okBtn   = document.getElementById('alertOkBtn');
+
+        if (!overlay || !msgEl || !okBtn) {
+          window.alert(message);
+          resolve();
+          return;
+        }
+
+        if (titleEl) titleEl.textContent = title;
+        if (iconEl)  iconEl.textContent  = icon;
+        msgEl.textContent = message;
+        overlay.classList.add('show');
+
+        function cleanup() {
+          overlay.classList.remove('show');
+          okBtn.removeEventListener('click', onOk);
+          overlay.removeEventListener('click', onOverlay);
+          resolve();
+        }
+        function onOk(e)      { e.stopPropagation(); cleanup(); }
+        function onOverlay(e) { if (e.target === overlay) cleanup(); }
+
+        okBtn.addEventListener('click', onOk);
+        overlay.addEventListener('click', onOverlay);
+      });
+    }
+
+    // Input modal — replaces native prompt()
+    // opts: { title, subtitle, icon, defaultValue, mode: 'text'|'select', options: [{value,label}] }
+    function showPrompt(opts = {}) {
+      const {
+        title        = 'Enter value',
+        subtitle     = '',
+        icon         = '✏️',
+        defaultValue = '',
+        mode         = 'text',
+        options      = []   // for mode:'select'  [{value,label}]
+      } = opts;
+
+      return new Promise(resolve => {
+        const overlay    = document.getElementById('inputOverlay');
+        const titleEl    = document.getElementById('inputTitle');
+        const subEl      = document.getElementById('inputSubtitle');
+        const iconEl     = document.getElementById('inputIcon');
+        const textWrap   = document.getElementById('inputTextWrap');
+        const selWrap    = document.getElementById('inputSelectWrap');
+        const textInput  = document.getElementById('inputValue');
+        const selInput   = document.getElementById('inputSelectValue');
+        const okBtn      = document.getElementById('inputOkBtn');
+        const cancelBtn  = document.getElementById('inputCancelBtn');
+
+        if (!overlay) { resolve(window.prompt(title, defaultValue)); return; }
+
+        if (titleEl) titleEl.textContent = title;
+        if (subEl)   subEl.textContent   = subtitle;
+        if (iconEl)  iconEl.textContent  = icon;
+
+        if (mode === 'select') {
+          textWrap.style.display = 'none';
+          selWrap.style.display  = 'block';
+          selInput.innerHTML = options.map(o =>
+            `<option value="${o.value}"${o.value === defaultValue ? ' selected' : ''}>${o.label}</option>`
+          ).join('');
+        } else {
+          textWrap.style.display = 'block';
+          selWrap.style.display  = 'none';
+          textInput.value = defaultValue || '';
+        }
+
+        overlay.classList.add('show');
+        if (mode === 'text') setTimeout(() => textInput.focus(), 50);
+
+        function getValue() {
+          return mode === 'select' ? selInput.value : textInput.value;
+        }
+        function cleanup(val) {
+          overlay.classList.remove('show');
+          okBtn.removeEventListener('click', onOk);
+          cancelBtn.removeEventListener('click', onCancel);
+          overlay.removeEventListener('click', onOverlay);
+          textInput.removeEventListener('keydown', onKeydown);
+          resolve(val);
+        }
+        function onOk(e)      { e.stopPropagation(); cleanup(getValue()); }
+        function onCancel(e)  { e.stopPropagation(); cleanup(null); }
+        function onOverlay(e) { if (e.target === overlay) cleanup(null); }
+        function onKeydown(e) { if (e.key === 'Enter') { e.preventDefault(); cleanup(getValue()); } }
+
+        okBtn.addEventListener('click', onOk);
+        cancelBtn.addEventListener('click', onCancel);
+        overlay.addEventListener('click', onOverlay);
+        textInput.addEventListener('keydown', onKeydown);
       });
     }
 
@@ -2111,6 +2287,7 @@
       jobsTab: document.getElementById('jobsTab'),
       kanbanTab: document.getElementById('kanbanTab'),
       customersTab: document.getElementById('customersTab'),
+      submissionsTab: document.getElementById('submissionsTab'),
       chartsTab: document.getElementById('chartsTab'),
       adminTab: document.getElementById('adminTab')
     };
@@ -2159,27 +2336,31 @@
         const tabId = link.dataset.tab;
         const u = getCurrentUser();
         if (tabId === 'adminTab' && !isAdmin(u)) {
-          alert('Admin/Founder only.');
+          showAlert({ title: 'Access denied', message: 'Admin or Founder role required.', icon: '🔒' });
           return;
         }
         if (tabId === 'customersTab' && u && !hasPermission(u, 'viewCustomers')) {
-          alert('You do not have access to Customers.');
+          showAlert({ title: 'Access denied', message: 'You do not have access to Customers.', icon: '🔒' });
           return;
         }
         if (tabId === 'chartsTab' && u && !hasPermission(u, 'viewCharts')) {
-          alert('You do not have access to Charts.');
+          showAlert({ title: 'Access denied', message: 'You do not have access to Charts.', icon: '🔒' });
           return;
         }
         if (tabId === 'jobsTab' && u && !hasPermission(u, 'viewJobs')) {
-          alert('You do not have access to Jobs.');
+          showAlert({ title: 'Access denied', message: 'You do not have access to Jobs.', icon: '🔒' });
           return;
         }
         if (tabId === 'expensesTab' && u && !hasPermission(u, 'viewExpenses')) {
-          alert('You do not have access to Expenses.');
+          showAlert({ title: 'Access denied', message: 'You do not have access to Expenses.', icon: '🔒' });
           return;
         }
         if (tabId === 'kanbanTab' && u && !hasPermission(u, 'viewKanban')) {
-          alert('You do not have access to this view.');
+          showAlert({ title: 'Access denied', message: 'You do not have access to this view.', icon: '🔒' });
+          return;
+        }
+        if (tabId === 'submissionsTab' && u && !hasPermission(u, 'viewSubmissions')) {
+          showAlert({ title: 'Access denied', message: 'You do not have access to Contact Submissions.', icon: '🔒' });
           return;
         }
         setActiveTab(tabId);
@@ -2187,6 +2368,7 @@
         if (tabId === 'kanbanTab') refreshKanban();
         if (tabId === 'chartsTab') refreshCharts();
         if (tabId === 'customersTab') refreshCustomersTable();
+        if (tabId === 'submissionsTab') renderSubmissionsTable();
         if (tabId === 'adminTab') {
           refreshMoney();
           refreshUsersTable();
@@ -2199,7 +2381,7 @@
     homeGoAdminBtn.addEventListener('click', () => {
       const u = getCurrentUser();
       if (!isAdmin(u)) {
-        alert('Admin/Founder only.');
+        showAlert({ title: 'Access denied', message: 'Admin or Founder role required.', icon: '🔒' });
         return;
       }
       setActiveTab('adminTab');
@@ -2211,42 +2393,136 @@
       const host = document.getElementById('rolePermissionsEditor');
       if (!host) return;
       const u = getCurrentUser();
-      if (!isAdmin(u)) {
-        host.innerHTML = '';
-        return;
-      }
-      const canEditMatrix = isFounder(u);
+      if (!isAdmin(u)) { host.innerHTML = ''; return; }
+      const canEdit = isFounder(u);
       const map = getRolePermissionsMap();
-      const permKeys = Object.keys(DEFAULT_ROLE_PERMISSIONS[ROLES.EMPLOYEE]);
-      let html = '<div class="table-container"><table style="width:100%;font-size:0.78rem;"><thead><tr><th>Permission</th>';
-      [ROLES.FOUNDER, ROLES.ADMIN, ROLES.EMPLOYEE].forEach(function (r) {
-        html += '<th>' + r + '</th>';
+
+      // Define page-visibility keys and their display labels
+      const pageKeys = [
+        { key: 'viewExpenses',    label: '📋 Expenses',            nav: 'expensesNav'    },
+        { key: 'viewJobs',        label: '🔧 Jobs',                nav: 'jobsNav'        },
+        { key: 'viewKanban',      label: '📌 Jobs Columned',       nav: 'kanbanNav'      },
+        { key: 'viewCustomers',   label: '👥 Customers',           nav: 'customersNav'   },
+        { key: 'viewSubmissions', label: '📬 Contact Submissions', nav: 'submissionsNav' },
+        { key: 'viewCharts',      label: '📊 Charts',              nav: 'chartsNav'      },
+      ];
+
+      // Action-only permission keys
+      const actionKeys = [
+        { key: 'manageCustomers',    label: 'Manage customers (add/edit/delete)' },
+        { key: 'manageUsers',        label: 'Manage user accounts' },
+        { key: 'approveExpenses',    label: 'Approve / reject expenses' },
+        { key: 'deleteRecords',      label: 'Delete records (jobs, expenses, etc.)' },
+        { key: 'exportData',         label: 'Export data (CSV / JSON)' },
+        { key: 'editRolePermissions',label: 'Edit role permissions (Founder only)' },
+      ];
+
+      const roles = [ROLES.ADMIN, ROLES.EMPLOYEE];
+
+      function toggleHtml(role, key, isPage) {
+        if (role === ROLES.FOUNDER) return '<span style="color:#9ca3af;font-size:0.75rem;">Always on</span>';
+        if (key === 'editRolePermissions' && role !== ROLES.FOUNDER) {
+          // Only founder can have this; show locked for others
+          return '<span style="color:#9ca3af;font-size:0.75rem;">Founder only</span>';
+        }
+        const checked = map[role][key] ? ' checked' : '';
+        const disabled = canEdit ? '' : ' disabled';
+        const cls = isPage ? 'perm-page-toggle' : 'perm-action-toggle';
+        return `<label class="perm-switch">
+          <input type="checkbox" class="${cls}" data-perm-role="${role}" data-perm-key="${key}"${checked}${disabled}>
+          <span class="perm-track"><span class="perm-thumb"></span></span>
+        </label>`;
+      }
+
+      let html = `
+      <style>
+        .perm-section-title {
+          font-size:0.78rem; font-weight:700; text-transform:uppercase;
+          letter-spacing:0.07em; color:#64748b; margin:0.9rem 0 0.45rem;
+        }
+        .perm-grid {
+          display:grid; gap:0.35rem;
+        }
+        .perm-row {
+          display:flex; align-items:center; justify-content:space-between;
+          gap:1rem; padding:0.5rem 0.75rem; border-radius:10px;
+          background:var(--card); border:1px solid var(--border);
+          font-size:0.83rem;
+        }
+        .perm-row:hover { border-color:rgba(102,185,106,0.25); }
+        .perm-row-label { flex:1; color:#e2e8f0; }
+        .perm-role-cells { display:flex; gap:1.5rem; }
+        .perm-role-cell { display:flex; flex-direction:column; align-items:center; gap:0.2rem; min-width:72px; }
+        .perm-role-cell-label { font-size:0.7rem; color:#6b7280; text-transform:uppercase; letter-spacing:0.05em; }
+        /* Toggle switch */
+        .perm-switch { position:relative; display:inline-flex; align-items:center; cursor:pointer; }
+        .perm-switch input { position:absolute; opacity:0; width:0; height:0; }
+        .perm-track {
+          width:34px; height:18px; background:#374151; border-radius:999px;
+          transition:background 0.2s; position:relative; display:inline-block;
+          border:1px solid #4b5563;
+        }
+        .perm-thumb {
+          position:absolute; top:2px; left:2px;
+          width:12px; height:12px; border-radius:50%;
+          background:#9ca3af; transition:transform 0.2s, background 0.2s;
+        }
+        .perm-switch input:checked + .perm-track { background:rgba(102,185,106,0.3); border-color:rgba(102,185,106,0.6); }
+        .perm-switch input:checked + .perm-track .perm-thumb { transform:translateX(16px); background:#66b96a; }
+        .perm-switch input:disabled + .perm-track { opacity:0.5; cursor:not-allowed; }
+        .perm-switch input:disabled { cursor:not-allowed; }
+      </style>`;
+
+      // Header row with role names
+      html += `<div style="display:flex;align-items:center;justify-content:flex-end;gap:1rem;padding:0 0.75rem;margin-bottom:0.25rem;">
+        <div style="flex:1;"></div>
+        <div class="perm-role-cells">`;
+      roles.forEach(r => {
+        html += `<div class="perm-role-cell"><span style="font-size:0.78rem;font-weight:600;color:#cbd5e1;text-transform:capitalize;">${r}</span></div>`;
       });
-      html += '</tr></thead><tbody>';
-      permKeys.forEach(function (key) {
-        html += '<tr><td style="text-align:left;">' + key + '</td>';
-        [ROLES.FOUNDER, ROLES.ADMIN, ROLES.EMPLOYEE].forEach(function (role) {
-          if (role === ROLES.FOUNDER) {
-            html += '<td style="color:#9ca3af;">—</td>';
-          } else {
-            var checked = map[role][key] ? ' checked' : '';
-            var dis = canEditMatrix ? '' : ' disabled';
-            html += '<td><input type="checkbox" data-perm-role="' + role + '" data-perm-key="' + key + '"' + checked + dis + '></td>';
-          }
+      html += `</div></div>`;
+
+      // Pages section
+      html += `<div class="perm-section-title">🖥️ Page visibility — hide/show nav tabs per role</div>`;
+      html += `<div class="perm-grid">`;
+      pageKeys.forEach(({ key, label }) => {
+        html += `<div class="perm-row"><span class="perm-row-label">${label}</span><div class="perm-role-cells">`;
+        roles.forEach(role => {
+          html += `<div class="perm-role-cell">${toggleHtml(role, key, true)}</div>`;
         });
-        html += '</tr>';
+        html += `</div></div>`;
       });
-      html += '</tbody></table></div>';
-      html += '<p class="card-subtitle" style="margin-top:0.45rem;">Founder always has full access. Toggle Admin / Employee only.</p>';
+      html += `</div>`;
+
+      // Actions section
+      html += `<div class="perm-section-title">⚡ Actions — what each role can do</div>`;
+      html += `<div class="perm-grid">`;
+      actionKeys.forEach(({ key, label }) => {
+        html += `<div class="perm-row"><span class="perm-row-label">${label}</span><div class="perm-role-cells">`;
+        roles.forEach(role => {
+          html += `<div class="perm-role-cell">${toggleHtml(role, key, false)}</div>`;
+        });
+        html += `</div></div>`;
+      });
+      html += `</div>`;
+
+      if (!canEdit) {
+        html += `<p class="card-subtitle" style="margin-top:0.6rem;color:#f97316;">⚠️ Only the Founder can edit permissions.</p>`;
+      } else {
+        html += `<p class="card-subtitle" style="margin-top:0.6rem;">Founder always has full access. Changes apply immediately.</p>`;
+      }
+
       host.innerHTML = html;
-      host.querySelectorAll('input[data-perm-role]').forEach(function (inp) {
+
+      host.querySelectorAll('.perm-page-toggle, .perm-action-toggle').forEach(function (inp) {
         inp.addEventListener('change', function () {
-          if (!canEditMatrix) return;
-          var m = getRolePermissionsMap();
+          if (!canEdit) return;
+          const m = getRolePermissionsMap();
           m[inp.dataset.permRole][inp.dataset.permKey] = inp.checked;
           saveRolePermissionsMap(m);
-          appendAuditLog('permissions', 'Role permission: ' + inp.dataset.permRole + ' · ' + inp.dataset.permKey, inp.checked ? 'on' : 'off');
+          appendAuditLog('permissions', 'Role permission changed: ' + inp.dataset.permRole + ' · ' + inp.dataset.permKey, inp.checked ? 'enabled' : 'disabled');
           applyNavPermissions(getCurrentUser());
+          showToast('Permission updated');
         });
       });
     }
@@ -2387,7 +2663,7 @@
     createUserBtn.addEventListener('click', () => {
       const u = getCurrentUser();
       if (!canManageUsers(u)) {
-        alert('Admin/Founder only.');
+        showAlert({ title: 'Access denied', message: 'Admin or Founder role required.', icon: '🔒' });
         return;
       }
       const name = (document.getElementById('newName').value || '').trim();
@@ -2525,7 +2801,7 @@
       const amt = parseAmount(expenseAmount.value);
       const date = expenseDate.value;
       if (!desc || amt === null || !validDateStr(date)) {
-        alert('Fill description, valid amount and date.');
+        showToast('Fill in description, a valid amount, and date.', false, 'error');
         return;
       }
       const u = getCurrentUser();
@@ -2578,35 +2854,47 @@
     function reviewExpense(id) {
       const u = getCurrentUser();
       if (!isAdmin(u) || !hasPermission(u, 'approveExpenses')) {
-        alert('You cannot review expenses.');
+        showAlert({ title: 'Access denied', message: 'You do not have permission to review expenses.', icon: '🔒' });
         return;
       }
       const ex = readJSON(STORAGE_KEYS.expenses, []);
       const idx = ex.findIndex(e => e.id === id);
       if (idx < 0) return;
       const cur = ex[idx];
-      const action = (prompt('Type approve, reject, or pending:', cur.status === 'approved' ? 'pending' : 'approve') || '').trim().toLowerCase();
-      if (!action) return;
-      if (!['approve', 'approved', 'reject', 'rejected', 'pending'].includes(action)) {
-        alert('Use approve, reject, or pending.');
-        return;
-      }
-      const comment = (prompt('Note to the submitter (reason for decision):', cur.approvalComment || '') || '').trim();
-      let st = cur.status;
-      if (action === 'approve' || action === 'approved') st = 'approved';
-      else if (action === 'reject' || action === 'rejected') st = 'rejected';
-      else if (action === 'pending') st = 'pending';
-      else return;
-      ex[idx].status = st;
-      ex[idx].approvalComment = comment;
-      ex[idx].reviewedBy = u.username;
-      ex[idx].reviewedAt = new Date().toISOString();
-      writeJSON(STORAGE_KEYS.expenses, ex);
-      appendAuditLog('expense_review', 'Expense ' + st + ': ' + cur.description, comment || '(no note)');
-      refreshExpenses();
-      refreshMoney();
-      refreshCharts();
-      showToast('Expense updated');
+
+      showPrompt({
+        title: 'Review expense',
+        subtitle: '"' + cur.description + '" — ' + formatCurrency(cur.amount),
+        icon: '📋',
+        mode: 'select',
+        defaultValue: cur.status === 'approved' ? 'pending' : 'approved',
+        options: [
+          { value: 'approved', label: '✅ Approve' },
+          { value: 'rejected', label: '❌ Reject' },
+          { value: 'pending',  label: '⏳ Set Pending' }
+        ]
+      }).then(action => {
+        if (!action) return;
+        return showPrompt({
+          title: 'Add a note (optional)',
+          subtitle: 'This note will be visible to the submitter.',
+          icon: '📝',
+          mode: 'text',
+          defaultValue: cur.approvalComment || ''
+        }).then(comment => {
+          const st = action;
+          ex[idx].status = st;
+          ex[idx].approvalComment = (comment || '').trim();
+          ex[idx].reviewedBy = u.username;
+          ex[idx].reviewedAt = new Date().toISOString();
+          writeJSON(STORAGE_KEYS.expenses, ex);
+          appendAuditLog('expense_review', 'Expense ' + st + ': ' + cur.description, (comment || '').trim() || '(no note)');
+          refreshExpenses();
+          refreshMoney();
+          refreshCharts();
+          showToast('Expense ' + st);
+        });
+      });
     }
 
     function refreshExpenses() {
@@ -2670,7 +2958,7 @@
             del.className = 'btn small danger';
             del.textContent = 'Delete';
             del.addEventListener('click', async () => {
-              const ok = await showConfirm('Delete this expense? This cannot be undone.');
+              const ok = await showConfirm({ title: 'Delete expense?', message: 'This expense record will be permanently removed.', okLabel: 'Yes, delete', icon: '🧾' });
               if (!ok) return;
               lastDeleted = { type: 'expense', item: e };
               deleteExpense(e.id);
@@ -2799,7 +3087,7 @@
         blow: !!document.getElementById('jobChkBlow').checked
       };
       if (!name || !size || payment === null || tipAmt === null || !status || !priority || !validDateStr(scheduledDate)) {
-        alert('Fill job name, size, base payment, status, priority, and scheduled date.');
+        showToast('Fill in job name, size, base payment, status, priority, and scheduled date.', false, 'error');
         return;
       }
       const u = getCurrentUser();
@@ -2919,7 +3207,7 @@
     document.getElementById('addCustomerBtn').addEventListener('click', function () {
       const u = getCurrentUser();
       if (!u || !hasPermission(u, 'manageCustomers')) {
-        alert('You cannot manage customers.');
+        showAlert({ title: 'Access denied', message: 'You do not have permission to manage customers.', icon: '🔒' });
         return;
       }
       const name = (document.getElementById('customerName').value || '').trim();
@@ -2948,10 +3236,10 @@
       clearAuditBtn.addEventListener('click', async function () {
         const u = getCurrentUser();
         if (!isFounder(u)) {
-          alert('Only the founder can clear the audit log.');
+          showAlert({ title: 'Access denied', message: 'Only the Founder can clear the audit log.', icon: '🔒' });
           return;
         }
-        const ok = await showConfirm('Clear the entire audit log? This cannot be undone.');
+        const ok = await showConfirm({ title: 'Clear audit log?', message: 'All audit entries will be permanently deleted. This cannot be undone.', okLabel: 'Yes, clear it', icon: '🗑️' });
         if (!ok) return;
         writeJSON(STORAGE_KEYS.auditLog, []);
         renderAuditLogPanel();
@@ -3179,7 +3467,7 @@
             del.textContent = 'Delete';
             del.addEventListener('click', async ev => {
               ev.stopPropagation();
-              const ok = await showConfirm('Delete this job? This cannot be undone.');
+              const ok = await showConfirm({ title: 'Delete job?', message: 'This job record will be permanently removed.', okLabel: 'Yes, delete', icon: '🔧' });
               if (!ok) return;
               lastDeleted = { type: 'job', item: job };
               deleteJob(job.id);
@@ -3280,7 +3568,7 @@
       if (type === 'number') {
         const n = parseAmount(val);
         if (n === null) {
-          alert('Invalid number.');
+          showToast('Invalid number — please enter a valid amount.', false, 'error');
           refreshJobs();
           return;
         }
@@ -3459,13 +3747,22 @@
           f.innerHTML = '<span>' + (j.whoName || j.who) + '</span><span>' + formatCurrency(jobTotalPayment(j)) + '</span>';
           card.appendChild(f);
           card.addEventListener('click', () => {
-            const ns = prompt('Move "' + j.name + '" to status (planned,in_progress,done,paid):', j.status);
-            if (!ns) return;
-            if (!['planned', 'in_progress', 'done', 'paid'].includes(ns)) {
-              alert('Invalid status.');
-              return;
-            }
-            updateJobField(j.id, 'status', ns, 'text');
+            showPrompt({
+              title: 'Move job status',
+              subtitle: '"' + j.name + '"',
+              icon: '📌',
+              mode: 'select',
+              defaultValue: j.status,
+              options: [
+                { value: 'planned',     label: '⬜ Planned' },
+                { value: 'in_progress', label: '🔵 In Progress' },
+                { value: 'done',        label: '✅ Done' },
+                { value: 'paid',        label: '💰 Paid' }
+              ]
+            }).then(ns => {
+              if (!ns) return;
+              updateJobField(j.id, 'status', ns, 'text');
+            });
           });
           list.appendChild(card);
         });
@@ -4029,7 +4326,7 @@
     document.getElementById('exportAllDataBtn').addEventListener('click', () => {
       const u = getCurrentUser();
       if (!userCanExport(u)) {
-        alert('Admin/Founder only.');
+        showAlert({ title: 'Access denied', message: 'Export permission required.', icon: '🔒' });
         return;
       }
       exportAllData();
@@ -4038,7 +4335,7 @@
     document.getElementById('exportAllDataBtnAdmin').addEventListener('click', () => {
       const u = getCurrentUser();
       if (!userCanExport(u)) {
-        alert('Admin/Founder only.');
+        showAlert({ title: 'Access denied', message: 'Export permission required.', icon: '🔒' });
         return;
       }
       exportAllData();
@@ -4130,7 +4427,7 @@
               del.className = 'btn small danger';
               del.textContent = 'Delete';
               del.addEventListener('click', async () => {
-                const ok = await showConfirm('Delete this expense? This cannot be undone.');
+                const ok = await showConfirm({ title: 'Delete expense?', message: 'This expense record will be permanently removed.', okLabel: 'Yes, delete', icon: '🧾' });
                 if (!ok) return;
                 lastDeleted = { type: 'expense', item: e };
                 deleteExpense(e.id);
@@ -4216,6 +4513,18 @@
           jobsBadge.style.display = 'inline';
         } else {
           jobsBadge.style.display = 'none';
+        }
+      }
+
+      const submissionsBadge = document.getElementById('submissionsBadge');
+      if (submissionsBadge) {
+        const submissions = readJSON(STORAGE_KEYS.submissions, []);
+        const newCount = submissions.filter(s => s.status === 'new').length;
+        if (newCount > 0) {
+          submissionsBadge.textContent = '(' + newCount + ')';
+          submissionsBadge.style.display = 'inline';
+        } else {
+          submissionsBadge.style.display = 'none';
         }
       }
 
@@ -4420,13 +4729,20 @@
     }
 
     function deleteSubmission(id) {
-      if (confirm('Delete this submission?')) {
+      showConfirm({
+        title: 'Delete submission?',
+        message: 'This contact inquiry will be permanently removed.',
+        okLabel: 'Yes, delete',
+        icon: '🗑️',
+        danger: true
+      }).then(ok => {
+        if (!ok) return;
         let submissions = getSubmissions();
         submissions = submissions.filter(s => s.id !== id);
         saveSubmissions(submissions);
         renderSubmissionsTable();
         showToast('Submission deleted');
-      }
+      });
     }
 
     function exportSubmissionsCSV() {
