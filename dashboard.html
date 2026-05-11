@@ -658,6 +658,67 @@
     @keyframes fadeIn { from { opacity: 0; transform: translateY(4px);} to {opacity:1; transform:translateY(0);} }
     @keyframes spin { 0%{transform:rotate(0);}100%{transform:rotate(360deg);} }
 
+    
+    .app-layout {
+      display:flex;
+      flex:1;
+      min-height:0;
+    }
+
+    .sidebar {
+      width:230px;
+      background:#081120;
+      border-right:1px solid var(--border);
+      transition:width .25s ease;
+      overflow-y:auto;
+      flex-shrink:0;
+    }
+
+    .sidebar.collapsed {
+      width:74px;
+    }
+
+    .sidebar.collapsed .nav-link span.label {
+      display:none;
+    }
+
+    .sidebar-toggle {
+      width:100%;
+      border-radius:0;
+      border:none;
+      padding:0.8rem;
+      background:#0f172a;
+      color:white;
+      cursor:pointer;
+      border-bottom:1px solid var(--border);
+    }
+
+    .sidebar .nav-menu {
+      flex-direction:column;
+      padding:0.5rem;
+    }
+
+    .sidebar .nav-link {
+      width:100%;
+      border-radius:14px;
+      margin-bottom:0.2rem;
+      display:flex;
+      align-items:center;
+      gap:0.65rem;
+    }
+
+    .content-area {
+      flex:1;
+      overflow-y:auto;
+      min-width:0;
+    }
+
+    .card {
+      border:none;
+      box-shadow:0 3px 10px rgba(0,0,0,.35);
+    }
+
+
     @media (max-width: 599px) {
       .hamburger { display: flex; }
       .nav {
@@ -673,80 +734,6 @@
       .nav-toggle:checked + .hamburger span:nth-child(2) { opacity: 0; }
       .nav-toggle:checked + .hamburger span:nth-child(3) { transform: translateY(-4px) rotate(-45deg); }
     }
-    
-    .app-layout {
-      display: flex;
-      flex: 1;
-      min-height: 0;
-    }
-
-    .sidebar {
-      width: 240px;
-      background: #081120;
-      border-right: 1px solid var(--border);
-      transition: width .25s ease;
-      overflow-y: auto;
-      flex-shrink: 0;
-    }
-
-    .sidebar.collapsed {
-      width: 72px;
-    }
-
-    .sidebar.collapsed .nav-link span {
-      display: none;
-    }
-
-    .sidebar-toggle {
-      width: 100%;
-      border-radius: 0;
-      padding: 0.9rem;
-      background: #0f172a;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .sidebar .nav-menu {
-      flex-direction: column;
-      padding: 0.5rem;
-    }
-
-    .sidebar .nav-link {
-      width: 100%;
-      border-radius: 14px;
-      margin-bottom: 0.2rem;
-      padding: 0.75rem 0.9rem;
-      display: flex;
-      align-items: center;
-      gap: 0.65rem;
-      font-size: 0.9rem;
-    }
-
-    .content-area {
-      flex: 1;
-      overflow-y: auto;
-      min-width: 0;
-    }
-
-    .card {
-      padding: 0.72rem;
-      border: none;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.35);
-    }
-
-    details.filters-collapse {
-      margin-bottom: 0.75rem;
-      background: rgba(2,6,23,.5);
-      border-radius: 12px;
-      padding: 0.55rem;
-    }
-
-    details.filters-collapse summary {
-      cursor: pointer;
-      font-weight: 600;
-      margin-bottom: 0.4rem;
-    }
-
-
     @media (min-width: 1025px) {
       .header { padding: 0.65rem 1.3rem; }
       .nav { border-top: 1px solid var(--border); }
@@ -804,27 +791,35 @@
       <span></span><span></span><span></span>
     </label>
 
-    <div class="app-layout"><aside class="sidebar" id="sidebar"><button class="btn secondary sidebar-toggle" id="sidebarToggleBtn">☰ Toggle Sidebar</button><nav class="nav" id="navBar">
+    <div class="app-layout"><aside class="sidebar" id="sidebar"><button type="button" class="sidebar-toggle" id="sidebarToggleBtn">☰ Toggle Sidebar</button><nav class="nav" id="navBar">
       <ul class="nav-menu">
-        <li><a href="#" class="nav-link" data-tab="homeTab" id="homeNav">🏠 <span>Home</span></a></li>
+        <li><a href="#" class="nav-link" data-tab="homeTab" id="homeNav">🏠 <span class="label">Home</span></a></li>
+
         <li>
           <a href="#" class="nav-link" data-tab="expensesTab" id="expensesNav">
-            💰 <span>Expenses</span> <span id="expensesBadge" style="margin-left:4px;font-size:0.75rem;display:none;"></span>
+            💰 <span class="label">Expenses</span>
+            <span id="expensesBadge" style="margin-left:4px;font-size:0.75rem;display:none;"></span>
           </a>
         </li>
+
         <li>
           <a href="#" class="nav-link" data-tab="jobsTab" id="jobsNav">
-            📋 <span>Jobs</span> <span id="jobsBadge" style="margin-left:4px;font-size:0.75rem;display:none;"></span>
+            📋 <span class="label">Jobs</span>
+            <span id="jobsBadge" style="margin-left:4px;font-size:0.75rem;display:none;"></span>
           </a>
         </li>
-        <li><a href="#" class="nav-link" data-tab="kanbanTab" id="kanbanNav">🧱 <span>Jobs Board</span></a></li>
-        
-        <li><a href="#" class="nav-link" data-tab="quotesTab" id="quotesNav">🧾 <span>Quotes</span></a></li>
 
-        <li><a href="#" class="nav-link" data-tab="customersTab" id="customersNav">👥 <span>Customers</span></a></li>
-        <li><a href="#" class="nav-link" data-tab="submissionsTab" id="submissionsNav">📨 <span>Submissions</span> <span id="submissionsBadge" style="margin-left:4px;font-size:0.75rem;display:none;"></span></a></li>
-        <li><a href="#" class="nav-link" data-tab="chartsTab" id="chartsNav">📊 <span>Charts</span></a></li>
-        <li><a href="#" class="nav-link" data-tab="adminTab" id="adminNav" style="display:none;">⚙️ <span>Admin</span></a></li>
+        <li><a href="#" class="nav-link" data-tab="kanbanTab" id="kanbanNav">🧱 <span class="label">Jobs Board</span></a></li>
+
+        <li><a href="#" class="nav-link" data-tab="quotesTab" id="quotesNav">🧾 <span class="label">Quotes</span></a></li>
+
+        <li><a href="#" class="nav-link" data-tab="customersTab" id="customersNav">👥 <span class="label">Customers</span></a></li>
+
+        <li><a href="#" class="nav-link" data-tab="submissionsTab" id="submissionsNav">📨 <span class="label">Submissions</span> <span id="submissionsBadge" style="margin-left:4px;font-size:0.75rem;display:none;"></span></a></li>
+
+        <li><a href="#" class="nav-link" data-tab="chartsTab" id="chartsNav">📊 <span class="label">Charts</span></a></li>
+
+        <li><a href="#" class="nav-link" data-tab="adminTab" id="adminNav" style="display:none;">⚙️ <span class="label">Admin</span></a></li>
       </ul>
     </nav></aside><div class="content-area"><main class="main">
       <div id="fileWarning" style="display:none; margin-bottom:0.8rem; padding:0.95rem 1rem; background:#f8f0d8; border-left:4px solid #f59e0b; border-radius:14px; color:#92400e; font-size:0.92rem;">
@@ -841,22 +836,22 @@
             Use the navigation to move between sections:
           </p>
           <ul style="font-size:0.84rem;color:#e5e7eb;margin-left:1rem;margin-bottom:0.6rem;list-style:disc;">
-            <li><strong>💰 <span>Expenses</span></strong>: Submit and approve expenses.</li>
+            <li><strong>Expenses</strong>: Submit and approve expenses.</li>
             <li><strong>Jobs</strong>: Add work, payments, and notes.</li>
-            <li><strong>🧱 <span>Jobs Board</span></strong>: Kanban view by status.</li>
-            <li><strong>📊 <span>Charts</span></strong>: See patterns in your work and money.</li>
-            <li><strong>⚙️ <span>Admin</span></strong>: Manage accounts, totals, and exports.</li>
+            <li><strong>Jobs columned</strong>: Kanban view by status.</li>
+            <li><strong>Charts</strong>: See patterns in your work and money.</li>
+            <li><strong>Admin</strong>: Manage accounts, totals, and exports.</li>
           </ul>
           <p style="font-size:0.82rem;color:#9ca3af;">
             All data is stored locally in this browser for your LLCS GitHub Pages site.
           </p>
         </div>
 
-        <div class="card" id="home⚙️ <span>Admin</span>Card" style="display:none;">
-          <div class="card-header">Founder / ⚙️ <span>Admin</span> quick tools</div>
+        <div class="card" id="homeAdminCard" style="display:none;">
+          <div class="card-header">Founder / Admin quick tools</div>
           <div class="card-subtitle">Shortcuts to common admin actions.</div>
           <div class="form-actions">
-            <button type="button" class="btn secondary small" id="homeGo⚙️ <span>Admin</span>Btn">Open admin page</button>
+            <button type="button" class="btn secondary small" id="homeGoAdminBtn">Open admin page</button>
             <button type="button" class="btn small" id="exportAllDataBtn">Export all data (JSON)</button>
           </div>
         </div>
@@ -888,7 +883,7 @@
             </div>
             <div style="flex:1 1 120px;min-width:120px;">
               <div style="color:#9ca3af;">Your pending expenses</div>
-              <div id="homeMyPending💰 <span>Expenses</span>" style="font-weight:600;font-size:1.1rem;">0</div>
+              <div id="homeMyPendingExpenses" style="font-weight:600;font-size:1.1rem;">0</div>
             </div>
           </div>
         </div>
@@ -899,7 +894,7 @@
         <div class="card">
           <div class="filter-bar">
             <div class="filter-row">
-              <span><strong>💰 <span>Expenses</span></strong> filters:</span>
+              <span><strong>Expenses</strong> filters:</span>
               <input type="text" id="expenseSearch" placeholder="Search description or name" />
               <select id="expenseStatusFilter">
                 <option value="all">All statuses</option>
@@ -922,7 +917,7 @@
             </div>
           </div>
           <div class="card-header">Add expense</div>
-          <div class="card-subtitle">Everyone can submit expenses. ⚙️ <span>Admin</span>s approve them.</div>
+          <div class="card-subtitle">Everyone can submit expenses. Admins approve them.</div>
           <form id="expenseForm" onsubmit="return false;">
             <div class="form-group">
               <label for="expenseDesc">What did you buy?</label>
@@ -966,13 +961,13 @@
             </div>
             <div class="form-actions">
               <button type="button" class="btn" id="addExpenseBtn">Save expense</button>
-              <button type="button" class="btn secondary small" id="export💰 <span>Expenses</span>CsvBtn">Export expenses CSV</button>
+              <button type="button" class="btn secondary small" id="exportExpensesCsvBtn">Export expenses CSV</button>
             </div>
           </form>
         </div>
 
         <div class="card">
-          <div class="card-header">💰 <span>Expenses</span> list</div>
+          <div class="card-header">Expenses list</div>
           <div class="card-subtitle">See what’s pending and what’s already approved.</div>
           <div class="table-container">
             <table id="expensesTable">
@@ -1139,7 +1134,7 @@
 
         <div class="card">
           <div class="card-header">Jobs list</div>
-          <div class="card-subtitle">Jobs are grouped by worker name. ⚙️ <span>Admin</span>s can edit any job inline.</div>
+          <div class="card-subtitle">Jobs are grouped by worker name. Admins can edit any job inline.</div>
           <div class="table-container">
             <table id="jobsTable">
               <thead>
@@ -1170,67 +1165,49 @@
       <section class="tab" id="quotesTab">
         <div class="card">
           <div class="card-header">Quote Generator</div>
-          <div class="card-subtitle">Create customer quotes for services and mulch installation.</div>
+          <div class="card-subtitle">Create customer quotes and estimates.</div>
 
-          <form id="quoteForm" onsubmit="return false;">
-            <div class="form-group-inline">
-              <div class="form-group">
-                <label>Customer Name</label>
-                <input type="text" id="quoteCustomerName" placeholder="Customer Name" />
-              </div>
-
-              <div class="form-group">
-                <label>Phone</label>
-                <input type="text" id="quoteCustomerPhone" placeholder="(555) 555-5555" />
-              </div>
+          <form onsubmit="return false;">
+            <div class="form-group">
+              <label>Customer Name</label>
+              <input type="text" id="quoteCustomerName" placeholder="Customer name" />
             </div>
 
             <div class="form-group">
               <label>Service</label>
               <select id="quoteService">
-                <option value="Lawn Mowing">Lawn Mowing</option>
                 <option value="Mulch Installation">🌱 Mulch Installation</option>
+                <option value="Lawn Mowing">Lawn Mowing</option>
                 <option value="Weed Pulling">Weed Pulling</option>
                 <option value="Weed Control">Weed Control</option>
-                <option value="Leaf Cleanup">Leaf Cleanup</option>
               </select>
             </div>
 
-            <div class="form-group">
-              <label>Mulch Installation Pricing</label>
-              <div style="padding:0.75rem;background:#020617;border-radius:14px;font-size:0.84rem;line-height:1.7;">
-                <div><strong>Small Area</strong> — $65-$95 — 1–1.5 hrs</div>
-                <div><strong>Medium Area</strong> — $95-$150 — 1.5–2 hrs</div>
-                <div><strong>Large / Multi-Area</strong> — $150-$200 — 2–3 hrs</div>
-                <div style="margin-top:0.5rem;color:#9ca3af;">
-                  Recommended at least once a year in spring for a brand new look. Also recommended with Weed Pulling and Weed Control.
-                </div>
-              </div>
+            <div style="background:#020617;padding:0.8rem;border-radius:14px;margin-bottom:0.8rem;font-size:0.84rem;line-height:1.7;">
+              <strong>🌱 Mulch Installation</strong><br><br>
+
+              Small Area — $65-$95 — 1–1.5 hrs<br>
+              Medium Area — $95-$150 — 1.5–2 hrs<br>
+              Large / Multi-Area — $150-$200 — 2–3 hrs<br><br>
+
+              <span style="color:#9ca3af;">
+                Recommended at least once a year in spring for a brand new look.
+                Also recommended with Weed Pulling and Weed Control.
+              </span>
             </div>
 
-            <div class="form-group-inline">
-              <div class="form-group">
-                <label>Estimated Price</label>
-                <input type="number" id="quotePrice" placeholder="125" />
-              </div>
-
-              <div class="form-group">
-                <label>Status</label>
-                <select id="quoteStatus">
-                  <option value="Draft">Draft</option>
-                  <option value="Sent">Sent</option>
-                  <option value="Approved">Approved</option>
-                </select>
-              </div>
+            <div class="form-group">
+              <label>Estimated Price</label>
+              <input type="number" id="quotePrice" />
             </div>
 
             <div class="form-group">
               <label>Notes</label>
-              <textarea id="quoteNotes" placeholder="Extra details, mulch color, square footage, etc."></textarea>
+              <textarea id="quoteNotes"></textarea>
             </div>
 
             <div class="form-actions">
-              <button type="button" class="btn" id="generateQuoteBtn">Generate Quote</button>
+              <button type="button" class="btn" id="generateQuoteBtn">Save Quote</button>
             </div>
           </form>
         </div>
@@ -1245,7 +1222,6 @@
                   <th>Customer</th>
                   <th>Service</th>
                   <th>Price</th>
-                  <th>Status</th>
                   <th>Date</th>
                 </tr>
               </thead>
@@ -1319,7 +1295,7 @@
         <div class="card">
           <div class="kanban-bar">
             <div>
-              <span class="card-header">🧱 <span>Jobs Board</span></span>
+              <span class="card-header">Jobs columned</span>
               <span class="card-subtitle">See jobs move from planned → paid.</span>
             </div>
             <div class="kanban-toggle">
@@ -1342,7 +1318,7 @@
             <button type="button" class="btn secondary small" id="exportSubmissionsCsvBtn">Export CSV</button>
           </div>
           <div id="submissionsStatus" style="font-size:0.84rem;color:#9ca3af;margin-bottom:0.5rem;">
-            Submissions are fetched from Formspree. To import them automatically, save your Formspree API key in the ⚙️ <span>Admin</span> tab.
+            Submissions are fetched from Formspree. To import them automatically, save your Formspree API key in the Admin tab.
           </div>
         </div>
 
@@ -1420,12 +1396,12 @@
       <!-- CHARTS TAB -->
       <section class="tab" id="chartsTab">
         <div class="card">
-          <div class="card-header">📊 <span>Charts</span> & goals</div>
+          <div class="card-header">Charts & goals</div>
 
           <div class="filter-row" style="margin-bottom:0.4rem;">
             <span>Monthly revenue goal:</span>
             <input type="number" id="chartsMonthlyGoal" min="0" step="50" style="width:110px;" />
-            <button type="button" class="btn small secondary" id="save📊 <span>Charts</span>GoalBtn">Save goal</button>
+            <button type="button" class="btn small secondary" id="saveChartsGoalBtn">Save goal</button>
             <span id="chartsGoalSummary" style="font-size:0.78rem;color:#9ca3af;"></span>
           </div>
 
@@ -1445,7 +1421,7 @@
               <option value="neighborhood">By neighborhood</option>
               <option value="zip">By ZIP</option>
             </select>
-            <button type="button" class="btn small secondary" id="apply📊 <span>Charts</span>FilterBtn">Apply</button>
+            <button type="button" class="btn small secondary" id="applyChartsFilterBtn">Apply</button>
           </div>
         </div>
 
@@ -1590,8 +1566,8 @@
       <!-- ADMIN TAB -->
       <section class="tab" id="adminTab">
         <div class="card">
-          <div class="card-header">⚙️ <span>Admin</span> overview</div>
-          <div class="card-subtitle">Founder and ⚙️ <span>Admin</span> can manage accounts, money, and exports.</div>
+          <div class="card-header">Admin overview</div>
+          <div class="card-subtitle">Founder and Admin can manage accounts, money, and exports.</div>
         </div>
 
         <div class="card">
@@ -1654,7 +1630,7 @@
           <div class="card-subtitle">Based on approved jobs and approved expenses.</div>
           <div class="totals">
             <div class="total-card"><h4>Income</h4><div class="amount" id="incomeTotal">$0.00</div></div>
-            <div class="total-card"><h4>💰 <span>Expenses</span></h4><div class="amount" id="expensesTotal">$0.00</div></div>
+            <div class="total-card"><h4>Expenses</h4><div class="amount" id="expensesTotal">$0.00</div></div>
             <div class="total-card"><h4>Net</h4><div class="amount" id="netTotal">$0.00</div></div>
           </div>
           <div class="filter-row">
@@ -1689,7 +1665,7 @@
         <div class="card">
           <div class="card-header">Data export</div>
           <div class="card-subtitle">Download all LLCS dashboard data as JSON.</div>
-          <button type="button" class="btn" id="exportAllDataBtn⚙️ <span>Admin</span>">Export all data (JSON)</button>
+          <button type="button" class="btn" id="exportAllDataBtnAdmin">Export all data (JSON)</button>
         </div>
       </section>
     </main></div></div>
@@ -1779,44 +1755,44 @@
 
     const DEFAULT_ROLE_PERMISSIONS = {
       [ROLES.FOUNDER]: {
-        view👥 <span>Customers</span>: true,
-        view📊 <span>Charts</span>: true,
+        viewCustomers: true,
+        viewCharts: true,
         viewJobs: true,
-        view💰 <span>Expenses</span>: true,
+        viewExpenses: true,
         viewKanban: true,
         viewSubmissions: true,
-        manage👥 <span>Customers</span>: true,
+        manageCustomers: true,
         manageUsers: true,
         editRolePermissions: true,
-        approve💰 <span>Expenses</span>: true,
+        approveExpenses: true,
         deleteRecords: true,
         exportData: true
       },
       [ROLES.ADMIN]: {
-        view👥 <span>Customers</span>: true,
-        view📊 <span>Charts</span>: true,
+        viewCustomers: true,
+        viewCharts: true,
         viewJobs: true,
-        view💰 <span>Expenses</span>: true,
+        viewExpenses: true,
         viewKanban: true,
         viewSubmissions: true,
-        manage👥 <span>Customers</span>: true,
+        manageCustomers: true,
         manageUsers: true,
         editRolePermissions: false,
-        approve💰 <span>Expenses</span>: true,
+        approveExpenses: true,
         deleteRecords: true,
         exportData: true
       },
       [ROLES.EMPLOYEE]: {
-        view👥 <span>Customers</span>: true,
-        view📊 <span>Charts</span>: true,
+        viewCustomers: true,
+        viewCharts: true,
         viewJobs: true,
-        view💰 <span>Expenses</span>: true,
+        viewExpenses: true,
         viewKanban: true,
         viewSubmissions: false,
-        manage👥 <span>Customers</span>: false,
+        manageCustomers: false,
         manageUsers: false,
         editRolePermissions: false,
-        approve💰 <span>Expenses</span>: false,
+        approveExpenses: false,
         deleteRecords: false,
         exportData: false
       }
@@ -1847,7 +1823,7 @@
       const map = getRolePermissionsMap();
       const row = map[u.role];
       if (!row || row[key] === undefined) {
-        if (key === 'manageUsers' || key === 'approve💰 <span>Expenses</span>' || key === 'deleteRecords' || key === 'exportData') return is⚙️ <span>Admin</span>(u);
+        if (key === 'manageUsers' || key === 'approveExpenses' || key === 'deleteRecords' || key === 'exportData') return isAdmin(u);
         if (key === 'editRolePermissions') return isFounder(u);
         return true;
       }
@@ -1896,10 +1872,10 @@
         if (a) a.style.display = on ? '' : 'none';
       }
       if (!u) return;
-      showNav('customersNav', hasPermission(u, 'view👥 <span>Customers</span>'));
-      showNav('chartsNav', hasPermission(u, 'view📊 <span>Charts</span>'));
+      showNav('customersNav', hasPermission(u, 'viewCustomers'));
+      showNav('chartsNav', hasPermission(u, 'viewCharts'));
       showNav('jobsNav', hasPermission(u, 'viewJobs'));
-      showNav('expensesNav', hasPermission(u, 'view💰 <span>Expenses</span>'));
+      showNav('expensesNav', hasPermission(u, 'viewExpenses'));
       showNav('kanbanNav', hasPermission(u, 'viewKanban'));
       showNav('submissionsNav', hasPermission(u, 'viewSubmissions'));
     }
@@ -1922,10 +1898,10 @@
     }
 
     function isFounder(u) { return u && u.role === ROLES.FOUNDER; }
-    function is⚙️ <span>Admin</span>(u) { return u && (u.role === ROLES.ADMIN || u.role === ROLES.FOUNDER); }
-    function canManageUsers(u) { return is⚙️ <span>Admin</span>(u) && hasPermission(u, 'manageUsers'); }
+    function isAdmin(u) { return u && (u.role === ROLES.ADMIN || u.role === ROLES.FOUNDER); }
+    function canManageUsers(u) { return isAdmin(u) && hasPermission(u, 'manageUsers'); }
     function canEditRoles(u) { return isFounder(u); }
-    function userCanExport(u) { return is⚙️ <span>Admin</span>(u) && hasPermission(u, 'exportData'); }
+    function userCanExport(u) { return isAdmin(u) && hasPermission(u, 'exportData'); }
 
     let lastDeleted = null;
 
@@ -2396,7 +2372,7 @@
       }
     }
 
-    function ensure⚙️ <span>Admin</span>User() {
+    function ensureAdminUser() {
       let users = readJSON(STORAGE_KEYS.users, []);
       let founder = users.find(u => u.username === 'LLCSFounder');
       if (!founder) {
@@ -2445,8 +2421,8 @@
     const logoutBtn = document.getElementById('logoutBtn');
     const navToggle = document.getElementById('navToggle');
     const adminNav = document.getElementById('adminNav');
-    const home⚙️ <span>Admin</span>Card = document.getElementById('home⚙️ <span>Admin</span>Card');
-    const homeGo⚙️ <span>Admin</span>Btn = document.getElementById('homeGo⚙️ <span>Admin</span>Btn');
+    const homeAdminCard = document.getElementById('homeAdminCard');
+    const homeGoAdminBtn = document.getElementById('homeGoAdminBtn');
 
     const tabs = {
       homeTab: document.getElementById('homeTab'),
@@ -2502,24 +2478,24 @@
         e.preventDefault();
         const tabId = link.dataset.tab;
         const u = getCurrentUser();
-        if (tabId === 'adminTab' && !is⚙️ <span>Admin</span>(u)) {
-          showAlert({ title: 'Access denied', message: '⚙️ <span>Admin</span> or Founder role required.', icon: '🔒' });
+        if (tabId === 'adminTab' && !isAdmin(u)) {
+          showAlert({ title: 'Access denied', message: 'Admin or Founder role required.', icon: '🔒' });
           return;
         }
-        if (tabId === 'customersTab' && u && !hasPermission(u, 'view👥 <span>Customers</span>')) {
-          showAlert({ title: 'Access denied', message: 'You do not have access to 👥 <span>Customers</span>.', icon: '🔒' });
+        if (tabId === 'customersTab' && u && !hasPermission(u, 'viewCustomers')) {
+          showAlert({ title: 'Access denied', message: 'You do not have access to Customers.', icon: '🔒' });
           return;
         }
-        if (tabId === 'chartsTab' && u && !hasPermission(u, 'view📊 <span>Charts</span>')) {
-          showAlert({ title: 'Access denied', message: 'You do not have access to 📊 <span>Charts</span>.', icon: '🔒' });
+        if (tabId === 'chartsTab' && u && !hasPermission(u, 'viewCharts')) {
+          showAlert({ title: 'Access denied', message: 'You do not have access to Charts.', icon: '🔒' });
           return;
         }
         if (tabId === 'jobsTab' && u && !hasPermission(u, 'viewJobs')) {
           showAlert({ title: 'Access denied', message: 'You do not have access to Jobs.', icon: '🔒' });
           return;
         }
-        if (tabId === 'expensesTab' && u && !hasPermission(u, 'view💰 <span>Expenses</span>')) {
-          showAlert({ title: 'Access denied', message: 'You do not have access to 💰 <span>Expenses</span>.', icon: '🔒' });
+        if (tabId === 'expensesTab' && u && !hasPermission(u, 'viewExpenses')) {
+          showAlert({ title: 'Access denied', message: 'You do not have access to Expenses.', icon: '🔒' });
           return;
         }
         if (tabId === 'kanbanTab' && u && !hasPermission(u, 'viewKanban')) {
@@ -2527,14 +2503,14 @@
           return;
         }
         if (tabId === 'submissionsTab' && u && !hasPermission(u, 'viewSubmissions')) {
-          showAlert({ title: 'Access denied', message: 'You do not have access to 📨 <span>Submissions</span>.', icon: '🔒' });
+          showAlert({ title: 'Access denied', message: 'You do not have access to Contact Submissions.', icon: '🔒' });
           return;
         }
         setActiveTab(tabId);
         closeMobileNav();
         if (tabId === 'kanbanTab') refreshKanban();
-        if (tabId === 'chartsTab') refresh📊 <span>Charts</span>();
-        if (tabId === 'customersTab') refresh👥 <span>Customers</span>Table();
+        if (tabId === 'chartsTab') refreshCharts();
+        if (tabId === 'customersTab') refreshCustomersTable();
         if (tabId === 'submissionsTab') renderSubmissionsTable();
         if (tabId === 'adminTab') {
           refreshMoney();
@@ -2545,10 +2521,10 @@
       });
     });
 
-    homeGo⚙️ <span>Admin</span>Btn.addEventListener('click', () => {
+    homeGoAdminBtn.addEventListener('click', () => {
       const u = getCurrentUser();
-      if (!is⚙️ <span>Admin</span>(u)) {
-        showAlert({ title: 'Access denied', message: '⚙️ <span>Admin</span> or Founder role required.', icon: '🔒' });
+      if (!isAdmin(u)) {
+        showAlert({ title: 'Access denied', message: 'Admin or Founder role required.', icon: '🔒' });
         return;
       }
       setActiveTab('adminTab');
@@ -2560,25 +2536,25 @@
       const host = document.getElementById('rolePermissionsEditor');
       if (!host) return;
       const u = getCurrentUser();
-      if (!is⚙️ <span>Admin</span>(u)) { host.innerHTML = ''; return; }
+      if (!isAdmin(u)) { host.innerHTML = ''; return; }
       const canEdit = isFounder(u);
       const map = getRolePermissionsMap();
 
       // Define page-visibility keys and their display labels
       const pageKeys = [
-        { key: 'view💰 <span>Expenses</span>',    label: '📋 💰 <span>Expenses</span>',            nav: 'expensesNav'    },
+        { key: 'viewExpenses',    label: '📋 Expenses',            nav: 'expensesNav'    },
         { key: 'viewJobs',        label: '🔧 Jobs',                nav: 'jobsNav'        },
         { key: 'viewKanban',      label: '📌 Jobs Columned',       nav: 'kanbanNav'      },
-        { key: 'view👥 <span>Customers</span>',   label: '👥 👥 <span>Customers</span>',           nav: 'customersNav'   },
-        { key: 'viewSubmissions', label: '📬 📨 <span>Submissions</span>', nav: 'submissionsNav' },
-        { key: 'view📊 <span>Charts</span>',      label: '📊 📊 <span>Charts</span>',              nav: 'chartsNav'      },
+        { key: 'viewCustomers',   label: '👥 Customers',           nav: 'customersNav'   },
+        { key: 'viewSubmissions', label: '📬 Contact Submissions', nav: 'submissionsNav' },
+        { key: 'viewCharts',      label: '📊 Charts',              nav: 'chartsNav'      },
       ];
 
       // Action-only permission keys
       const actionKeys = [
-        { key: 'manage👥 <span>Customers</span>',    label: 'Manage customers (add/edit/delete)' },
+        { key: 'manageCustomers',    label: 'Manage customers (add/edit/delete)' },
         { key: 'manageUsers',        label: 'Manage user accounts' },
-        { key: 'approve💰 <span>Expenses</span>',    label: 'Approve / reject expenses' },
+        { key: 'approveExpenses',    label: 'Approve / reject expenses' },
         { key: 'deleteRecords',      label: 'Delete records (jobs, expenses, etc.)' },
         { key: 'exportData',         label: 'Export data (CSV / JSON)' },
         { key: 'editRolePermissions',label: 'Edit role permissions (Founder only)' },
@@ -2743,28 +2719,28 @@
       currentNameLabel.textContent = '· ' + (u.name || u.username);
       let role = 'Employee';
       if (u.role === ROLES.FOUNDER) role = 'Founder';
-      else if (u.role === ROLES.ADMIN) role = '⚙️ <span>Admin</span>';
+      else if (u.role === ROLES.ADMIN) role = 'Admin';
       currentRoleLabel.textContent = role;
 
-      if (is⚙️ <span>Admin</span>(u)) {
+      if (isAdmin(u)) {
         adminNav.style.display = 'inline-flex';
-        home⚙️ <span>Admin</span>Card.style.display = 'block';
+        homeAdminCard.style.display = 'block';
       } else {
         adminNav.style.display = 'none';
-        home⚙️ <span>Admin</span>Card.style.display = 'none';
+        homeAdminCard.style.display = 'none';
       }
 
       applyNavPermissions(u);
 
       const canExp = userCanExport(u);
-      ['exportJobsCsvBtn', 'export💰 <span>Expenses</span>CsvBtn', 'exportMoneyCsvBtn', 'exportAllDataBtn', 'exportAllDataBtn⚙️ <span>Admin</span>']
+      ['exportJobsCsvBtn', 'exportExpensesCsvBtn', 'exportMoneyCsvBtn', 'exportAllDataBtn', 'exportAllDataBtnAdmin']
         .forEach(id => {
           const el = document.getElementById(id);
           if (el) el.style.display = canExp ? 'inline-flex' : 'none';
         });
 
       populateJobCustomerSelect();
-      refresh👥 <span>Customers</span>Table();
+      refreshCustomersTable();
       renderRolePermissionsEditor();
       renderAuditLogPanel();
       updateBadgesAndHomeBanner();
@@ -2784,7 +2760,7 @@
         return;
       }
 
-      ensure⚙️ <span>Admin</span>User();
+      ensureAdminUser();
       const users = readJSON(STORAGE_KEYS.users, []);
       let found = users.find(u => u.username === username && u.password === password);
 
@@ -2830,7 +2806,7 @@
     createUserBtn.addEventListener('click', () => {
       const u = getCurrentUser();
       if (!canManageUsers(u)) {
-        showAlert({ title: 'Access denied', message: '⚙️ <span>Admin</span> or Founder role required.', icon: '🔒' });
+        showAlert({ title: 'Access denied', message: 'Admin or Founder role required.', icon: '🔒' });
         return;
       }
       const name = (document.getElementById('newName').value || '').trim();
@@ -2841,7 +2817,7 @@
         createUserError.classList.add('show');
         return;
       }
-      ensure⚙️ <span>Admin</span>User();
+      ensureAdminUser();
       let users = readJSON(STORAGE_KEYS.users, []);
       if (users.some(x => x.username === username)) {
         createUserError.textContent = 'That username is already taken.';
@@ -2885,7 +2861,7 @@
           const sel = document.createElement('select');
           [
             { v: ROLES.EMPLOYEE, l: 'Employee' },
-            { v: ROLES.ADMIN, l: '⚙️ <span>Admin</span>' },
+            { v: ROLES.ADMIN, l: 'Admin' },
             { v: ROLES.FOUNDER, l: 'Founder' }
           ].forEach(r => {
             const opt = document.createElement('option');
@@ -2901,7 +2877,7 @@
         } else {
           roleTd.textContent =
             u.role === ROLES.FOUNDER ? 'Founder' :
-            u.role === ROLES.ADMIN ? '⚙️ <span>Admin</span>' : 'Employee';
+            u.role === ROLES.ADMIN ? 'Admin' : 'Employee';
         }
 
         const aTd = document.createElement('td');
@@ -2960,7 +2936,7 @@
     const expenseQuickRange = document.getElementById('expenseQuickRange');
     const expenseFilterApply = document.getElementById('expenseFilterApply');
     const expenseFilterClear = document.getElementById('expenseFilterClear');
-    const export💰 <span>Expenses</span>CsvBtn = document.getElementById('export💰 <span>Expenses</span>CsvBtn');
+    const exportExpensesCsvBtn = document.getElementById('exportExpensesCsvBtn');
     expenseDate.value = getToday();
 
     addExpenseBtn.addEventListener('click', () => {
@@ -2997,13 +2973,13 @@
       document.getElementById('expenseVendor').value = '';
       showGlobalOverlay('Saving expense...');
       appendAuditLog('expense_created', 'Expense submitted: ' + desc, formatCurrency(amt));
-      refresh💰 <span>Expenses</span>();
+      refreshExpenses();
       refreshMoney();
-      refresh📊 <span>Charts</span>();
+      refreshCharts();
       showToast('Expense added');
     });
 
-    function getFiltered💰 <span>Expenses</span>Raw() {
+    function getFilteredExpensesRaw() {
       const expenses = readJSON(STORAGE_KEYS.expenses, []);
       const s = (expenseSearch.value || '').toLowerCase();
       const status = expenseStatusFilter.value;
@@ -3020,7 +2996,7 @@
 
     function reviewExpense(id) {
       const u = getCurrentUser();
-      if (!is⚙️ <span>Admin</span>(u) || !hasPermission(u, 'approve💰 <span>Expenses</span>')) {
+      if (!isAdmin(u) || !hasPermission(u, 'approveExpenses')) {
         showAlert({ title: 'Access denied', message: 'You do not have permission to review expenses.', icon: '🔒' });
         return;
       }
@@ -3056,19 +3032,19 @@
           ex[idx].reviewedAt = new Date().toISOString();
           writeJSON(STORAGE_KEYS.expenses, ex);
           appendAuditLog('expense_review', 'Expense ' + st + ': ' + cur.description, (comment || '').trim() || '(no note)');
-          refresh💰 <span>Expenses</span>();
+          refreshExpenses();
           refreshMoney();
-          refresh📊 <span>Charts</span>();
+          refreshCharts();
           showToast('Expense ' + st);
         });
       });
     }
 
-    function refresh💰 <span>Expenses</span>() {
+    function refreshExpenses() {
       const u = getCurrentUser();
-      const canApprove = is⚙️ <span>Admin</span>(u) && hasPermission(u, 'approve💰 <span>Expenses</span>');
-      const canDel = is⚙️ <span>Admin</span>(u) && hasPermission(u, 'deleteRecords');
-      const rows = getFiltered💰 <span>Expenses</span>Raw();
+      const canApprove = isAdmin(u) && hasPermission(u, 'approveExpenses');
+      const canDel = isAdmin(u) && hasPermission(u, 'deleteRecords');
+      const rows = getFilteredExpensesRaw();
       expensesBody.innerHTML = '';
       rows.forEach(e => {
         const tr = document.createElement('tr');
@@ -3158,12 +3134,12 @@
       ex = ex.filter(e => e.id !== id);
       writeJSON(STORAGE_KEYS.expenses, ex);
       if (victim) appendAuditLog('expense_deleted', 'Expense deleted: ' + victim.description, String(id));
-      refresh💰 <span>Expenses</span>();
+      refreshExpenses();
       refreshMoney();
-      refresh📊 <span>Charts</span>();
+      refreshCharts();
     }
 
-    expenseFilterApply.addEventListener('click', refresh💰 <span>Expenses</span>);
+    expenseFilterApply.addEventListener('click', refreshExpenses);
 
     expenseFilterClear.addEventListener('click', () => {
       expenseSearch.value = '';
@@ -3171,17 +3147,17 @@
       expenseQuickRange.value = 'all';
       expenseFromDate.value = '';
       expenseToDate.value = '';
-      refresh💰 <span>Expenses</span>();
+      refreshExpenses();
     });
 
     expenseQuickRange.addEventListener('change', () => {
       const { from, to } = getQuickRange(expenseQuickRange.value);
       expenseFromDate.value = from;
       expenseToDate.value = to;
-      refresh💰 <span>Expenses</span>();
+      refreshExpenses();
     });
 
-    export💰 <span>Expenses</span>CsvBtn.addEventListener('click', () => {
+    exportExpensesCsvBtn.addEventListener('click', () => {
       const ex = readJSON(STORAGE_KEYS.expenses, []);
       const rows = [['Description', 'Amount', 'Date', 'Status', 'Category', 'PaymentMethod', 'Vendor', 'ReviewNote', 'Submitted by']];
       ex.forEach(e => {
@@ -3314,7 +3290,7 @@
       refreshJobs();
       refreshKanban();
       refreshMoney();
-      refresh📊 <span>Charts</span>();
+      refreshCharts();
       refreshHomeScheduleCard();
       showToast('Job added');
     });
@@ -3329,13 +3305,13 @@
       document.getElementById('jobZipCode').value = c.zip || '';
     });
 
-    function refresh👥 <span>Customers</span>Table() {
+    function refreshCustomersTable() {
       const u = getCurrentUser();
       const body = document.getElementById('customersBody');
       if (!body) return;
       const customers = readJSON(STORAGE_KEYS.customers, []);
       body.innerHTML = '';
-      const canManage = u && hasPermission(u, 'manage👥 <span>Customers</span>');
+      const canManage = u && hasPermission(u, 'manageCustomers');
       customers.forEach(function (c) {
         const tr = document.createElement('tr');
         [c.name || '', c.phone || '', c.address || '', ((c.neighborhood || '') + ' / ' + (c.zip || '')).trim(), c.notes || ''].forEach(function (text) {
@@ -3358,7 +3334,7 @@
             jobList.forEach(function (j) { if (String(j.customerId) === String(c.id)) j.customerId = null; });
             writeJSON(STORAGE_KEYS.jobs, jobList);
             appendAuditLog('customer_deleted', 'Customer removed: ' + c.name, String(c.id));
-            refresh👥 <span>Customers</span>Table();
+            refreshCustomersTable();
             populateJobCustomerSelect();
             refreshJobs();
           });
@@ -3373,7 +3349,7 @@
 
     document.getElementById('addCustomerBtn').addEventListener('click', function () {
       const u = getCurrentUser();
-      if (!u || !hasPermission(u, 'manage👥 <span>Customers</span>')) {
+      if (!u || !hasPermission(u, 'manageCustomers')) {
         showAlert({ title: 'Access denied', message: 'You do not have permission to manage customers.', icon: '🔒' });
         return;
       }
@@ -3393,7 +3369,7 @@
       writeJSON(STORAGE_KEYS.customers, customers);
       appendAuditLog('customer_created', 'Customer added: ' + name, row.zip || '');
       document.getElementById('customerForm').reset();
-      refresh👥 <span>Customers</span>Table();
+      refreshCustomersTable();
       populateJobCustomerSelect();
       showToast('Customer saved');
     });
@@ -3462,8 +3438,8 @@
 
     function renderJobsGrouped(rows) {
       const u = getCurrentUser();
-      const isAdm = is⚙️ <span>Admin</span>(u);
-      const canDel = is⚙️ <span>Admin</span>(u) && hasPermission(u, 'deleteRecords');
+      const isAdm = isAdmin(u);
+      const canDel = isAdmin(u) && hasPermission(u, 'deleteRecords');
       const groups = {};
       rows.forEach(j => {
         const key = j.whoName || j.who || 'unknown';
@@ -3703,7 +3679,7 @@
               refreshJobs();
               refreshKanban();
               refreshMoney();
-              refresh📊 <span>Charts</span>();
+              refreshCharts();
             });
             lab.appendChild(cb);
             lab.appendChild(document.createTextNode(' ' + k));
@@ -3757,7 +3733,7 @@
       refreshJobs();
       refreshKanban();
       refreshMoney();
-      refresh📊 <span>Charts</span>();
+      refreshCharts();
       refreshHomeScheduleCard();
     }
 
@@ -3770,7 +3746,7 @@
       refreshJobs();
       refreshKanban();
       refreshMoney();
-      refresh📊 <span>Charts</span>();
+      refreshCharts();
       refreshHomeScheduleCard();
     }
 
@@ -3964,33 +3940,33 @@
     const chartsFromDate = document.getElementById('chartsFromDate');
     const chartsToDate = document.getElementById('chartsToDate');
     const chartsTimeframe = document.getElementById('chartsTimeframe');
-    const apply📊 <span>Charts</span>FilterBtn = document.getElementById('apply📊 <span>Charts</span>FilterBtn');
+    const applyChartsFilterBtn = document.getElementById('applyChartsFilterBtn');
     const chartsMonthlyGoalInput = document.getElementById('chartsMonthlyGoal');
-    const save📊 <span>Charts</span>GoalBtn = document.getElementById('save📊 <span>Charts</span>GoalBtn');
+    const saveChartsGoalBtn = document.getElementById('saveChartsGoalBtn');
     const chartsGoalSummary = document.getElementById('chartsGoalSummary');
 
-    function load📊 <span>Charts</span>GoalFromPrefs() {
+    function loadChartsGoalFromPrefs() {
       const prefs = getPrefs();
       if (chartsMonthlyGoalInput) {
         chartsMonthlyGoalInput.value = prefs.monthlyGoal || 0;
       }
     }
 
-    function save📊 <span>Charts</span>GoalToPrefs() {
+    function saveChartsGoalToPrefs() {
       const raw = chartsMonthlyGoalInput ? Number(chartsMonthlyGoalInput.value || '0') : 0;
       const goal = Number.isNaN(raw) || raw < 0 ? 0 : Math.round(raw);
       const prefs = getPrefs();
       prefs.monthlyGoal = goal;
       savePrefs(prefs);
-      showToast('📊 <span>Charts</span> goal updated');
-      refresh📊 <span>Charts</span>();
+      showToast('Charts goal updated');
+      refreshCharts();
     }
 
-    if (save📊 <span>Charts</span>GoalBtn) {
-      save📊 <span>Charts</span>GoalBtn.addEventListener('click', save📊 <span>Charts</span>GoalToPrefs);
+    if (saveChartsGoalBtn) {
+      saveChartsGoalBtn.addEventListener('click', saveChartsGoalToPrefs);
     }
 
-    function get📊 <span>Charts</span>FilterRange() {
+    function getChartsFilterRange() {
       let from = chartsFromDate.value || '';
       let to = chartsToDate.value || '';
       const tf = chartsTimeframe.value || 'all';
@@ -4172,10 +4148,10 @@
       return ds.slice(0, 7);
     }
 
-    function refresh📊 <span>Charts</span>() {
+    function refreshCharts() {
       const jobs = readJSON(STORAGE_KEYS.jobs, []);
       const expenses = readJSON(STORAGE_KEYS.expenses, []).filter(e => e.status === 'approved');
-      const { from, to } = get📊 <span>Charts</span>FilterRange();
+      const { from, to } = getChartsFilterRange();
       const fj = jobs.filter(j => dateInRange(j.date, from, to));
       const fjRev = jobs.filter(j => dateInRange(jobRevenueDate(j), from, to));
       const fe = expenses.filter(e => dateInRange(e.date, from, to));
@@ -4338,9 +4314,9 @@
       }, 'status');
     }
 
-    apply📊 <span>Charts</span>FilterBtn.addEventListener('click', refresh📊 <span>Charts</span>);
+    applyChartsFilterBtn.addEventListener('click', refreshCharts);
     const chartsAreaModeEl = document.getElementById('chartsAreaMode');
-    if (chartsAreaModeEl) chartsAreaModeEl.addEventListener('change', refresh📊 <span>Charts</span>);
+    if (chartsAreaModeEl) chartsAreaModeEl.addEventListener('change', refreshCharts);
 
     function initChartFullscreen() {
       const cards = document.querySelectorAll('.chart-card');
@@ -4353,7 +4329,7 @@
           if (['BUTTON', 'SELECT', 'OPTION', 'INPUT', 'LABEL'].includes(e.target.tagName)) return;
           const isFull = card.classList.toggle('fullscreen');
           card.style.cursor = isFull ? 'zoom-out' : 'zoom-in';
-          setTimeout(() => refresh📊 <span>Charts</span>(), 80);
+          setTimeout(() => refreshCharts(), 80);
         });
       });
     }
@@ -4499,7 +4475,7 @@
       exportAllData();
     });
 
-    document.getElementById('exportAllDataBtn⚙️ <span>Admin</span>').addEventListener('click', () => {
+    document.getElementById('exportAllDataBtnAdmin').addEventListener('click', () => {
       const u = getCurrentUser();
       if (!userCanExport(u)) {
         showAlert({ title: 'Access denied', message: 'Export permission required.', icon: '🔒' });
@@ -4541,10 +4517,10 @@
     }
 
     function initSorting() {
-      attachSorting('expensesTable', 'expensesBody', () => getFiltered💰 <span>Expenses</span>Raw(), rows => {
+      attachSorting('expensesTable', 'expensesBody', () => getFilteredExpensesRaw(), rows => {
         const u = getCurrentUser();
-        const canApprove = is⚙️ <span>Admin</span>(u) && hasPermission(u, 'approve💰 <span>Expenses</span>');
-        const canDel = is⚙️ <span>Admin</span>(u) && hasPermission(u, 'deleteRecords');
+        const canApprove = isAdmin(u) && hasPermission(u, 'approveExpenses');
+        const canDel = isAdmin(u) && hasPermission(u, 'deleteRecords');
         expensesBody.innerHTML = '';
         rows.forEach(e => {
           const tr = document.createElement('tr');
@@ -4638,15 +4614,15 @@
         refreshJobs();
         refreshKanban();
         refreshMoney();
-        refresh📊 <span>Charts</span>();
+        refreshCharts();
         showToast('Job restored');
       } else if (lastDeleted.type === 'expense') {
         const ex = readJSON(STORAGE_KEYS.expenses, []);
         ex.push(lastDeleted.item);
         writeJSON(STORAGE_KEYS.expenses, ex);
-        refresh💰 <span>Expenses</span>();
+        refreshExpenses();
         refreshMoney();
-        refresh📊 <span>Charts</span>();
+        refreshCharts();
         showToast('Expense restored');
       }
       lastDeleted = null;
@@ -4657,7 +4633,7 @@
       const jobs = readJSON(STORAGE_KEYS.jobs, []);
       const current = getCurrentUser();
 
-      const pending💰 <span>Expenses</span> = expenses.filter(e => e.status === 'pending').length;
+      const pendingExpenses = expenses.filter(e => e.status === 'pending').length;
       const activeJobs = jobs.filter(j => j.status === 'planned' || j.status === 'in_progress').length;
 
       const expensesBadge = document.getElementById('expensesBadge');
@@ -4666,8 +4642,8 @@
       const homePendingText = document.getElementById('homePendingText');
 
       if (expensesBadge) {
-        if (pending💰 <span>Expenses</span> > 0) {
-          expensesBadge.textContent = '(' + pending💰 <span>Expenses</span> + ')';
+        if (pendingExpenses > 0) {
+          expensesBadge.textContent = '(' + pendingExpenses + ')';
           expensesBadge.style.display = 'inline';
         } else {
           expensesBadge.style.display = 'none';
@@ -4696,9 +4672,9 @@
       }
 
       if (homePendingCard && homePendingText) {
-        if (is⚙️ <span>Admin</span>(current) && pending💰 <span>Expenses</span> > 0) {
+        if (isAdmin(current) && pendingExpenses > 0) {
           homePendingText.textContent =
-            'You have ' + pending💰 <span>Expenses</span> + ' expense' + (pending💰 <span>Expenses</span> === 1 ? '' : 's') + ' waiting for approval.';
+            'You have ' + pendingExpenses + ' expense' + (pendingExpenses === 1 ? '' : 's') + ' waiting for approval.';
           homePendingCard.style.display = 'block';
         } else {
           homePendingCard.style.display = 'none';
@@ -4708,7 +4684,7 @@
       const myCard = document.getElementById('homeMySummaryCard');
       const myJobsWeekEl = document.getElementById('homeMyJobsWeek');
       const myRevenueMonthEl = document.getElementById('homeMyRevenueMonth');
-      const myPendingExpEl = document.getElementById('homeMyPending💰 <span>Expenses</span>');
+      const myPendingExpEl = document.getElementById('homeMyPendingExpenses');
 
       if (myCard && myJobsWeekEl && myRevenueMonthEl && myPendingExpEl && current) {
         const me = current.username;
@@ -4723,14 +4699,14 @@
           isInCurrentMonth(j.date)
         );
 
-        const myPending💰 <span>Expenses</span> = expenses.filter(e =>
+        const myPendingExpenses = expenses.filter(e =>
           e.submittedBy === me && e.status === 'pending'
         );
 
         myJobsWeekEl.textContent = myJobsThisWeek.length;
         const rev = myJobsThisMonth.reduce((sum, j) => sum + jobTotalPayment(j), 0);
         myRevenueMonthEl.textContent = formatCurrency(rev);
-        myPendingExpEl.textContent = myPending💰 <span>Expenses</span>.length;
+        myPendingExpEl.textContent = myPendingExpenses.length;
 
         myCard.style.display = 'block';
       } else if (myCard) {
@@ -4761,24 +4737,24 @@
 
         refreshJobs();
         refreshKanban();
-        refresh📊 <span>Charts</span>();
+        refreshCharts();
       });
     }
 
     function refreshAllUI() {
-      refresh💰 <span>Expenses</span>();
+      refreshExpenses();
       refreshJobs();
       refreshKanban();
-      refresh📊 <span>Charts</span>();
+      refreshCharts();
       refreshMoney();
       updateBadgesAndHomeBanner();
     }
 
     window.addEventListener('load', () => {
       ensureMetaAndMigrate();
-      ensure⚙️ <span>Admin</span>User();
+      ensureAdminUser();
       applyThemeFromPrefs();
-      load📊 <span>Charts</span>GoalFromPrefs();
+      loadChartsGoalFromPrefs();
 
       const jobSchedEl = document.getElementById('jobScheduledDate');
       if (jobSchedEl) jobSchedEl.value = getToday();
@@ -4800,7 +4776,7 @@
       initSorting();
       initChartFullscreen();
 
-      // 📨 <span>Submissions</span> Event Listeners
+      // Contact Submissions Event Listeners
       document.getElementById('addManualSubmissionBtn').addEventListener('click', addManualSubmission);
       document.getElementById('exportSubmissionsCsvBtn').addEventListener('click', exportSubmissionsCSV);
       document.getElementById('refreshSubmissionsBtn').addEventListener('click', () => {
@@ -4950,7 +4926,7 @@
   const sidebar = document.getElementById('sidebar');
 
   if(sidebarBtn && sidebar){
-    sidebarBtn.addEventListener('click', ()=>{
+    sidebarBtn.addEventListener('click', function(){
       sidebar.classList.toggle('collapsed');
     });
   }
@@ -4963,30 +4939,30 @@
 
     body.innerHTML = '';
 
-    quotes.forEach(q=>{
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
+    quotes.forEach(function(q){
+      const row = document.createElement('tr');
+
+      row.innerHTML = `
         <td>${q.customer}</td>
         <td>${q.service}</td>
-        <td>$${Number(q.price || 0).toFixed(2)}</td>
-        <td>${q.status}</td>
+        <td>$${Number(q.price).toFixed(2)}</td>
         <td>${q.date}</td>
       `;
-      body.appendChild(tr);
+
+      body.appendChild(row);
     });
   }
 
-  const btn = document.getElementById('generateQuoteBtn');
+  const quoteBtn = document.getElementById('generateQuoteBtn');
 
-  if(btn){
-    btn.addEventListener('click', ()=>{
+  if(quoteBtn){
+    quoteBtn.addEventListener('click', function(){
+
       const quote = {
         customer: document.getElementById('quoteCustomerName').value || 'Unknown',
-        phone: document.getElementById('quoteCustomerPhone').value || '',
         service: document.getElementById('quoteService').value,
         price: document.getElementById('quotePrice').value || 0,
-        status: document.getElementById('quoteStatus').value,
-        notes: document.getElementById('quoteNotes').value,
+        notes: document.getElementById('quoteNotes').value || '',
         date: new Date().toLocaleDateString()
       };
 
@@ -4996,7 +4972,7 @@
 
       renderQuotes();
 
-      alert('Quote saved successfully.');
+      alert('Quote saved.');
     });
   }
 
