@@ -1177,24 +1177,13 @@
               <label>Service</label>
               <select id="quoteService">
                 <option value="Mulch Installation">🌱 Mulch Installation</option>
-                <option value="Lawn Mowing">Lawn Mowing</option>
-                <option value="Weed Pulling">Weed Pulling</option>
-                <option value="Weed Control">Weed Control</option>
+                <option value="Lawn Mowing">🌿 Lawn Mowing</option>
+                <option value="Weed Pulling">🌾 Weed Pulling</option>
+                <option value="Weed Control">🧴 Weed Control</option>
               </select>
             </div>
 
-            <div style="background:#020617;padding:0.8rem;border-radius:14px;margin-bottom:0.8rem;font-size:0.84rem;line-height:1.7;">
-              <strong>🌱 Mulch Installation</strong><br><br>
-
-              Small Area — $65-$95 — 1–1.5 hrs<br>
-              Medium Area — $95-$150 — 1.5–2 hrs<br>
-              Large / Multi-Area — $150-$200 — 2–3 hrs<br><br>
-
-              <span style="color:#9ca3af;">
-                Recommended at least once a year in spring for a brand new look.
-                Also recommended with Weed Pulling and Weed Control.
-              </span>
-            </div>
+            <div id="quoteServiceInfo" style="background:#020617;padding:0.8rem;border-radius:14px;margin-bottom:0.8rem;font-size:0.84rem;line-height:1.7;"></div>
 
             <div class="form-group">
               <label>Estimated Price</label>
@@ -1222,7 +1211,9 @@
                   <th>Customer</th>
                   <th>Service</th>
                   <th>Price</th>
+                  <th>Notes</th>
                   <th>Date</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
 
@@ -2428,6 +2419,7 @@
       homeTab: document.getElementById('homeTab'),
       expensesTab: document.getElementById('expensesTab'),
       jobsTab: document.getElementById('jobsTab'),
+      quotesTab: document.getElementById('quotesTab'),
       kanbanTab: document.getElementById('kanbanTab'),
       customersTab: document.getElementById('customersTab'),
       submissionsTab: document.getElementById('submissionsTab'),
@@ -4931,48 +4923,157 @@
     });
   }
 
-  let quotes = JSON.parse(localStorage.getItem('quotes') || '[]');
+  const SERVICE_INFO = {
+    'Mulch Installation': {
+      icon: '🌱',
+      lines: [
+        'Small Area — $65–$95 — 1–1.5 hrs',
+        'Medium Area — $95–$150 — 1.5–2 hrs',
+        'Large / Multi-Area — $150–$200 — 2–3 hrs'
+      ],
+      note: 'Recommended at least once a year in spring for a brand new look. Also recommended with Weed Pulling and Weed Control.'
+    },
+    'Lawn Mowing': {
+      icon: '🌿',
+      lines: [
+        'Small Lawn — $35–$55 — 30–45 min',
+        'Medium Lawn — $55–$85 — 45–75 min',
+        'Large Lawn — $85–$130 — 1.5–2 hrs'
+      ],
+      note: 'Includes mowing, trimming edges, and blowing clippings. Recommended weekly or bi-weekly during growing season.'
+    },
+    'Weed Pulling': {
+      icon: '🌾',
+      lines: [
+        'Small Bed — $30–$55 — 30–60 min',
+        'Medium Bed — $55–$95 — 1–1.5 hrs',
+        'Large / Multiple Beds — $95–$150 — 1.5–2.5 hrs'
+      ],
+      note: 'Manual removal of weeds by hand. Best paired with Weed Control for longer-lasting results.'
+    },
+    'Weed Control': {
+      icon: '🧴',
+      lines: [
+        'Small Area — $40–$65 — 20–40 min',
+        'Medium Area — $65–$100 — 40–60 min',
+        'Large Area — $100–$160 — 1–1.5 hrs'
+      ],
+      note: 'Application of pre- or post-emergent herbicide. Recommended in combination with Weed Pulling for best results.'
+    }
+  };
 
-  function renderQuotes(){
+  function updateServiceInfo() {
+    const sel = document.getElementById('quoteService');
+    const box = document.getElementById('quoteServiceInfo');
+    if (!sel || !box) return;
+    const info = SERVICE_INFO[sel.value];
+    if (!info) { box.innerHTML = ''; return; }
+    box.innerHTML =
+      '<strong>' + info.icon + ' ' + sel.value + '</strong><br><br>' +
+      info.lines.join('<br>') +
+      '<br><br><span style="color:#9ca3af;">' + info.note + '</span>';
+  }
+
+  let quotes = JSON.parse(localStorage.getItem('llcs_quotes') || localStorage.getItem('quotes') || '[]');
+
+  function saveQuotes() {
+    localStorage.setItem('llcs_quotes', JSON.stringify(quotes));
+  }
+
+  function renderQuotes() {
     const body = document.getElementById('quotesBody');
-    if(!body) return;
-
+    if (!body) return;
     body.innerHTML = '';
-
-    quotes.forEach(function(q){
+    if (!quotes.length) {
+      const tr = document.createElement('tr');
+      const td = document.createElement('td');
+      td.colSpan = 6;
+      td.style.textAlign = 'center';
+      td.style.color = '#6b7280';
+      td.style.padding = '1rem';
+      td.textContent = 'No quotes saved yet.';
+      tr.appendChild(td);
+      body.appendChild(tr);
+      return;
+    }
+    quotes.forEach(function(q, idx) {
       const row = document.createElement('tr');
-
-      row.innerHTML = `
-        <td>${q.customer}</td>
-        <td>${q.service}</td>
-        <td>$${Number(q.price).toFixed(2)}</td>
-        <td>${q.date}</td>
-      `;
-
+      const custTd = document.createElement('td');
+      custTd.textContent = q.customer;
+      const svcTd = document.createElement('td');
+      svcTd.textContent = q.service;
+      const priceTd = document.createElement('td');
+      priceTd.textContent = '$' + Number(q.price).toFixed(2);
+      const notesTd = document.createElement('td');
+      notesTd.textContent = q.notes || '—';
+      notesTd.style.maxWidth = '180px';
+      notesTd.style.whiteSpace = 'pre-wrap';
+      notesTd.style.fontSize = '0.78rem';
+      const dateTd = document.createElement('td');
+      dateTd.textContent = q.date;
+      const actTd = document.createElement('td');
+      const delBtn = document.createElement('button');
+      delBtn.className = 'btn small danger';
+      delBtn.textContent = 'Delete';
+      delBtn.addEventListener('click', function() {
+        quotes.splice(idx, 1);
+        saveQuotes();
+        renderQuotes();
+      });
+      actTd.appendChild(delBtn);
+      row.appendChild(custTd);
+      row.appendChild(svcTd);
+      row.appendChild(priceTd);
+      row.appendChild(notesTd);
+      row.appendChild(dateTd);
+      row.appendChild(actTd);
       body.appendChild(row);
     });
   }
 
-  const quoteBtn = document.getElementById('generateQuoteBtn');
+  const quoteServiceSel = document.getElementById('quoteService');
+  if (quoteServiceSel) {
+    quoteServiceSel.addEventListener('change', updateServiceInfo);
+    updateServiceInfo();
+  }
 
-  if(quoteBtn){
-    quoteBtn.addEventListener('click', function(){
+  const quoteBtn = document.getElementById('generateQuoteBtn');
+  if (quoteBtn) {
+    quoteBtn.addEventListener('click', function() {
+      const customerName = (document.getElementById('quoteCustomerName').value || '').trim();
+      const service = document.getElementById('quoteService').value;
+      const price = document.getElementById('quotePrice').value;
+      const notes = (document.getElementById('quoteNotes').value || '').trim();
+
+      if (!customerName) {
+        if (typeof showToast === 'function') showToast('Please enter a customer name.', false, 'error');
+        else alert('Please enter a customer name.');
+        return;
+      }
+      if (!price || isNaN(Number(price)) || Number(price) < 0) {
+        if (typeof showToast === 'function') showToast('Please enter a valid estimated price.', false, 'error');
+        else alert('Please enter a valid estimated price.');
+        return;
+      }
 
       const quote = {
-        customer: document.getElementById('quoteCustomerName').value || 'Unknown',
-        service: document.getElementById('quoteService').value,
-        price: document.getElementById('quotePrice').value || 0,
-        notes: document.getElementById('quoteNotes').value || '',
+        customer: customerName,
+        service: service,
+        price: Number(price),
+        notes: notes,
         date: new Date().toLocaleDateString()
       };
 
       quotes.push(quote);
-
-      localStorage.setItem('quotes', JSON.stringify(quotes));
-
+      saveQuotes();
       renderQuotes();
 
-      alert('Quote saved.');
+      document.getElementById('quoteCustomerName').value = '';
+      document.getElementById('quotePrice').value = '';
+      document.getElementById('quoteNotes').value = '';
+
+      if (typeof showToast === 'function') showToast('Quote saved.');
+      else alert('Quote saved.');
     });
   }
 
