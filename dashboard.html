@@ -5229,6 +5229,13 @@
   }
 
   let quotes = JSON.parse(localStorage.getItem('llcs_quotes') || localStorage.getItem('quotes') || '[]');
+  let quoteCounter = parseInt(localStorage.getItem('llcs_quote_counter') || '0', 10);
+
+  function nextQuoteNumber() {
+    quoteCounter += 1;
+    localStorage.setItem('llcs_quote_counter', String(quoteCounter));
+    return quoteCounter;
+  }
 
   function saveQuotes() {
     localStorage.setItem('llcs_quotes', JSON.stringify(quotes));
@@ -5242,7 +5249,7 @@
     const priceLabel = svc && svc.sizes[q.size] ? svc.sizes[q.size].priceLabel : ('$' + Number(q.price).toFixed(2));
     const timeEst = svc && svc.sizes[q.size] ? svc.sizes[q.size].time : '';
     const svcNote = svc ? svc.note : '';
-    const quoteNum = String(q.id || Date.now()).slice(-6);
+    const quoteNum = String(q.id || '?');
     const divider = '─────────────────────────────';
 
     var lines = [
@@ -5412,7 +5419,7 @@
       }
 
       const quote = {
-        id: Date.now(),
+        id: nextQuoteNumber(),
         customer: customerName,
         email: email,
         address: address,
