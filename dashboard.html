@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <title>LLCS Business Dashboard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="LLCS dashboard for managing Logan's Lawncare Services quotes, jobs, expenses, and schedule in one local browser tool." />
+  <meta name="theme-color" content="#0b1728" />
   <link rel="icon" type="image/png" href="https://i.postimg.cc/3RJNmCnN/Untitled-removebg-preview.png" />
   <style>
     :root {
@@ -763,6 +765,20 @@
       .charts-grid { grid-template-columns: 1fr; }
       .kanban-column { min-height: 200px; }
     }
+
+    .dashboard-footer {
+      padding: 1rem 1.2rem;
+      background: #07101f;
+      color: #bfcbd7;
+      text-align: center;
+      border-top: 1px solid rgba(148,163,184,0.18);
+      font-size: 0.82rem;
+    }
+    .dashboard-footer a {
+      color: #7dd3fc;
+      text-decoration: none;
+    }
+    .dashboard-footer a:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
@@ -1468,12 +1484,12 @@
                 </select>
               </div>
               <div class="form-group">
-                <label for="manualYardSize">Yard Size</label>
+                <label for="manualYardSize">Job size</label>
                 <select id="manualYardSize">
                   <option value="">Not sure</option>
-                  <option value="small">Small (up to ~0.25 acre)</option>
-                  <option value="medium">Medium (~0.25–0.5 acre)</option>
-                  <option value="large">Large (over ~0.5 acre)</option>
+                  <option value="small">Small / quick visit</option>
+                  <option value="medium">Medium / standard visit</option>
+                  <option value="large">Large / extended visit</option>
                 </select>
               </div>
             </div>
@@ -5327,9 +5343,9 @@
       label: '🌾 Lawn Mowing',
       desc: 'Recurring or one‑time mowing with edging, trimming, and blowing for a clean, even lawn.',
       sizes: {
-        small:  { label: 'Small (up to ~0.25 acre)',   price: 40,  time: '0.5–1 hr',   priceLabel: '$40' },
-        medium: { label: 'Medium (~0.25–0.5 acre)',     price: 60,  time: '1–1.5 hrs',  priceLabel: '$60' },
-        large:  { label: 'Large (over ~0.5 acre)',      price: 100, time: '1.5–2.5 hrs',priceLabel: '$100' }
+        small:  { label: 'Small job / quick visit',   price: 40,  time: '0.5–1 hr',   priceLabel: '$40' },
+        medium: { label: 'Medium job / standard visit',     price: 60,  time: '1–1.5 hrs',  priceLabel: '$60' },
+        large:  { label: 'Large job / extended visit',      price: 100, time: '1.5–2.5 hrs',priceLabel: '$100' }
       },
       note: 'Suggested: weekly or bi‑weekly during the growing season.'
     },
@@ -5338,9 +5354,9 @@
       label: '🌬️ Lawn Aeration',
       desc: 'Core aeration to relieve compaction and help water, air, and nutrients reach the roots.',
       sizes: {
-        small:  { label: 'Small (up to ~0.25 acre)',   price: 90,  time: '1 hr',        priceLabel: '$90' },
-        medium: { label: 'Medium (~0.25–0.5 acre)',     price: 130, time: '1–1.5 hrs',   priceLabel: '$130' },
-        large:  { label: 'Large (over ~0.5 acre)',      price: 190, time: '1.5–2 hrs',   priceLabel: '$190' }
+        small:  { label: 'Small job / quick visit',   price: 90,  time: '1 hr',        priceLabel: '$90' },
+        medium: { label: 'Medium job / standard visit',     price: 130, time: '1–1.5 hrs',   priceLabel: '$130' },
+        large:  { label: 'Large job / extended visit',      price: 190, time: '1.5–2 hrs',   priceLabel: '$190' }
       },
       note: 'Suggested: once per year in spring or fall.'
     },
@@ -5349,9 +5365,9 @@
       label: '🌿 Lawn Health Care',
       desc: 'Non-chemical maintenance support and general lawn improvement guidance to keep your grass thick and healthy.',
       sizes: {
-        small:  { label: 'Small (up to ~0.25 acre)',   price: 70,  time: '0.5–1 hr',    priceLabel: '$70' },
-        medium: { label: 'Medium (~0.25–0.5 acre)',     price: 110, time: '0.5–1 hr',    priceLabel: '$110' },
-        large:  { label: 'Large (over ~0.5 acre)',      price: 170, time: '1–1.5 hrs',   priceLabel: '$170' }
+        small:  { label: 'Small job / quick visit',   price: 70,  time: '0.5–1 hr',    priceLabel: '$70' },
+        medium: { label: 'Medium job / standard visit',     price: 110, time: '0.5–1 hr',    priceLabel: '$110' },
+        large:  { label: 'Large job / extended visit',      price: 170, time: '1–1.5 hrs',   priceLabel: '$170' }
       },
       note: 'Pairs well with aeration and regular mowing for the healthiest results.'
     },
@@ -5470,9 +5486,9 @@
       label: '📦 Basic Lawn Package (Monthly)',
       desc: 'Simple, reliable lawn care — weekly mowing, trimming, edging, and blowing each visit.',
       sizes: {
-        small:  { label: 'Small (≤ ~0.25 acre)',   price: 120, time: '1–1.5 hrs/visit',  priceLabel: '$120/mo' },
-        medium: { label: 'Medium (~0.25–0.5 acre)', price: 160, time: '1.5–2 hrs/visit',  priceLabel: '$160/mo' },
-        large:  { label: 'Large (> 0.5 acre)',      price: 220, time: '2–2.5 hrs/visit',  priceLabel: '$220/mo' }
+        small:  { label: 'Small job / light property',   price: 120, time: '1–1.5 hrs/visit',  priceLabel: '$120/mo' },
+        medium: { label: 'Medium job / typical property', price: 160, time: '1.5–2 hrs/visit',  priceLabel: '$160/mo' },
+        large:  { label: 'Large job / bigger property',      price: 220, time: '2–2.5 hrs/visit',  priceLabel: '$220/mo' }
       },
       note: 'Frequency: ~4 mowing visits/month during the growing season.'
     },
@@ -5481,9 +5497,9 @@
       label: '📦 Premium Lawn Package (Monthly)',
       desc: 'Full‑service lawn care: weekly mowing + lawn health care, weed management, and aeration visits.',
       sizes: {
-        small:  { label: 'Small (~0.25 acre)',      price: 220, time: '~1.5 hrs/visit',   priceLabel: '$220/mo' },
-        medium: { label: 'Medium (~0.25–0.5 acre)', price: 280, time: '~2 hrs/visit',     priceLabel: '$280/mo' },
-        large:  { label: 'Large (> 0.5 acre)',      price: 350, time: '2–2.5 hrs/visit',  priceLabel: '$350/mo' }
+        small:  { label: 'Small job / light property',      price: 220, time: '~1.5 hrs/visit',   priceLabel: '$220/mo' },
+        medium: { label: 'Medium job / typical property', price: 280, time: '~2 hrs/visit',     priceLabel: '$280/mo' },
+        large:  { label: 'Large job / bigger property',      price: 350, time: '2–2.5 hrs/visit',  priceLabel: '$350/mo' }
       },
       note: 'Includes 3–4 lawn health visits/yr, 2–3 weed management sessions, and 1 aeration visit annually.'
     },
@@ -5503,9 +5519,9 @@
       label: '📦 Seasonal Cleanup Package',
       desc: 'Spring or fall cleanup: yard cleanup, leaf removal, and basic bed touch‑ups.',
       sizes: {
-        small:  { label: 'Small (up to ~0.25 acre)',   price: 260, time: '3–4 hrs', priceLabel: '$260' },
-        medium: { label: 'Medium (~0.25–0.5 acre)',    price: 360, time: '4–5 hrs', priceLabel: '$360' },
-        large:  { label: 'Large (> 0.5 acre)',         price: 480, time: '5–7 hrs', priceLabel: '$480' }
+        small:  { label: 'Small job / compact cleanup',   price: 260, time: '3–4 hrs', priceLabel: '$260' },
+        medium: { label: 'Medium job / thorough cleanup',    price: 360, time: '4–5 hrs', priceLabel: '$360' },
+        large:  { label: 'Large job / deep cleanup',         price: 480, time: '5–7 hrs', priceLabel: '$480' }
       },
       note: 'Includes yard cleanup, leaf removal, light pruning, bed clean‑out, and debris haul‑off.'
     },
@@ -5525,9 +5541,9 @@
       label: '📦 Total Lawn Health Plan (Monthly)',
       desc: 'Year‑round care combining mowing, lawn health care, weed management, and aeration into one custom plan.',
       sizes: {
-        small:  { label: 'Small (up to ~0.25 acre)',   price: 260, time: 'In‑season', priceLabel: '$260/mo' },
-        medium: { label: 'Medium (~0.25–0.5 acre)',    price: 320, time: 'In‑season', priceLabel: '$320/mo' },
-        large:  { label: 'Large (> 0.5 acre)',         price: 390, time: 'In‑season', priceLabel: '$390/mo' }
+        small:  { label: 'Small job / basic plan',   price: 260, time: 'In‑season', priceLabel: '$260/mo' },
+        medium: { label: 'Medium job / standard plan',    price: 320, time: 'In‑season', priceLabel: '$320/mo' },
+        large:  { label: 'Large job / full plan',         price: 390, time: 'In‑season', priceLabel: '$390/mo' }
       },
       note: 'Includes weekly mowing, multiple lawn health care & weed management visits, and one aeration per year.'
     }
@@ -5914,5 +5930,9 @@
 })();
 </script>
 
+  <footer class="dashboard-footer">
+    <div>LLCS Dashboard | Logan's Lawncare Services</div>
+    <div>Questions? Email <a href="mailto:logan@lawncareservices.com">logan@lawncareservices.com</a> | Local yard work management for school-friendly small jobs.</div>
+  </footer>
 </body>
 </html>

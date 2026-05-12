@@ -3,6 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Explore services and small job pricing from Logan's Lawncare Services, designed for local school-friendly yards and neighborhood lawn jobs." />
+  <meta name="theme-color" content="#0b1728" />
+  <meta property="og:title" content="Services - Logan's Lawncare Services" />
+  <meta property="og:description" content="Find local lawn care packages and small job time-frame pricing for a healthier yard with dependable teen-run service." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="https://i.postimg.cc/3RJNmCnN/Untitled-removebg-preview.png" />
+  <meta name="twitter:card" content="summary_large_image" />
   <title>Services - Logan's Lawncare Services</title>
   <link rel="icon" type="image/png" href="https://i.postimg.cc/3RJNmCnN/Untitled-removebg-preview.png" />
   <style>
@@ -371,9 +378,84 @@
       background: var(--card);
       border-top: 1px solid var(--border);
       color: var(--text-muted);
-      text-align: center;
-      padding: 1.5rem 1rem;
-      font-size: 0.88rem;
+      padding: 2rem 1rem 1.2rem;
+      font-size: 0.9rem;
+    }
+    .footer-content {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(170px, 1fr));
+      gap: 1rem;
+      max-width: 1200px;
+      margin: 0 auto 1rem;
+      text-align: left;
+    }
+    .footer-section h4 {
+      color: var(--text);
+      margin-bottom: 0.6rem;
+      font-size: 1rem;
+    }
+    .footer-section p {
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      line-height: 1.6;
+    }
+    .social-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin-top: 0.4rem;
+    }
+    .social-links a {
+      color: var(--text);
+      text-decoration: none;
+      background: rgba(102, 185, 106, 0.12);
+      padding: 0.45rem 0.8rem;
+      border-radius: 999px;
+      transition: transform 0.15s ease, background 0.15s ease;
+    }
+    .social-links a:hover { transform: translateY(-1px); background: rgba(102, 185, 106, 0.2); }
+    .newsletter-form {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-top: 0.4rem;
+    }
+    .newsletter-form input {
+      flex: 1 1 150px;
+      min-width: 0;
+      padding: 0.75rem 0.9rem;
+      border: 1px solid rgba(148,163,184,0.3);
+      border-radius: 999px;
+      background: rgba(255,255,255,0.05);
+      color: #f8fafc;
+      outline: none;
+    }
+    .newsletter-form button {
+      padding: 0.75rem 1rem;
+      border-radius: 999px;
+      border: none;
+      background: var(--primary);
+      color: #0b1728;
+      cursor: pointer;
+      transition: transform 0.15s ease, filter 0.15s ease;
+    }
+    .newsletter-form button:hover { filter: brightness(1.05); transform: translateY(-1px); }
+    .footer-bottom {
+      display: flex;
+      justify-content: center;
+      border-top: 1px solid rgba(148,163,184,0.12);
+      padding-top: 1rem;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    @media (max-width: 900px) {
+      .footer-content { grid-template-columns: repeat(2, minmax(200px, 1fr)); }
+    }
+    @media (max-width: 620px) {
+      .footer-content { grid-template-columns: 1fr; text-align: center; }
+      .footer-bottom { justify-content: center; }
+      .newsletter-form { justify-content: center; }
     }
 
     /* ── Animations ── */
@@ -462,11 +544,13 @@
       <div class="tag">🌿 Pricing</div>
       <h2>Services & Pricing</h2>
       <p>Oneâ€‘time, seasonal, and recurring lawn & yard services from a local teen-run team. Flat rates and honest estimates keep your yard looking its best without surprise fees.</p>
-      <p class="size-guide">Size guide: Small – up to ~0.25 acre · Medium – ~0.25–0.5 acre · Large – over ~0.5 acre. Need help choosing the right plan? Contact for a free recommendation based on your yard.</p>
+      <p class="size-guide">Size guide: Small – quick jobs or compact properties · Medium – standard jobs or average properties · Large – larger jobs or longer visits. Need help choosing the right option? Contact for a free recommendation.</p>
     </div>
 
     <!-- Trust Badges -->
     <div class="trust-badges">
+      <div class="badge">✅ Licensed & Insured</div>
+      <div class="badge">⭐ 5-Star Reviews</div>
       <div class="badge">⏰ On-Time Guarantee</div>
       <div class="badge">💚 Eco-Friendly Practices</div>
     </div>
@@ -480,9 +564,9 @@
         <h3>🌾 Lawn Mowing</h3>
         <p class="desc">Recurring or one‑time mowing with edging, trimming, and blowing. Sharp blades, clean lines, full cleanup before we leave.</p>
         <table>
-          <tr><td>Small (up to ~0.25 acre)</td><td>$40</td><td>0.5–1 hr</td></tr>
-          <tr><td>Medium (~0.25–0.5 acre)</td><td>$60</td><td>1–1.5 hrs</td></tr>
-          <tr><td>Large (over ~0.5 acre)</td><td>$100</td><td>1.5–2.5 hrs</td></tr>
+          <tr><td>Small job / quick visit</td><td>$40</td><td>0.5–1 hr</td></tr>
+          <tr><td>Medium job / standard visit</td><td>$60</td><td>1–1.5 hrs</td></tr>
+          <tr><td>Large job / extended visit</td><td>$100</td><td>1.5–2.5 hrs</td></tr>
         </table>
         <p class="note">Starting at $40–$45 for small yards. Most residential lawns $50–$75. Suggested: weekly or bi‑weekly during the growing season.</p>
       </div>
@@ -492,9 +576,9 @@
         <h3>🌬️ Lawn Aeration</h3>
         <p class="desc">Core aeration to relieve soil compaction and help water, air, and nutrients reach the roots for a thicker, healthier lawn.</p>
         <table>
-          <tr><td>Small (up to ~0.25 acre)</td><td>$90</td><td>1 hr</td></tr>
-          <tr><td>Medium (~0.25–0.5 acre)</td><td>$130</td><td>1–1.5 hrs</td></tr>
-          <tr><td>Large (over ~0.5 acre)</td><td>$190</td><td>1.5–2 hrs</td></tr>
+          <tr><td>Small job / quick visit</td><td>$90</td><td>1 hr</td></tr>
+          <tr><td>Medium job / standard visit</td><td>$130</td><td>1–1.5 hrs</td></tr>
+          <tr><td>Large job / extended visit</td><td>$190</td><td>1.5–2 hrs</td></tr>
         </table>
         <p class="note">Suggested: once per year in spring or fall for best results.</p>
       </div>
@@ -504,9 +588,9 @@
         <h3>🌿 Lawn Health Care</h3>
         <p class="desc">Non-chemical maintenance support and general lawn improvement guidance. Helps identify problem areas, improve turf density, and keep your grass looking its best.</p>
         <table>
-          <tr><td>Small (up to ~0.25 acre)</td><td>$70</td><td>0.5–1 hr</td></tr>
-          <tr><td>Medium (~0.25–0.5 acre)</td><td>$110</td><td>0.5–1 hr</td></tr>
-          <tr><td>Large (over ~0.5 acre)</td><td>$170</td><td>1–1.5 hrs</td></tr>
+          <tr><td>Small job / quick visit</td><td>$70</td><td>0.5–1 hr</td></tr>
+          <tr><td>Medium job / standard visit</td><td>$110</td><td>0.5–1 hr</td></tr>
+          <tr><td>Large job / extended visit</td><td>$170</td><td>1–1.5 hrs</td></tr>
         </table>
         <p class="note">Pairs well with aeration and regular mowing for the healthiest results.</p>
       </div>
@@ -634,10 +718,10 @@
       </div>
       <div class="package-table-wrap">
         <table>
-          <tr><th>Size</th><th>Price (monthly)</th><th>Time / visit</th></tr>
-          <tr><td>Small (≤ ~0.25 acre)</td><td>$120/mo</td><td>1–1.5 hrs</td></tr>
-          <tr><td>Medium (~0.25–0.5 acre)</td><td>$160/mo</td><td>1.5–2 hrs</td></tr>
-          <tr><td>Large (&gt; 0.5 acre)</td><td>$220/mo</td><td>2–2.5 hrs</td></tr>
+          <tr><th>Work size</th><th>Price (monthly)</th><th>Time / visit</th></tr>
+          <tr><td>Small job / light property</td><td>$120/mo</td><td>1–1.5 hrs</td></tr>
+          <tr><td>Medium job / typical property</td><td>$160/mo</td><td>1.5–2 hrs</td></tr>
+          <tr><td>Large job / bigger property</td><td>$220/mo</td><td>2–2.5 hrs</td></tr>
         </table>
       </div>
     </div>
@@ -652,10 +736,10 @@
       </div>
       <div class="package-table-wrap">
         <table>
-          <tr><th>Size</th><th>Price (monthly)</th><th>Time / visit</th></tr>
-          <tr><td>Small (~0.25 acre)</td><td>$220/mo</td><td>~1.5 hrs</td></tr>
-          <tr><td>Medium (~0.25–0.5 acre)</td><td>$280/mo</td><td>~2 hrs</td></tr>
-          <tr><td>Large (&gt; 0.5 acre)</td><td>$350/mo</td><td>2–2.5 hrs</td></tr>
+          <tr><th>Work size</th><th>Price (monthly)</th><th>Time / visit</th></tr>
+          <tr><td>Small job / light property</td><td>$220/mo</td><td>~1.5 hrs</td></tr>
+          <tr><td>Medium job / typical property</td><td>$280/mo</td><td>~2 hrs</td></tr>
+          <tr><td>Large job / bigger property</td><td>$350/mo</td><td>2–2.5 hrs</td></tr>
         </table>
       </div>
     </div>
@@ -671,9 +755,9 @@
       <div class="package-table-wrap">
         <table>
           <tr><th>Bundle size</th><th>Price</th><th>Est. time</th></tr>
-          <tr><td>Small property</td><td>$230</td><td>2–3 hrs</td></tr>
-          <tr><td>Medium property</td><td>$320</td><td>3–4 hrs</td></tr>
-          <tr><td>Large property</td><td>$440</td><td>4–6 hrs</td></tr>
+          <tr><td>Small job / focused boost</td><td>$230</td><td>2–3 hrs</td></tr>
+          <tr><td>Medium job / thorough cleanup</td><td>$320</td><td>3–4 hrs</td></tr>
+          <tr><td>Large job / full refresh</td><td>$440</td><td>4–6 hrs</td></tr>
         </table>
       </div>
     </div>
@@ -688,10 +772,10 @@
       </div>
       <div class="package-table-wrap">
         <table>
-          <tr><th>Property size</th><th>Price</th><th>Est. time</th></tr>
-          <tr><td>Small (up to ~0.25 acre)</td><td>$260</td><td>3–4 hrs</td></tr>
-          <tr><td>Medium (~0.25–0.5 acre)</td><td>$360</td><td>4–5 hrs</td></tr>
-          <tr><td>Large (&gt; 0.5 acre)</td><td>$480</td><td>5–7 hrs</td></tr>
+          <tr><th>Work scope</th><th>Price</th><th>Est. time</th></tr>
+          <tr><td>Small job / compact cleanup</td><td>$260</td><td>3–4 hrs</td></tr>
+          <tr><td>Medium job / thorough cleanup</td><td>$360</td><td>4–5 hrs</td></tr>
+          <tr><td>Large job / deep cleanup</td><td>$480</td><td>5–7 hrs</td></tr>
         </table>
       </div>
     </div>
@@ -724,10 +808,10 @@
       </div>
       <div class="package-table-wrap">
         <table>
-          <tr><th>Lawn size</th><th>Starting at (monthly)</th><th>Season</th></tr>
-          <tr><td>Small (up to ~0.25 acre)</td><td>$260/mo</td><td>In‑season</td></tr>
-          <tr><td>Medium (~0.25–0.5 acre)</td><td>$320/mo</td><td>In‑season</td></tr>
-          <tr><td>Large (&gt; 0.5 acre)</td><td>$390/mo</td><td>In‑season</td></tr>
+          <tr><th>Service scale</th><th>Starting at (monthly)</th><th>Season</th></tr>
+          <tr><td>Small job / basic plan</td><td>$260/mo</td><td>Inseason</td></tr>
+          <tr><td>Medium job / standard plan</td><td>$320/mo</td><td>Inseason</td></tr>
+          <tr><td>Large job / full plan</td><td>$390/mo</td><td>Inseason</td></tr>
         </table>
       </div>
     </div>
@@ -741,7 +825,38 @@
   </main>
 
   <footer>
-    <p>&copy; 2025 Logan's Lawncare Services. All rights reserved.</p>
+    <div class="footer-content">
+      <div class="footer-section">
+        <h4>Logan's Lawncare Services</h4>
+        <p>Neighborhood lawn care jobs finished with care, reliability, and school-friendly support.</p>
+        <div class="social-links">
+          <a href="https://instagram.com/loganslawncare" target="_blank" rel="noreferrer">📷 Instagram</a>
+          <a href="https://facebook.com/loganslawncare" target="_blank" rel="noreferrer">📘 Facebook</a>
+        </div>
+      </div>
+      <div class="footer-section">
+        <h4>Contact</h4>
+        <p>📧 logan@lawncareservices.com</p>
+        <p>📞 (555) 123-4567</p>
+      </div>
+      <div class="footer-section">
+        <h4>Hours</h4>
+        <p>Mon-Fri: 8am - 6pm</p>
+        <p>Sat: 9am - 4pm</p>
+        <p>Sun: By appointment</p>
+      </div>
+      <div class="footer-section">
+        <h4>Stay Updated</h4>
+        <p>Sign up for local lawn care tips and seasonal reminders.</p>
+        <form class="newsletter-form" action="https://formspree.io/f/xeenpqwj" method="POST">
+          <input type="email" name="email" placeholder="Your email" required>
+          <button type="submit">Subscribe</button>
+        </form>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2025 Logan's Lawncare Services. All rights reserved. | Trusted local care for your yard and school community.</p>
+    </div>
   </footer>
 
   <script>
