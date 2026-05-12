@@ -1174,14 +1174,20 @@
                 <input type="text" id="quoteCustomerName" placeholder="Customer name" />
               </div>
               <div class="form-group">
-                <label>Customer Email (optional)</label>
-                <input type="email" id="quoteCustomerEmail" placeholder="customer@email.com" />
+                <label>Phone Number (optional)</label>
+                <input type="tel" id="quoteCustomerPhone" placeholder="(410) 555-1234" />
               </div>
             </div>
 
-            <div class="form-group">
-              <label>Customer Address (optional)</label>
-              <input type="text" id="quoteCustomerAddress" placeholder="Street, city, ZIP" />
+            <div class="form-group-inline">
+              <div class="form-group">
+                <label>Customer Email (optional)</label>
+                <input type="email" id="quoteCustomerEmail" placeholder="customer@email.com" />
+              </div>
+              <div class="form-group">
+                <label>Customer Address (optional)</label>
+                <input type="text" id="quoteCustomerAddress" placeholder="Street, city, ZIP" />
+              </div>
             </div>
 
             <div class="form-group-inline">
@@ -1229,6 +1235,7 @@
                   <th>Service</th>
                   <th>Size</th>
                   <th>Price</th>
+                  <th>Status</th>
                   <th>Notes</th>
                   <th>Date</th>
                   <th>Actions</th>
@@ -5265,8 +5272,9 @@
     lines.push('Thank you for reaching out! Here\'s your personalized service quote:');
     lines.push('');
 
-    if (q.address) {
-      lines.push('📍 Property: ' + q.address);
+    if (q.phone || q.address) {
+      if (q.phone)   lines.push('📞 Contact: ' + q.phone);
+      if (q.address) lines.push('📍 Property: ' + q.address);
       lines.push('');
     }
 
@@ -5330,6 +5338,63 @@
     };
   }
 
+  const QUOTE_STATUSES = [
+    { key: 'new',       label: 'New',       style: 'background:#1e3a5f;color:#9bd3ff;' },
+    { key: 'reviewed',  label: 'Reviewed',  style: 'background:#312e81;color:#c4b5fd;' },
+    { key: 'accepted',  label: 'Accepted',  style: 'background:#14532d;color:#bbf7d0;' },
+    { key: 'scheduled', label: 'Scheduled', style: 'background:#164e63;color:#67e8f9;' },
+    { key: 'completed', label: 'Completed', style: 'background:#064e3b;color:#6ee7b7;' },
+    { key: 'rejected',  label: 'Rejected',  style: 'background:#7f1d1d;color:#fca5a5;' }
+  ];
+
+  function getQuoteStatusStyle(key) {
+    const s = QUOTE_STATUSES.find(function(s) { return s.key === key; });
+    return s ? s.style : 'background:#1f2937;color:#9ca3af;';
+  }
+  function getQuoteStatusLabel(key) {
+    const s = QUOTE_STATUSES.find(function(s) { return s.key === key; });
+    return s ? s.label : 'New';
+  }
+
+  function updateQuoteStatus(idx, newStatus) {
+    quotes[idx].status = newStatus;
+    saveQuotes();
+    renderQuotes();
+  }
+
+  function convertQuoteToJob(q) {
+    const jobsTab = document.getElementById('jobsTab');
+    const jobsNav = document.getElementById('jobsNav');
+    if (jobsNav) jobsNav.click();
+
+    setTimeout(function() {
+      var nameEl = document.getElementById('jobName');
+      var sizeEl = document.getElementById('jobSize');
+      var payEl  = document.getElementById('jobPayment');
+      var notesEl = document.getElementById('jobNotes');
+      var dateEl = document.getElementById('jobScheduledDate');
+      var neighborhoodEl = document.getElementById('jobNeighborhood');
+
+      if (nameEl) nameEl.value = q.service + (q.customer ? ' — ' + q.customer : '');
+      if (sizeEl) sizeEl.value = q.size || 'small';
+      if (payEl)  payEl.value  = q.price || '';
+      if (notesEl) {
+        var parts = [];
+        if (q.customer) parts.push('Customer: ' + q.customer);
+        if (q.phone)    parts.push('Phone: ' + q.phone);
+        if (q.email)    parts.push('Email: ' + q.email);
+        if (q.address)  parts.push('Address: ' + q.address);
+        if (q.notes)    parts.push('Notes: ' + q.notes);
+        notesEl.value = parts.join('\n');
+      }
+      if (dateEl) {
+        var today = new Date();
+        dateEl.value = today.toISOString().slice(0, 10);
+      }
+      if (typeof showToast === 'function') showToast('Quote pre-filled into the job form. Review and save.');
+    }, 150);
+  }
+
   function renderQuotes() {
     const body = document.getElementById('quotesBody');
     if (!body) return;
@@ -5337,7 +5402,7 @@
     if (!quotes.length) {
       const tr = document.createElement('tr');
       const td = document.createElement('td');
-      td.colSpan = 7;
+      td.colSpan = 8;
       td.style.cssText = 'text-align:center;color:#6b7280;padding:1.2rem;';
       td.textContent = 'No quotes saved yet.';
       tr.appendChild(td);
@@ -5346,41 +5411,82 @@
     }
     quotes.forEach(function(q, idx) {
       const row = document.createElement('tr');
+      if ((q.status || 'new') === 'new') row.style.borderLeft = '3px solid #3b82f6';
+
       function cell(text, style) {
         const td = document.createElement('td');
         td.textContent = text || '—';
         if (style) td.style.cssText = style;
         return td;
       }
+
       const svc = getServiceData(q.service);
       const sizeLabels = { small: 'Small', medium: 'Medium', large: 'Large' };
       const priceLabel = svc && svc.sizes[q.size] ? svc.sizes[q.size].priceLabel : ('$' + Number(q.price).toFixed(2));
-      row.appendChild(cell(q.customer));
+
+      // Customer cell — show phone as subtitle if present
+      const custTd = document.createElement('td');
+      custTd.style.minWidth = '110px';
+      const custName = document.createElement('div');
+      custName.textContent = q.customer || '—';
+      custTd.appendChild(custName);
+      if (q.phone) {
+        const custPhone = document.createElement('div');
+        custPhone.textContent = q.phone;
+        custPhone.style.cssText = 'font-size:0.74rem;color:#64748b;margin-top:1px;';
+        custTd.appendChild(custPhone);
+      }
+      row.appendChild(custTd);
+
       row.appendChild(cell(q.service));
       row.appendChild(cell(sizeLabels[q.size] || q.size || '—'));
       row.appendChild(cell(priceLabel));
-      const notesTd = cell(q.notes || '—', 'max-width:160px;white-space:pre-wrap;font-size:0.78rem;');
+
+      // Status badge + dropdown
+      const statusTd = document.createElement('td');
+      const statusSel = document.createElement('select');
+      statusSel.style.cssText = 'background:#020617;border:1px solid #1e3a5f;border-radius:999px;padding:0.18rem 0.5rem;font-size:0.75rem;cursor:pointer;color:#e2e8f0;font-family:inherit;';
+      QUOTE_STATUSES.forEach(function(s) {
+        const opt = document.createElement('option');
+        opt.value = s.key;
+        opt.textContent = s.label;
+        if ((q.status || 'new') === s.key) opt.selected = true;
+        statusSel.appendChild(opt);
+      });
+      statusSel.addEventListener('change', function() { updateQuoteStatus(idx, statusSel.value); });
+      statusTd.appendChild(statusSel);
+      row.appendChild(statusTd);
+
+      const notesTd = cell(q.notes || '—', 'max-width:140px;white-space:pre-wrap;font-size:0.78rem;');
       row.appendChild(notesTd);
       row.appendChild(cell(q.date));
 
       const actTd = document.createElement('td');
       actTd.style.whiteSpace = 'nowrap';
 
+      const jobBtn = document.createElement('button');
+      jobBtn.className = 'btn small secondary';
+      jobBtn.textContent = '➕ Job';
+      jobBtn.title = 'Convert to job';
+      jobBtn.style.marginRight = '3px';
+      jobBtn.addEventListener('click', function() { convertQuoteToJob(q); });
+
       const expBtn = document.createElement('button');
       expBtn.className = 'btn small secondary';
-      expBtn.textContent = '📤 Send Quote';
-      expBtn.style.marginRight = '4px';
+      expBtn.textContent = '📤 Send';
+      expBtn.style.marginRight = '3px';
       expBtn.addEventListener('click', function() { exportQuote(q); });
 
       const delBtn = document.createElement('button');
       delBtn.className = 'btn small danger';
-      delBtn.textContent = 'Delete';
+      delBtn.textContent = 'Del';
       delBtn.addEventListener('click', function() {
         quotes.splice(idx, 1);
         saveQuotes();
         renderQuotes();
       });
 
+      actTd.appendChild(jobBtn);
       actTd.appendChild(expBtn);
       actTd.appendChild(delBtn);
       row.appendChild(actTd);
@@ -5418,15 +5524,19 @@
         return;
       }
 
+      const phone = (document.getElementById('quoteCustomerPhone').value || '').trim();
+
       const quote = {
         id: nextQuoteNumber(),
         customer: customerName,
+        phone: phone,
         email: email,
         address: address,
         service: service,
         size: size,
         price: Number(price),
         notes: notes,
+        status: 'new',
         date: new Date().toLocaleDateString()
       };
 
@@ -5435,6 +5545,7 @@
       renderQuotes();
 
       document.getElementById('quoteCustomerName').value = '';
+      document.getElementById('quoteCustomerPhone').value = '';
       document.getElementById('quoteCustomerEmail').value = '';
       document.getElementById('quoteCustomerAddress').value = '';
       document.getElementById('quoteNotes').value = '';
