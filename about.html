@@ -26,6 +26,7 @@
       color: var(--text);
       min-height: 100vh;
       line-height: 1.6;
+      overflow-x: hidden;
     }
 
     /* ── Header ── */
@@ -46,8 +47,7 @@
       pointer-events: none;
     }
     .header-logo {
-      width: 64px;
-      height: 64px;
+      width: 64px; height: 64px;
       border-radius: 50%;
       object-fit: contain;
       background: rgba(255,255,255,0.15);
@@ -71,7 +71,7 @@
 
     /* ── Nav ── */
     .nav-container {
-      background-color: rgba(11,23,40,0.95);
+      background-color: rgba(11,23,40,0.97);
       backdrop-filter: blur(8px);
       position: sticky;
       top: 0;
@@ -86,6 +86,7 @@
       padding: 0.5rem 1.25rem;
       max-width: 1100px;
       margin: 0 auto;
+      position: relative;
     }
     .menu-toggle {
       display: none;
@@ -94,9 +95,11 @@
       color: var(--text);
       font-size: 1.3rem;
       cursor: pointer;
-      padding: 0.4rem 0.7rem;
+      padding: 0.45rem 0.75rem;
       border-radius: 8px;
       transition: background 0.2s;
+      min-width: 44px; min-height: 44px;
+      align-items: center; justify-content: center;
     }
     .menu-toggle:hover { background: var(--card); }
     nav ul {
@@ -180,24 +183,15 @@
       text-align: center;
       transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
-    .highlight-item:hover {
-      transform: translateY(-3px);
-      box-shadow: var(--shadow-hover);
-    }
-    .highlight-item .icon {
-      font-size: 1.8rem;
-      margin-bottom: 0.4rem;
-      display: block;
-    }
-    .highlight-item strong {
-      display: block;
-      color: var(--primary-light);
-      font-size: 0.9rem;
-      margin-bottom: 0.2rem;
-    }
-    .highlight-item span {
-      color: var(--text-muted);
-      font-size: 0.82rem;
+    .highlight-item:hover { transform: translateY(-3px); box-shadow: var(--shadow-hover); }
+    .highlight-item .icon { font-size: 1.8rem; margin-bottom: 0.4rem; display: block; }
+    .highlight-item strong { display: block; color: var(--primary-light); font-size: 0.9rem; margin-bottom: 0.2rem; }
+    .highlight-item span { color: var(--text-muted); font-size: 0.82rem; }
+
+    .equip-item {
+      flex: 1 1 100%;
+      text-align: left;
+      padding: 1.25rem 1.4rem;
     }
 
     .cta-row {
@@ -211,7 +205,7 @@
       color: #fff;
       border: none;
       border-radius: 999px;
-      padding: 0.65rem 1.5rem;
+      padding: 0.75rem 1.5rem;
       font-size: 0.95rem;
       font-family: inherit;
       cursor: pointer;
@@ -221,6 +215,8 @@
       gap: 0.4rem;
       box-shadow: 0 2px 8px rgba(0,0,0,0.4);
       transition: transform 0.12s ease, box-shadow 0.15s ease, filter 0.15s ease;
+      font-weight: 600;
+      min-height: 44px;
     }
     .btn:hover { transform: translateY(-2px); box-shadow: var(--shadow-hover); filter: brightness(1.08); }
     .btn:active { transform: translateY(0); filter: brightness(0.96); }
@@ -248,21 +244,25 @@
 
     /* ── Mobile ── */
     @media (max-width: 768px) {
-      .menu-toggle { display: block; }
+      .menu-toggle { display: inline-flex; }
       nav ul {
         display: none;
         position: absolute;
         top: 100%;
         left: 0; right: 0;
-        background: rgba(11,23,40,0.98);
+        background: rgba(11,23,40,0.99);
         flex-direction: column;
-        padding: 0.75rem 1rem;
+        padding: 0.75rem 1rem 1rem;
         border-bottom: 1px solid var(--border);
-        box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+        max-height: 0;
+        overflow: hidden;
+        opacity: 0;
+        transition: max-height 0.3s ease, opacity 0.25s ease;
       }
-      nav ul.active { display: flex; }
+      nav ul.active { display: flex; max-height: 320px; opacity: 1; }
       nav ul li { width: 100%; }
-      nav ul li a { display: block; border-radius: 10px; padding: 0.7rem 1rem; }
+      nav ul li a { display: block; border-radius: 10px; padding: 0.8rem 1rem; font-size: 1rem; }
       .about-card { padding: 1.5rem 1.1rem; }
     }
     @media (max-width: 480px) {
@@ -280,7 +280,7 @@
 
   <div class="nav-container">
     <nav>
-      <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+      <button class="menu-toggle" onclick="toggleMenu()" aria-label="Toggle navigation">☰</button>
       <ul id="navMenu">
         <li><a href="index.html">Home</a></li>
         <li><a href="about.html" class="active">About</a></li>
@@ -296,7 +296,7 @@
       <h2>Hi, I'm Logan</h2>
       <p>I'm the 13‑year‑old owner of Logan's Lawncare Services — a local lawn care business built to help neighbors keep their yards looking clean, healthy, and taken care of. I started this business because I enjoy working outside and wanted to offer a reliable, affordable option for people right here in my community instead of them having to call a big company.</p>
       <p>When I'm on your property, I treat your yard like it's my own — sharp mower blades, clean edging, careful weed whacking around fences and beds, and full cleanup before I leave. I keep my prices simple with flat rates and clear quotes, and I focus on being on time, respectful, and easy to work with for every local customer I serve.</p>
-      <p>Whether you need a one-time touch-up or regular mowing and maintenance, my goal is to give my neighbors a yard they can be proud of — while supporting a local, youth-run business.</p>
+      <p>Whether you need a one-time touch-up, regular mowing, lawn health care support, or help with manual weed management, my goal is to give my neighbors a yard they can be proud of — while supporting a local, youth-run business.</p>
 
       <div class="highlight-row">
         <div class="highlight-item">
@@ -319,20 +319,20 @@
           <strong>Youth-Run</strong>
           <span>Supporting a local teen business</span>
         </div>
-        <div class="highlight-item" style="flex: 1 1 100%; text-align: left; padding: 1.25rem 1.4rem;">
-  <span class="icon">🏹</span>
-  <strong style="display:block; color:#aee2b2; font-size:1rem; margin-bottom:0.5rem;">My Current Equipment</strong>
-  <span style="display:block; color:#9ca3af; font-size:0.9rem; line-height:1.8;">• Self-propelled push mower</span>
-  <span style="display:block; color:#9ca3af; font-size:0.9rem; line-height:1.8;">• Electric powered weed wacker</span>
-  <span style="display:block; color:#9ca3af; font-size:0.9rem; line-height:1.8;">• Electric powered leaf blower</span>
-  <span style="display:block; color:#9ca3af; font-size:0.9rem; line-height:1.8;">• Electric powered pressure washer</span>
-  <span style="display:block; color:#9ca3af; font-size:0.9rem; line-height:1.8;">• An assortment of hand tools (shovels, rakes, etc.)</span>
-</div>
+        <div class="highlight-item equip-item">
+          <span class="icon">🛠️</span>
+          <strong style="display:block; color:#aee2b2; font-size:1rem; margin-bottom:0.5rem;">My Current Equipment</strong>
+          <span style="display:block; color:#9ca3af; font-size:0.9rem; line-height:1.8;">• Self-propelled push mower</span>
+          <span style="display:block; color:#9ca3af; font-size:0.9rem; line-height:1.8;">• Electric powered weed wacker</span>
+          <span style="display:block; color:#9ca3af; font-size:0.9rem; line-height:1.8;">• Electric powered leaf blower</span>
+          <span style="display:block; color:#9ca3af; font-size:0.9rem; line-height:1.8;">• Electric powered pressure washer</span>
+          <span style="display:block; color:#9ca3af; font-size:0.9rem; line-height:1.8;">• An assortment of hand tools (shovels, rakes, etc.)</span>
+        </div>
       </div>
 
       <div class="cta-row">
-        <a href="services.html" class="btn">View Services</a>
-        <a href="contact.html" class="btn secondary">Get a Quote</a>
+        <a href="services.html" class="btn">View Services & Pricing</a>
+        <a href="contact.html" class="btn secondary">Get a Free Quote</a>
       </div>
     </div>
   </main>
@@ -342,15 +342,26 @@
   </footer>
 
   <script>
+    let menuOpen = false;
     function toggleMenu() {
-      document.getElementById('navMenu').classList.toggle('active');
+      const menu = document.getElementById('navMenu');
+      menuOpen = !menuOpen;
+      menu.classList.toggle('active', menuOpen);
+      if (menuOpen) document.body.style.overflow = 'hidden';
+      else document.body.style.overflow = '';
     }
     document.querySelectorAll('#navMenu a').forEach(link => {
-      link.addEventListener('click', () => document.getElementById('navMenu').classList.remove('active'));
+      link.addEventListener('click', () => {
+        menuOpen = false;
+        document.getElementById('navMenu').classList.remove('active');
+        document.body.style.overflow = '';
+      });
     });
     document.addEventListener('click', e => {
-      if (!document.querySelector('.nav-container').contains(e.target)) {
+      if (menuOpen && !document.querySelector('.nav-container').contains(e.target)) {
+        menuOpen = false;
         document.getElementById('navMenu').classList.remove('active');
+        document.body.style.overflow = '';
       }
     });
   </script>

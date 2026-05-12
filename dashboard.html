@@ -1174,20 +1174,14 @@
                 <input type="text" id="quoteCustomerName" placeholder="Customer name" />
               </div>
               <div class="form-group">
-                <label>Phone Number (optional)</label>
-                <input type="tel" id="quoteCustomerPhone" placeholder="(410) 555-1234" />
-              </div>
-            </div>
-
-            <div class="form-group-inline">
-              <div class="form-group">
                 <label>Customer Email (optional)</label>
                 <input type="email" id="quoteCustomerEmail" placeholder="customer@email.com" />
               </div>
-              <div class="form-group">
-                <label>Customer Address (optional)</label>
-                <input type="text" id="quoteCustomerAddress" placeholder="Street, city, ZIP" />
-              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Customer Address (optional)</label>
+              <input type="text" id="quoteCustomerAddress" placeholder="Street, city, ZIP" />
             </div>
 
             <div class="form-group-inline">
@@ -1235,7 +1229,6 @@
                   <th>Service</th>
                   <th>Size</th>
                   <th>Price</th>
-                  <th>Status</th>
                   <th>Notes</th>
                   <th>Date</th>
                   <th>Actions</th>
@@ -1342,91 +1335,158 @@
         </div>
       </section>
 
-      <!-- CONTACT SUBMISSIONS TAB -->
+      <!-- CONTACT SUBMISSIONS / INCOMING QUOTES TAB -->
       <section class="tab" id="submissionsTab">
-        <div class="card">
-          <div class="card-header">Contact Form Submissions</div>
-          <div class="card-subtitle">Customer inquiries from the website contact form.</div>
-          <div class="form-actions" style="margin-bottom:0.8rem;">
-            <a href="https://formspree.io/f/xeenpqwj" target="_blank" class="btn secondary small">View on Formspree</a>
-            <button type="button" class="btn secondary small" id="refreshSubmissionsBtn">Refresh from Formspree</button>
-            <button type="button" class="btn secondary small" id="exportSubmissionsCsvBtn">Export CSV</button>
+
+        <!-- Top toolbar -->
+        <div class="card" style="margin-bottom:0.7rem;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.5rem;">
+            <div>
+              <div class="card-header" style="margin-bottom:0.1rem;">📨 Incoming Quote Requests</div>
+              <div class="card-subtitle">Website submissions & phone inquiries. Convert accepted quotes directly to jobs.</div>
+            </div>
+            <div style="display:flex;gap:0.4rem;flex-wrap:wrap;align-items:center;">
+              <a href="https://formspree.io/f/xeenpqwj" target="_blank" class="btn secondary small">Formspree ↗</a>
+              <button type="button" class="btn secondary small" id="refreshSubmissionsBtn">↻ Refresh</button>
+              <button type="button" class="btn secondary small" id="exportSubmissionsCsvBtn">⬇ CSV</button>
+            </div>
           </div>
-          <div id="submissionsStatus" style="font-size:0.84rem;color:#9ca3af;margin-bottom:0.5rem;">
-            Submissions are fetched from Formspree. To import them automatically, save your Formspree API key in the Admin tab.
+
+          <!-- Stats row -->
+          <div id="submissionsStats" style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.75rem;font-size:0.82rem;">
+            <span id="statNew"    style="background:#1e3a5f;color:#9bd3ff;border-radius:999px;padding:0.15rem 0.7rem;">⚡ New: 0</span>
+            <span id="statReviewed" style="background:#1f2937;color:#e5e7eb;border-radius:999px;padding:0.15rem 0.7rem;">👁 Reviewed: 0</span>
+            <span id="statAccepted" style="background:#14532d;color:#bbf7d0;border-radius:999px;padding:0.15rem 0.7rem;">✅ Accepted: 0</span>
+            <span id="statScheduled" style="background:#4c1d95;color:#ddd6fe;border-radius:999px;padding:0.15rem 0.7rem;">📅 Scheduled: 0</span>
+            <span id="statCompleted" style="background:#064e3b;color:#a7f3d0;border-radius:999px;padding:0.15rem 0.7rem;">🏁 Completed: 0</span>
+            <span id="statRejected" style="background:#7f1d1d;color:#fecaca;border-radius:999px;padding:0.15rem 0.7rem;">✗ Rejected: 0</span>
+          </div>
+
+          <!-- Sort / Filter bar -->
+          <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center;font-size:0.8rem;">
+            <input type="text" id="subSearch" placeholder="Search name, address, service…" style="font-size:0.8rem;padding:0.28rem 0.7rem;border-radius:999px;border:1px solid var(--border);background:#020617;color:var(--text);min-width:160px;" />
+            <select id="subStatusFilter" style="font-size:0.8rem;padding:0.28rem 0.7rem;border-radius:999px;border:1px solid var(--border);background:#020617;color:var(--text);">
+              <option value="all">All statuses</option>
+              <option value="new">⚡ New</option>
+              <option value="reviewed">👁 Reviewed</option>
+              <option value="accepted">✅ Accepted</option>
+              <option value="scheduled">📅 Scheduled</option>
+              <option value="completed">🏁 Completed</option>
+              <option value="rejected">✗ Rejected</option>
+            </select>
+            <select id="subSortBy" style="font-size:0.8rem;padding:0.28rem 0.7rem;border-radius:999px;border:1px solid var(--border);background:#020617;color:var(--text);">
+              <option value="newest">Newest first</option>
+              <option value="oldest">Oldest first</option>
+              <option value="service">By service</option>
+              <option value="status">By status</option>
+              <option value="name">By name</option>
+            </select>
+            <button type="button" class="btn small secondary" id="subFilterApply">Apply</button>
+            <button type="button" class="btn small secondary" id="subFilterClear">Clear</button>
           </div>
         </div>
 
+        <!-- Incoming quotes cards list -->
+        <div id="submissionsCards" style="margin-bottom:0.9rem;"></div>
+
+        <!-- Log manual inquiry -->
         <div class="card">
-          <div class="card-header">Log Manual Inquiry</div>
-          <div class="card-subtitle">Track inquiries received via phone or other methods.</div>
+          <div class="card-header">📞 Log Manual Inquiry</div>
+          <div class="card-subtitle">Track phone calls, texts, or other inquiries not submitted via the website.</div>
           <form id="manualSubmissionForm" onsubmit="return false;">
-            <div class="form-group">
-              <label for="manualName">Name</label>
-              <input id="manualName" type="text" placeholder="Customer name" required />
+            <div class="form-group-inline">
+              <div class="form-group">
+                <label for="manualName">Name *</label>
+                <input id="manualName" type="text" placeholder="Customer full name" required />
+              </div>
+              <div class="form-group">
+                <label for="manualPhone">Phone *</label>
+                <input id="manualPhone" type="tel" placeholder="(410) 555-0000" />
+              </div>
             </div>
             <div class="form-group-inline">
               <div class="form-group">
                 <label for="manualEmail">Email</label>
-                <input id="manualEmail" type="email" placeholder="Email address" />
+                <input id="manualEmail" type="email" placeholder="customer@email.com" />
               </div>
               <div class="form-group">
-                <label for="manualPhone">Phone</label>
-                <input id="manualPhone" type="tel" placeholder="Phone number" />
+                <label for="manualAddress">Property Address</label>
+                <input id="manualAddress" type="text" placeholder="Street, city, ZIP" />
+              </div>
+            </div>
+            <div class="form-group-inline">
+              <div class="form-group">
+                <label for="manualService">Service Interested In</label>
+                <select id="manualService">
+                  <option value="">Select a service</option>
+                  <option value="mowing">🌾 Lawn Mowing</option>
+                  <option value="aeration">🌬️ Lawn Aeration</option>
+                  <option value="lawn-health">🌿 Lawn Health Care</option>
+                  <option value="weed-management">🌱 Weed Management (manual)</option>
+                  <option value="cleanup">🧹 Yard Cleanup</option>
+                  <option value="leaf-removal">🍂 Leaf Removal</option>
+                  <option value="cleaning">🏡 Outdoor Cleaning</option>
+                  <option value="pressure-washing">💧 Pressure Washing</option>
+                  <option value="trimming">✂️ Hedge Trimming</option>
+                  <option value="tree-trimming">🌳 Small Tree Trimming</option>
+                  <option value="gutter-cleaning">🏠 Gutter Cleaning</option>
+                  <option value="mulch">🪴 Mulch Installation</option>
+                  <option value="package">📦 Service Package</option>
+                  <option value="other">Other / Not Sure</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="manualYardSize">Yard Size</label>
+                <select id="manualYardSize">
+                  <option value="">Not sure</option>
+                  <option value="small">Small (up to ~0.25 acre)</option>
+                  <option value="medium">Medium (~0.25–0.5 acre)</option>
+                  <option value="large">Large (over ~0.5 acre)</option>
+                </select>
               </div>
             </div>
             <div class="form-group">
-              <label for="manualService">Service Interested In</label>
-              <select id="manualService">
-                <option value="">Select a service</option>
-                <option value="mowing">Lawn Mowing</option>
-                <option value="aeration">Lawn Aeration</option>
-                <option value="fertilization">Fertilization</option>
-                <option value="weed-control">Weed Control</option>
-                <option value="cleanup">Yard Cleanup</option>
-                <option value="leaf-removal">Leaf Removal</option>
-                <option value="cleaning">Outdoor Cleaning</option>
-                <option value="pressure-washing">Pressure Washing</option>
-                <option value="trimming">Hedge Trimming</option>
-                <option value="tree-trimming">Small Tree Trimming</option>
-                <option value="weed-pulling">Weed Pulling</option>
-                <option value="gutter-cleaning">Gutter Cleaning</option>
-                <option value="package">Service Package</option>
-                <option value="other">Other</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="manualMessage">Message</label>
-              <textarea id="manualMessage" placeholder="Customer inquiry details..."></textarea>
+              <label for="manualMessage">Notes / Message</label>
+              <textarea id="manualMessage" placeholder="What did the customer say? Any special requests, gate codes, property details…"></textarea>
             </div>
             <div class="form-actions">
               <button type="button" class="btn" id="addManualSubmissionBtn">Log Inquiry</button>
             </div>
           </form>
         </div>
+      </section>
 
-        <div class="card">
-          <div class="card-header">All Submissions</div>
-          <div class="card-subtitle">All contact inquiries, including those logged manually.</div>
-          <div class="table-container">
-            <table id="submissionsTable">
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Email</th>
-                  <th>Phone</th>
-                  <th>Service</th>
-                  <th>Message</th>
-                  <th>Date</th>
-                  <th>Source</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody id="submissionsBody"></tbody>
-            </table>
+      <!-- CONVERT-TO-JOB MODAL -->
+      <div id="convertJobModal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.75);backdrop-filter:blur(4px);align-items:center;justify-content:center;">
+        <div style="background:#0f172a;border:1px solid #1e3a5f;border-radius:20px;width:min(560px,95vw);max-height:92vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,0.65);">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:1.1rem 1.4rem;border-bottom:1px solid #1e3a5f;">
+            <div>
+              <div style="font-weight:700;font-size:1rem;color:#aee2b2;">🔁 Convert Quote to Job</div>
+              <div style="font-size:0.78rem;color:#64748b;margin-top:0.15rem;">Review and confirm the details before creating a job entry.</div>
+            </div>
+            <button onclick="document.getElementById('convertJobModal').style.display='none';" style="background:none;border:none;color:#64748b;font-size:1.5rem;cursor:pointer;line-height:1;padding:0.2rem 0.4rem;">×</button>
+          </div>
+          <div style="padding:1.1rem 1.4rem;flex:1;overflow-y:auto;">
+            <div id="convertJobPreview" style="margin-bottom:1rem;font-size:0.86rem;color:#cbd5e1;background:#020617;border-radius:12px;padding:0.8rem 1rem;line-height:1.8;border:1px solid #1e3a5f;"></div>
+            <div class="form-group">
+              <label>Scheduled Date</label>
+              <input type="date" id="convertJobDate" style="width:100%;padding:0.55rem 0.85rem;border-radius:999px;border:1px solid var(--border);background:#111827;color:var(--text);font-size:0.9rem;" />
+            </div>
+            <div class="form-group">
+              <label>Base Payment ($)</label>
+              <input type="number" id="convertJobPayment" min="0" step="0.01" style="width:100%;padding:0.55rem 0.85rem;border-radius:999px;border:1px solid var(--border);background:#111827;color:var(--text);font-size:0.9rem;" />
+            </div>
+            <div class="form-group">
+              <label>Notes for Job</label>
+              <textarea id="convertJobNotes" rows="3" style="width:100%;padding:0.55rem 0.85rem;border-radius:12px;border:1px solid var(--border);background:#111827;color:var(--text);font-size:0.9rem;resize:vertical;"></textarea>
+            </div>
+          </div>
+          <div style="padding:0.9rem 1.4rem;border-top:1px solid #1e3a5f;display:flex;gap:0.6rem;justify-content:flex-end;">
+            <button onclick="document.getElementById('convertJobModal').style.display='none';" style="background:#1e293b;color:#94a3b8;border:1px solid #334155;border-radius:999px;padding:0.5rem 1.2rem;font-size:0.85rem;cursor:pointer;font-family:inherit;">Cancel</button>
+            <button id="convertJobConfirmBtn" style="background:linear-gradient(135deg,#66b96a,#4aa556);color:#fff;border:none;border-radius:999px;padding:0.5rem 1.5rem;font-size:0.85rem;cursor:pointer;font-family:inherit;font-weight:600;">✅ Create Job</button>
           </div>
         </div>
-      </section>
+      </div>
 
       <!-- CHARTS TAB -->
       <section class="tab" id="chartsTab">
@@ -4830,129 +4890,390 @@
       }
     }
 
-    // CONTACT SUBMISSIONS FUNCTIONS
+    // ──────────────────────────────────────────────────────────────
+    // CONTACT SUBMISSIONS — UPGRADED ENGINE
+    // Status workflow: new → reviewed → accepted → scheduled → completed | rejected
+    // ──────────────────────────────────────────────────────────────
+
     function getSubmissions() {
       return readJSON(STORAGE_KEYS.submissions, []);
     }
+    function saveSubmissions(subs) {
+      writeJSON(STORAGE_KEYS.submissions, subs);
+    }
 
-    function saveSubmissions(submissions) {
-      localStorage.setItem(STORAGE_KEYS.submissions, JSON.stringify(submissions));
+    // ── Status helpers ─────────────────────────────────────────────
+    const SUB_STATUS_META = {
+      new:       { label: '⚡ New',       bg: '#1e3a5f', color: '#9bd3ff',  border: '#3b82f6' },
+      reviewed:  { label: '👁 Reviewed',  bg: '#1f2937', color: '#e5e7eb',  border: '#4b5563' },
+      accepted:  { label: '✅ Accepted',  bg: '#14532d', color: '#bbf7d0',  border: '#22c55e' },
+      scheduled: { label: '📅 Scheduled', bg: '#4c1d95', color: '#ddd6fe',  border: '#7c3aed' },
+      completed: { label: '🏁 Completed', bg: '#064e3b', color: '#a7f3d0',  border: '#10b981' },
+      rejected:  { label: '✗ Rejected',   bg: '#7f1d1d', color: '#fecaca',  border: '#ef4444' }
+    };
+
+    function subStatusChip(status) {
+      const m = SUB_STATUS_META[status] || SUB_STATUS_META.new;
+      return '<span style="display:inline-flex;align-items:center;font-size:0.76rem;border-radius:999px;padding:0.1rem 0.6rem;background:' + m.bg + ';color:' + m.color + ';border:1px solid ' + m.border + ';white-space:nowrap;">' + m.label + '</span>';
+    }
+
+    function updateSubmissionsStats(subs) {
+      const counts = { new: 0, reviewed: 0, accepted: 0, scheduled: 0, completed: 0, rejected: 0 };
+      subs.forEach(s => { if (counts[s.status] !== undefined) counts[s.status]++; });
+      const el = id => document.getElementById(id);
+      if (el('statNew'))       el('statNew').textContent       = '⚡ New: '       + counts.new;
+      if (el('statReviewed'))  el('statReviewed').textContent  = '👁 Reviewed: '  + counts.reviewed;
+      if (el('statAccepted'))  el('statAccepted').textContent  = '✅ Accepted: '  + counts.accepted;
+      if (el('statScheduled')) el('statScheduled').textContent = '📅 Scheduled: ' + counts.scheduled;
+      if (el('statCompleted')) el('statCompleted').textContent = '🏁 Completed: ' + counts.completed;
+      if (el('statRejected'))  el('statRejected').textContent  = '✗ Rejected: '   + counts.rejected;
+    }
+
+    // ── Filter & sort submissions ──────────────────────────────────
+    function getFilteredSubmissions() {
+      let subs = getSubmissions();
+      const search  = (document.getElementById('subSearch')       || {}).value || '';
+      const status  = (document.getElementById('subStatusFilter') || {}).value || 'all';
+      const sortBy  = (document.getElementById('subSortBy')       || {}).value || 'newest';
+
+      if (search.trim()) {
+        const q = search.toLowerCase();
+        subs = subs.filter(s =>
+          (s.name    || '').toLowerCase().includes(q) ||
+          (s.address || '').toLowerCase().includes(q) ||
+          (s.service || '').toLowerCase().includes(q) ||
+          (s.message || '').toLowerCase().includes(q) ||
+          (s.phone   || '').includes(q)
+        );
+      }
+      if (status !== 'all') {
+        subs = subs.filter(s => s.status === status);
+      }
+      subs.sort((a, b) => {
+        if (sortBy === 'oldest')  return new Date(a.date) - new Date(b.date);
+        if (sortBy === 'service') return (a.service || '').localeCompare(b.service || '');
+        if (sortBy === 'status')  return (a.status  || '').localeCompare(b.status  || '');
+        if (sortBy === 'name')    return (a.name    || '').localeCompare(b.name    || '');
+        return new Date(b.date) - new Date(a.date); // newest
+      });
+      return subs;
+    }
+
+    // ── Status change (1-click) ─────────────────────────────────────
+    function updateSubmissionStatus(id, newStatus) {
+      const subs = getSubmissions();
+      const idx = subs.findIndex(s => s.id === id);
+      if (idx < 0) return;
+      subs[idx].status = newStatus;
+      subs[idx].statusUpdatedAt = new Date().toISOString();
+      saveSubmissions(subs);
+      appendAuditLog('submission_status', 'Status → ' + newStatus, subs[idx].name || id);
+      renderSubmissionsCards();
+      updateBadgesAndHomeBanner();
+      showToast('Status updated → ' + (SUB_STATUS_META[newStatus] || {}).label || newStatus);
+    }
+
+    // ── Main render function ────────────────────────────────────────
+    function renderSubmissionsCards() {
+      const container = document.getElementById('submissionsCards');
+      if (!container) return;
+      const all = getSubmissions();
+      updateSubmissionsStats(all);
+
+      const subs = getFilteredSubmissions();
+      container.innerHTML = '';
+
+      if (!subs.length) {
+        container.innerHTML = '<div style="text-align:center;color:#6b7280;padding:2rem 1rem;font-size:0.9rem;">No submissions match your filters.</div>';
+        return;
+      }
+
+      subs.forEach(sub => {
+        const isNew = sub.status === 'new';
+        const card = document.createElement('div');
+        card.style.cssText =
+          'background:' + (isNew ? '#0f1f3a' : 'var(--card-elevated)') + ';' +
+          'border:1px solid ' + (isNew ? '#3b82f6' : 'var(--border)') + ';' +
+          'border-radius:16px;padding:1rem 1.1rem;margin-bottom:0.7rem;' +
+          'box-shadow:' + (isNew ? '0 0 0 2px rgba(59,130,246,0.2)' : 'var(--shadow-soft)') + ';' +
+          'animation:fadeIn 0.25s ease-out;';
+
+        const dateStr = new Date(sub.date).toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' });
+        const serviceFmt = (sub.service || 'Not specified').replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+        const yardSize   = sub.yardSize  ? ({ small: 'Small', medium: 'Medium', large: 'Large' }[sub.yardSize]  || sub.yardSize)  : '';
+        const frequency  = sub.frequency ? ({ 'one-time': 'One-time', weekly: 'Weekly', biweekly: 'Bi-weekly', monthly: 'Monthly', seasonal: 'Seasonal', 'not-sure': 'Not sure' }[sub.frequency] || sub.frequency) : '';
+
+        // Header row
+        const header = document.createElement('div');
+        header.style.cssText = 'display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.4rem;margin-bottom:0.55rem;';
+        header.innerHTML =
+          '<div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;">' +
+            '<span style="font-weight:700;font-size:0.97rem;color:#f1f5f9;">' + escapeHtml(sub.name) + '</span>' +
+            subStatusChip(sub.status || 'new') +
+            (isNew ? '<span style="font-size:0.72rem;color:#3b82f6;font-weight:700;letter-spacing:0.05em;">NEW</span>' : '') +
+          '</div>' +
+          '<span style="font-size:0.76rem;color:#6b7280;white-space:nowrap;">' + dateStr + ' · ' + (sub.source || 'website') + '</span>';
+        card.appendChild(header);
+
+        // Details row
+        const details = document.createElement('div');
+        details.style.cssText = 'display:flex;flex-wrap:wrap;gap:0.3rem 1.5rem;margin-bottom:0.6rem;font-size:0.84rem;';
+        const det = (icon, label, val) => val
+          ? '<span style="color:#9ca3af;">' + icon + ' <span style="color:#cbd5e1;">' + escapeHtml(String(val)) + '</span></span>'
+          : '';
+        details.innerHTML =
+          det('📋', 'Service', serviceFmt) +
+          det('📐', 'Size', yardSize) +
+          det('🔁', 'Frequency', frequency) +
+          det('📍', 'Address', sub.address) +
+          det('📞', 'Phone', sub.phone) +
+          det('✉️', 'Email', sub.email);
+        card.appendChild(details);
+
+        // Message
+        if (sub.message && sub.message.trim()) {
+          const msg = document.createElement('div');
+          msg.style.cssText = 'font-size:0.83rem;color:#94a3b8;background:#020617;border-radius:10px;padding:0.55rem 0.75rem;margin-bottom:0.65rem;border:1px solid #1e293b;white-space:pre-wrap;line-height:1.6;max-height:100px;overflow-y:auto;';
+          msg.textContent = sub.message.trim();
+          card.appendChild(msg);
+        }
+
+        // Action buttons
+        const actions = document.createElement('div');
+        actions.style.cssText = 'display:flex;flex-wrap:wrap;gap:0.4rem;align-items:center;';
+
+        // Status selector (fast 1-click update)
+        const statusSel = document.createElement('select');
+        statusSel.style.cssText = 'font-size:0.78rem;padding:0.25rem 0.6rem;border-radius:999px;border:1px solid var(--border);background:#020617;color:var(--text);';
+        Object.keys(SUB_STATUS_META).forEach(st => {
+          const o = document.createElement('option');
+          o.value = st;
+          o.textContent = SUB_STATUS_META[st].label;
+          if (st === (sub.status || 'new')) o.selected = true;
+          statusSel.appendChild(o);
+        });
+        statusSel.addEventListener('change', () => updateSubmissionStatus(sub.id, statusSel.value));
+        actions.appendChild(statusSel);
+
+        // Quick-action buttons
+        function mkBtn(label, cls, handler) {
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'btn small ' + cls;
+          b.textContent = label;
+          b.addEventListener('click', handler);
+          return b;
+        }
+
+        if (sub.status === 'new' || sub.status === 'reviewed') {
+          actions.appendChild(mkBtn('✅ Accept', 'secondary', () => updateSubmissionStatus(sub.id, 'accepted')));
+          actions.appendChild(mkBtn('✗ Reject',  'danger',    () => updateSubmissionStatus(sub.id, 'rejected')));
+        }
+        if (sub.status === 'accepted' || sub.status === 'reviewed') {
+          actions.appendChild(mkBtn('📅 Schedule', 'secondary', () => updateSubmissionStatus(sub.id, 'scheduled')));
+        }
+        if (sub.status === 'scheduled') {
+          actions.appendChild(mkBtn('🏁 Complete', 'secondary', () => updateSubmissionStatus(sub.id, 'completed')));
+        }
+
+        // Convert to Job
+        if (['accepted', 'scheduled'].includes(sub.status || '')) {
+          actions.appendChild(mkBtn('🔁 → Job', '', () => openConvertJobModal(sub)));
+        }
+
+        // Phone / email quick-links
+        if (sub.phone) {
+          const aPhone = document.createElement('a');
+          aPhone.href = 'tel:' + sub.phone.replace(/\D/g, '');
+          aPhone.className = 'btn small secondary';
+          aPhone.textContent = '📞 Call';
+          aPhone.style.textDecoration = 'none';
+          actions.appendChild(aPhone);
+        }
+
+        // Delete
+        actions.appendChild(mkBtn('🗑', 'danger', async () => {
+          const ok = await showConfirm({ title: 'Delete submission?', message: 'Remove this inquiry permanently.', okLabel: 'Delete', icon: '🗑️', danger: true });
+          if (!ok) return;
+          deleteSubmission(sub.id);
+        }));
+
+        card.appendChild(actions);
+        container.appendChild(card);
+      });
+    }
+
+    // Keep old function name alias for backward compat
+    function renderSubmissionsTable() { renderSubmissionsCards(); }
+
+    function deleteSubmission(id) {
+      let subs = getSubmissions();
+      subs = subs.filter(s => s.id !== id);
+      saveSubmissions(subs);
+      renderSubmissionsCards();
+      updateBadgesAndHomeBanner();
+      showToast('Submission deleted');
     }
 
     function addManualSubmission() {
-      const name = document.getElementById('manualName').value.trim();
-      const email = document.getElementById('manualEmail').value.trim();
-      const phone = document.getElementById('manualPhone').value.trim();
-      const service = document.getElementById('manualService').value;
-      const message = document.getElementById('manualMessage').value.trim();
+      const name     = (document.getElementById('manualName')     || {}).value || '';
+      const email    = (document.getElementById('manualEmail')    || {}).value || '';
+      const phone    = (document.getElementById('manualPhone')    || {}).value || '';
+      const address  = (document.getElementById('manualAddress')  || {}).value || '';
+      const service  = (document.getElementById('manualService')  || {}).value || '';
+      const yardSize = (document.getElementById('manualYardSize') || {}).value || '';
+      const message  = (document.getElementById('manualMessage')  || {}).value || '';
 
-      if (!name) {
-        showToast('Please enter a name', 'error');
-        return;
-      }
+      if (!name.trim()) { showToast('Please enter a customer name.', false, 'error'); return; }
 
-      const submission = {
-        id: 'sub_' + Date.now(),
-        name,
-        email,
-        phone,
+      const sub = {
+        id:      'sub_' + Date.now(),
+        name:    name.trim(),
+        email:   email.trim(),
+        phone:   phone.trim(),
+        address: address.trim(),
         service,
-        message,
-        date: new Date().toISOString(),
-        source: 'manual',
-        status: 'new'
+        yardSize,
+        message: message.trim(),
+        date:    new Date().toISOString(),
+        source:  'manual',
+        status:  'new'
       };
-
-      const submissions = getSubmissions();
-      submissions.push(submission);
-      saveSubmissions(submissions);
-
-      // Clear form
+      const subs = getSubmissions();
+      subs.push(sub);
+      saveSubmissions(subs);
       document.getElementById('manualSubmissionForm').reset();
-      renderSubmissionsTable();
-      showToast('Inquiry logged successfully');
-
-      // Add to audit log
-      addAuditEntry('submission_added', `New inquiry from ${name}`);
-    }
-
-    function renderSubmissionsTable() {
-      const submissions = getSubmissions().sort((a, b) => new Date(b.date) - new Date(a.date));
-      const tbody = document.getElementById('submissionsBody');
-      tbody.innerHTML = '';
-
-      if (submissions.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:#9ca3af;padding:1rem;">No submissions yet</td></tr>';
-        return;
-      }
-
-      submissions.forEach(sub => {
-        const row = document.createElement('tr');
-        const dateStr = new Date(sub.date).toLocaleDateString() + ' ' + new Date(sub.date).toLocaleTimeString();
-        const serviceName = sub.service ? sub.service.replace(/-/g, ' ').charAt(0).toUpperCase() + sub.service.slice(1).replace(/-/g, ' ').substring(1) : 'Not specified';
-        
-        row.innerHTML = `
-          <td>${escapeHtml(sub.name)}</td>
-          <td><a href="mailto:${sub.email}" style="color:#60a5fa;">${escapeHtml(sub.email)}</a></td>
-          <td>${escapeHtml(sub.phone || '—')}</td>
-          <td>${serviceName}</td>
-          <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(sub.message || '—')}</td>
-          <td>${dateStr}</td>
-          <td><span style="font-size:0.75rem;color:#9ca3af;">${sub.source}</span></td>
-          <td>
-            <button type="button" class="btn small secondary" onclick="deleteSubmission('${sub.id}')">Delete</button>
-          </td>
-        `;
-        tbody.appendChild(row);
-      });
-    }
-
-    function deleteSubmission(id) {
-      showConfirm({
-        title: 'Delete submission?',
-        message: 'This contact inquiry will be permanently removed.',
-        okLabel: 'Yes, delete',
-        icon: '🗑️',
-        danger: true
-      }).then(ok => {
-        if (!ok) return;
-        let submissions = getSubmissions();
-        submissions = submissions.filter(s => s.id !== id);
-        saveSubmissions(submissions);
-        renderSubmissionsTable();
-        showToast('Submission deleted');
-      });
+      renderSubmissionsCards();
+      updateBadgesAndHomeBanner();
+      appendAuditLog('submission_added', 'Manual inquiry from ' + sub.name, sub.service || '');
+      showToast('Inquiry logged — ' + sub.name);
     }
 
     function exportSubmissionsCSV() {
-      const submissions = getSubmissions();
-      if (submissions.length === 0) {
-        showToast('No submissions to export');
-        return;
-      }
-
-      const headers = ['Name', 'Email', 'Phone', 'Service', 'Message', 'Date', 'Source'];
+      const subs = getSubmissions();
+      if (!subs.length) { showToast('No submissions to export'); return; }
+      const headers = ['Name','Email','Phone','Address','Service','YardSize','Frequency','Message','Date','Source','Status'];
       const rows = [headers.join(',')];
-
-      submissions.forEach(sub => {
-        rows.push([
-          `"${sub.name}"`,
-          `"${sub.email || ''}"`,
-          `"${sub.phone || ''}"`,
-          `"${sub.service || ''}"`,
-          `"${(sub.message || '').replace(/"/g, '""')}"`,
-          `"${new Date(sub.date).toLocaleString()}"`,
-          `"${sub.source}"`
-        ].join(','));
+      subs.forEach(s => {
+        rows.push([s.name,s.email||'',s.phone||'',s.address||'',s.service||'',s.yardSize||'',s.frequency||'',
+          (s.message||'').replace(/"/g,'""'),
+          new Date(s.date).toLocaleString(),s.source||'',s.status||'new'
+        ].map(v => '"' + v + '"').join(','));
       });
-
       downloadCsv(rows, 'contact-submissions.csv');
     }
 
+    // ── Convert to Job modal ────────────────────────────────────────
+    let _convertSub = null;
+
+    function openConvertJobModal(sub) {
+      _convertSub = sub;
+      const svcFmt = (sub.service || 'Service').replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+      const preview = document.getElementById('convertJobPreview');
+      if (preview) {
+        preview.innerHTML =
+          '<strong style="color:#aee2b2;">' + escapeHtml(sub.name) + '</strong><br>' +
+          (sub.address ? '📍 ' + escapeHtml(sub.address) + '<br>' : '') +
+          (sub.phone   ? '📞 ' + escapeHtml(sub.phone)   + '<br>' : '') +
+          '📋 ' + escapeHtml(svcFmt) +
+          (sub.yardSize ? ' · ' + ({ small:'Small', medium:'Medium', large:'Large' }[sub.yardSize] || sub.yardSize) : '');
+      }
+      const dateEl = document.getElementById('convertJobDate');
+      if (dateEl) dateEl.value = getToday();
+      const notesEl = document.getElementById('convertJobNotes');
+      if (notesEl) notesEl.value = sub.message || '';
+      const payEl = document.getElementById('convertJobPayment');
+      if (payEl) payEl.value = '';
+      const modal = document.getElementById('convertJobModal');
+      if (modal) modal.style.display = 'flex';
+    }
+
+    document.getElementById('convertJobConfirmBtn').addEventListener('click', function() {
+      if (!_convertSub) return;
+      const sub = _convertSub;
+      const scheduledDate = (document.getElementById('convertJobDate')    || {}).value || getToday();
+      const paymentRaw    = (document.getElementById('convertJobPayment') || {}).value || '0';
+      const notes         = (document.getElementById('convertJobNotes')   || {}).value || '';
+      const payment       = parseFloat(paymentRaw) || 0;
+      const svcFmt = (sub.service || 'Lawn Service').replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+      const u = getCurrentUser();
+
+      const newJob = {
+        id:            Date.now(),
+        name:          (sub.name || 'Customer') + ' — ' + svcFmt,
+        status:        'planned',
+        priority:      'medium',
+        size:          sub.yardSize || 'medium',
+        payment,
+        tipAmount:     0,
+        scheduledDate,
+        date:          scheduledDate,
+        neighborhood:  '',
+        zipCode:       '',
+        tags:          [sub.service || 'quote-convert'],
+        attachmentUrl: '',
+        notes:         (sub.address ? 'Address: ' + sub.address + '\n' : '') + (notes || ''),
+        who:           u ? u.username : 'LLCSFounder',
+        whoName:       u ? (u.name || u.username) : 'Logan M.',
+        checklist:     { mow: true, trim: true, edge: true, blow: true },
+        createdAt:     getToday(),
+        updatedAt:     getToday(),
+        lastEditedBy:  u ? u.username : 'LLCSFounder',
+        lastEditedByName: u ? (u.name || u.username) : 'Logan M.',
+        fromSubmissionId: sub.id
+      };
+
+      const jobs = readJSON(STORAGE_KEYS.jobs, []);
+      jobs.push(newJob);
+      writeJSON(STORAGE_KEYS.jobs, jobs);
+
+      // Mark submission as scheduled
+      updateSubmissionStatus(sub.id, 'scheduled');
+
+      appendAuditLog('job_from_quote', 'Job created from submission: ' + sub.name, svcFmt);
+      document.getElementById('convertJobModal').style.display = 'none';
+      _convertSub = null;
+
+      refreshJobs();
+      refreshKanban();
+      refreshMoney();
+      refreshCharts();
+      refreshHomeScheduleCard();
+      showToast('✅ Job created from quote — ' + sub.name);
+
+      // Navigate to Jobs tab
+      setTimeout(() => {
+        const jobsLink = document.querySelector('[data-tab="jobsTab"]');
+        if (jobsLink) jobsLink.click();
+      }, 800);
+    });
+
+    // ── Filter/sort event bindings ──────────────────────────────────
+    (function bindSubFilters() {
+      const applyBtn = document.getElementById('subFilterApply');
+      const clearBtn = document.getElementById('subFilterClear');
+      const searchEl = document.getElementById('subSearch');
+      const statusEl = document.getElementById('subStatusFilter');
+      const sortEl   = document.getElementById('subSortBy');
+      if (applyBtn) applyBtn.addEventListener('click', renderSubmissionsCards);
+      if (clearBtn) clearBtn.addEventListener('click', () => {
+        if (searchEl) searchEl.value = '';
+        if (statusEl) statusEl.value = 'all';
+        if (sortEl)   sortEl.value   = 'newest';
+        renderSubmissionsCards();
+      });
+      if (searchEl) searchEl.addEventListener('input', () => {
+        clearTimeout(searchEl._t);
+        searchEl._t = setTimeout(renderSubmissionsCards, 200);
+      });
+      if (statusEl) statusEl.addEventListener('change', renderSubmissionsCards);
+      if (sortEl)   sortEl.addEventListener('change', renderSubmissionsCards);
+    })();
+
     function escapeHtml(text) {
       if (!text) return '';
-      const map = {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'};
-      return text.replace(/[&<>"']/g, m => map[m]);
+      const map = {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'};
+      return String(text).replace(/[&<>"']/g, m => map[m]);
     }
   </script>
 
@@ -4992,26 +5313,26 @@
       note: 'Suggested: once per year in spring or fall.'
     },
     {
-      key: 'Fertilization',
-      label: '🌿 Fertilization',
-      desc: 'Balanced fertilizer applications for thicker, greener turf with fewer bare spots.',
+      key: 'Lawn Health Care',
+      label: '🌿 Lawn Health Care',
+      desc: 'Non-chemical maintenance support and general lawn improvement guidance to keep your grass thick and healthy.',
       sizes: {
         small:  { label: 'Small (up to ~0.25 acre)',   price: 70,  time: '0.5–1 hr',    priceLabel: '$70' },
         medium: { label: 'Medium (~0.25–0.5 acre)',     price: 110, time: '0.5–1 hr',    priceLabel: '$110' },
         large:  { label: 'Large (over ~0.5 acre)',      price: 170, time: '1–1.5 hrs',   priceLabel: '$170' }
       },
-      note: 'Suggested: 3–4 applications per year for best results.'
+      note: 'Pairs well with aeration and regular mowing for the healthiest results.'
     },
     {
-      key: 'Weed Control Treatment',
-      label: '🚫 Weed Control Treatment',
-      desc: 'Targeted weed treatments in lawns and beds with selective products that protect your grass.',
+      key: 'Weed Management',
+      label: '🌱 Weed Management',
+      desc: 'Manual weed removal and prevention support — hand-pulling weeds from beds and walkways, removing roots to slow regrowth naturally without chemicals.',
       sizes: {
-        small:  { label: 'Small (up to ~0.25 acre)',   price: 80,  time: '0.5–1 hr',    priceLabel: '$80' },
-        medium: { label: 'Medium (~0.25–0.5 acre)',     price: 130, time: '1–1.5 hrs',   priceLabel: '$130' },
-        large:  { label: 'Large (over ~0.5 acre)',      price: 190, time: '1.5–2 hrs',   priceLabel: '$190' }
+        small:  { label: 'Small beds',               price: 45,  time: '0.5–1 hr',    priceLabel: '$45' },
+        medium: { label: 'Medium beds',               price: 75,  time: '1–1.5 hrs',   priceLabel: '$75' },
+        large:  { label: 'Large / overgrown beds',    price: 130, time: '1.5–3 hrs',   priceLabel: '$130' }
       },
-      note: 'Works best paired with fertilization and mowing on a regular schedule.'
+      note: 'Chemical-free approach. Great before mulch installation or seasonal cleanups.'
     },
     {
       key: 'Yard Cleanup',
@@ -5126,13 +5447,13 @@
     {
       key: 'Premium Lawn Package',
       label: '📦 Premium Lawn Package (Monthly)',
-      desc: 'Full‑service lawn care: weekly mowing + fertilization, weed control, and aeration visits.',
+      desc: 'Full‑service lawn care: weekly mowing + lawn health care, weed management, and aeration visits.',
       sizes: {
         small:  { label: 'Small (~0.25 acre)',      price: 220, time: '~1.5 hrs/visit',   priceLabel: '$220/mo' },
         medium: { label: 'Medium (~0.25–0.5 acre)', price: 280, time: '~2 hrs/visit',     priceLabel: '$280/mo' },
         large:  { label: 'Large (> 0.5 acre)',      price: 350, time: '2–2.5 hrs/visit',  priceLabel: '$350/mo' }
       },
-      note: 'Includes 3–4 fertilization visits/yr, 2–3 weed control visits, and 1 aeration visit annually.'
+      note: 'Includes 3–4 lawn health visits/yr, 2–3 weed management sessions, and 1 aeration visit annually.'
     },
     {
       key: 'Curb Appeal Cleanup',
@@ -5170,13 +5491,13 @@
     {
       key: 'Total Lawn Health Plan',
       label: '📦 Total Lawn Health Plan (Monthly)',
-      desc: 'Year‑round care combining mowing, fertilization, weed control, and aeration into one custom plan.',
+      desc: 'Year‑round care combining mowing, lawn health care, weed management, and aeration into one custom plan.',
       sizes: {
         small:  { label: 'Small (up to ~0.25 acre)',   price: 260, time: 'In‑season', priceLabel: '$260/mo' },
         medium: { label: 'Medium (~0.25–0.5 acre)',    price: 320, time: 'In‑season', priceLabel: '$320/mo' },
         large:  { label: 'Large (> 0.5 acre)',         price: 390, time: 'In‑season', priceLabel: '$390/mo' }
       },
-      note: 'Includes weekly mowing, multiple fertilization & weed control applications, and one aeration per year.'
+      note: 'Includes weekly mowing, multiple lawn health care & weed management visits, and one aeration per year.'
     }
   ];
 
@@ -5272,9 +5593,8 @@
     lines.push('Thank you for reaching out! Here\'s your personalized service quote:');
     lines.push('');
 
-    if (q.phone || q.address) {
-      if (q.phone)   lines.push('📞 Contact: ' + q.phone);
-      if (q.address) lines.push('📍 Property: ' + q.address);
+    if (q.address) {
+      lines.push('📍 Property: ' + q.address);
       lines.push('');
     }
 
@@ -5338,63 +5658,6 @@
     };
   }
 
-  const QUOTE_STATUSES = [
-    { key: 'new',       label: 'New',       style: 'background:#1e3a5f;color:#9bd3ff;' },
-    { key: 'reviewed',  label: 'Reviewed',  style: 'background:#312e81;color:#c4b5fd;' },
-    { key: 'accepted',  label: 'Accepted',  style: 'background:#14532d;color:#bbf7d0;' },
-    { key: 'scheduled', label: 'Scheduled', style: 'background:#164e63;color:#67e8f9;' },
-    { key: 'completed', label: 'Completed', style: 'background:#064e3b;color:#6ee7b7;' },
-    { key: 'rejected',  label: 'Rejected',  style: 'background:#7f1d1d;color:#fca5a5;' }
-  ];
-
-  function getQuoteStatusStyle(key) {
-    const s = QUOTE_STATUSES.find(function(s) { return s.key === key; });
-    return s ? s.style : 'background:#1f2937;color:#9ca3af;';
-  }
-  function getQuoteStatusLabel(key) {
-    const s = QUOTE_STATUSES.find(function(s) { return s.key === key; });
-    return s ? s.label : 'New';
-  }
-
-  function updateQuoteStatus(idx, newStatus) {
-    quotes[idx].status = newStatus;
-    saveQuotes();
-    renderQuotes();
-  }
-
-  function convertQuoteToJob(q) {
-    const jobsTab = document.getElementById('jobsTab');
-    const jobsNav = document.getElementById('jobsNav');
-    if (jobsNav) jobsNav.click();
-
-    setTimeout(function() {
-      var nameEl = document.getElementById('jobName');
-      var sizeEl = document.getElementById('jobSize');
-      var payEl  = document.getElementById('jobPayment');
-      var notesEl = document.getElementById('jobNotes');
-      var dateEl = document.getElementById('jobScheduledDate');
-      var neighborhoodEl = document.getElementById('jobNeighborhood');
-
-      if (nameEl) nameEl.value = q.service + (q.customer ? ' — ' + q.customer : '');
-      if (sizeEl) sizeEl.value = q.size || 'small';
-      if (payEl)  payEl.value  = q.price || '';
-      if (notesEl) {
-        var parts = [];
-        if (q.customer) parts.push('Customer: ' + q.customer);
-        if (q.phone)    parts.push('Phone: ' + q.phone);
-        if (q.email)    parts.push('Email: ' + q.email);
-        if (q.address)  parts.push('Address: ' + q.address);
-        if (q.notes)    parts.push('Notes: ' + q.notes);
-        notesEl.value = parts.join('\n');
-      }
-      if (dateEl) {
-        var today = new Date();
-        dateEl.value = today.toISOString().slice(0, 10);
-      }
-      if (typeof showToast === 'function') showToast('Quote pre-filled into the job form. Review and save.');
-    }, 150);
-  }
-
   function renderQuotes() {
     const body = document.getElementById('quotesBody');
     if (!body) return;
@@ -5402,7 +5665,7 @@
     if (!quotes.length) {
       const tr = document.createElement('tr');
       const td = document.createElement('td');
-      td.colSpan = 8;
+      td.colSpan = 7;
       td.style.cssText = 'text-align:center;color:#6b7280;padding:1.2rem;';
       td.textContent = 'No quotes saved yet.';
       tr.appendChild(td);
@@ -5411,82 +5674,41 @@
     }
     quotes.forEach(function(q, idx) {
       const row = document.createElement('tr');
-      if ((q.status || 'new') === 'new') row.style.borderLeft = '3px solid #3b82f6';
-
       function cell(text, style) {
         const td = document.createElement('td');
         td.textContent = text || '—';
         if (style) td.style.cssText = style;
         return td;
       }
-
       const svc = getServiceData(q.service);
       const sizeLabels = { small: 'Small', medium: 'Medium', large: 'Large' };
       const priceLabel = svc && svc.sizes[q.size] ? svc.sizes[q.size].priceLabel : ('$' + Number(q.price).toFixed(2));
-
-      // Customer cell — show phone as subtitle if present
-      const custTd = document.createElement('td');
-      custTd.style.minWidth = '110px';
-      const custName = document.createElement('div');
-      custName.textContent = q.customer || '—';
-      custTd.appendChild(custName);
-      if (q.phone) {
-        const custPhone = document.createElement('div');
-        custPhone.textContent = q.phone;
-        custPhone.style.cssText = 'font-size:0.74rem;color:#64748b;margin-top:1px;';
-        custTd.appendChild(custPhone);
-      }
-      row.appendChild(custTd);
-
+      row.appendChild(cell(q.customer));
       row.appendChild(cell(q.service));
       row.appendChild(cell(sizeLabels[q.size] || q.size || '—'));
       row.appendChild(cell(priceLabel));
-
-      // Status badge + dropdown
-      const statusTd = document.createElement('td');
-      const statusSel = document.createElement('select');
-      statusSel.style.cssText = 'background:#020617;border:1px solid #1e3a5f;border-radius:999px;padding:0.18rem 0.5rem;font-size:0.75rem;cursor:pointer;color:#e2e8f0;font-family:inherit;';
-      QUOTE_STATUSES.forEach(function(s) {
-        const opt = document.createElement('option');
-        opt.value = s.key;
-        opt.textContent = s.label;
-        if ((q.status || 'new') === s.key) opt.selected = true;
-        statusSel.appendChild(opt);
-      });
-      statusSel.addEventListener('change', function() { updateQuoteStatus(idx, statusSel.value); });
-      statusTd.appendChild(statusSel);
-      row.appendChild(statusTd);
-
-      const notesTd = cell(q.notes || '—', 'max-width:140px;white-space:pre-wrap;font-size:0.78rem;');
+      const notesTd = cell(q.notes || '—', 'max-width:160px;white-space:pre-wrap;font-size:0.78rem;');
       row.appendChild(notesTd);
       row.appendChild(cell(q.date));
 
       const actTd = document.createElement('td');
       actTd.style.whiteSpace = 'nowrap';
 
-      const jobBtn = document.createElement('button');
-      jobBtn.className = 'btn small secondary';
-      jobBtn.textContent = '➕ Job';
-      jobBtn.title = 'Convert to job';
-      jobBtn.style.marginRight = '3px';
-      jobBtn.addEventListener('click', function() { convertQuoteToJob(q); });
-
       const expBtn = document.createElement('button');
       expBtn.className = 'btn small secondary';
-      expBtn.textContent = '📤 Send';
-      expBtn.style.marginRight = '3px';
+      expBtn.textContent = '📤 Send Quote';
+      expBtn.style.marginRight = '4px';
       expBtn.addEventListener('click', function() { exportQuote(q); });
 
       const delBtn = document.createElement('button');
       delBtn.className = 'btn small danger';
-      delBtn.textContent = 'Del';
+      delBtn.textContent = 'Delete';
       delBtn.addEventListener('click', function() {
         quotes.splice(idx, 1);
         saveQuotes();
         renderQuotes();
       });
 
-      actTd.appendChild(jobBtn);
       actTd.appendChild(expBtn);
       actTd.appendChild(delBtn);
       row.appendChild(actTd);
@@ -5524,19 +5746,15 @@
         return;
       }
 
-      const phone = (document.getElementById('quoteCustomerPhone').value || '').trim();
-
       const quote = {
         id: nextQuoteNumber(),
         customer: customerName,
-        phone: phone,
         email: email,
         address: address,
         service: service,
         size: size,
         price: Number(price),
         notes: notes,
-        status: 'new',
         date: new Date().toLocaleDateString()
       };
 
@@ -5545,7 +5763,6 @@
       renderQuotes();
 
       document.getElementById('quoteCustomerName').value = '';
-      document.getElementById('quoteCustomerPhone').value = '';
       document.getElementById('quoteCustomerEmail').value = '';
       document.getElementById('quoteCustomerAddress').value = '';
       document.getElementById('quoteNotes').value = '';

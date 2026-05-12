@@ -27,6 +27,7 @@
       color: var(--text);
       min-height: 100vh;
       line-height: 1.6;
+      overflow-x: hidden;
     }
 
     /* ── Header ── */
@@ -47,8 +48,7 @@
       pointer-events: none;
     }
     .header-logo {
-      width: 64px;
-      height: 64px;
+      width: 64px; height: 64px;
       border-radius: 50%;
       object-fit: contain;
       background: rgba(255,255,255,0.15);
@@ -72,7 +72,7 @@
 
     /* ── Nav ── */
     .nav-container {
-      background-color: rgba(11,23,40,0.95);
+      background-color: rgba(11,23,40,0.97);
       backdrop-filter: blur(8px);
       position: sticky;
       top: 0;
@@ -87,6 +87,7 @@
       padding: 0.5rem 1.25rem;
       max-width: 1200px;
       margin: 0 auto;
+      position: relative;
     }
     .menu-toggle {
       display: none;
@@ -95,9 +96,11 @@
       color: var(--text);
       font-size: 1.3rem;
       cursor: pointer;
-      padding: 0.4rem 0.7rem;
+      padding: 0.45rem 0.75rem;
       border-radius: 8px;
       transition: background 0.2s;
+      min-width: 44px; min-height: 44px;
+      align-items: center; justify-content: center;
     }
     .menu-toggle:hover { background: var(--card); }
     nav ul {
@@ -256,7 +259,7 @@
       border-color: rgba(102,185,106,0.35);
     }
     .package-card.orange:hover { border-color: rgba(230,126,34,0.4); }
-    .package-info { flex: 1 1 260px; }
+    .package-info { flex: 1 1 260px; min-width: 0; }
     .package-info h4 {
       font-size: 1.05rem;
       margin-bottom: 0.4rem;
@@ -275,11 +278,12 @@
       margin-bottom: 0.25rem;
     }
     .package-info .meta strong { color: #94a3b8; font-weight: 600; }
-    .package-table-wrap { flex: 1 1 260px; }
+    .package-table-wrap { flex: 1 1 260px; min-width: 0; overflow-x: auto; }
     .package-table-wrap table {
       width: 100%;
       border-collapse: collapse;
       font-size: 0.875rem;
+      min-width: 220px;
     }
     .package-table-wrap th {
       text-align: left;
@@ -320,7 +324,7 @@
       color: #fff;
       border: none;
       border-radius: 999px;
-      padding: 0.65rem 1.5rem;
+      padding: 0.75rem 1.5rem;
       font-size: 0.95rem;
       font-family: inherit;
       cursor: pointer;
@@ -331,6 +335,8 @@
       box-shadow: 0 2px 8px rgba(0,0,0,0.4);
       transition: transform 0.12s ease, box-shadow 0.15s ease, filter 0.15s ease;
       margin: 0.25rem;
+      min-height: 44px;
+      font-weight: 600;
     }
     .btn:hover { transform: translateY(-2px); box-shadow: var(--shadow-hover); filter: brightness(1.08); }
     .btn:active { transform: translateY(0); filter: brightness(0.96); }
@@ -356,7 +362,7 @@
     @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes fadeInDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* Stagger animation for cards */
+    /* Stagger animations */
     .services-grid .service-card:nth-child(1) { animation-delay: 0.05s; }
     .services-grid .service-card:nth-child(2) { animation-delay: 0.10s; }
     .services-grid .service-card:nth-child(3) { animation-delay: 0.15s; }
@@ -372,26 +378,34 @@
 
     /* ── Mobile ── */
     @media (max-width: 768px) {
-      .menu-toggle { display: block; }
+      .menu-toggle { display: inline-flex; }
       nav ul {
         display: none;
         position: absolute;
         top: 100%;
         left: 0; right: 0;
-        background: rgba(11,23,40,0.98);
+        background: rgba(11,23,40,0.99);
         flex-direction: column;
-        padding: 0.75rem 1rem;
+        padding: 0.75rem 1rem 1rem;
         border-bottom: 1px solid var(--border);
-        box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+        max-height: 0;
+        overflow: hidden;
+        opacity: 0;
+        transition: max-height 0.3s ease, opacity 0.25s ease;
       }
-      nav ul.active { display: flex; }
+      nav ul.active {
+        display: flex;
+        max-height: 320px;
+        opacity: 1;
+      }
       nav ul li { width: 100%; }
-      nav ul li a { display: block; border-radius: 10px; padding: 0.7rem 1rem; }
+      nav ul li a { display: block; border-radius: 10px; padding: 0.8rem 1rem; font-size: 1rem; }
       .package-card { flex-direction: column; gap: 1rem; }
+      .services-grid { grid-template-columns: 1fr; }
     }
     @media (max-width: 480px) {
-      .services-grid { grid-template-columns: 1fr; }
-      .cta-bar .btn { width: 100%; justify-content: center; }
+      .cta-bar .btn { width: 100%; justify-content: center; margin: 0.25rem 0; }
     }
   </style>
 </head>
@@ -404,7 +418,7 @@
 
   <div class="nav-container">
     <nav>
-      <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+      <button class="menu-toggle" onclick="toggleMenu()" aria-label="Toggle navigation">☰</button>
       <ul id="navMenu">
         <li><a href="index.html">Home</a></li>
         <li><a href="about.html">About</a></li>
@@ -418,7 +432,7 @@
     <div class="intro-block">
       <div class="tag">🌿 Pricing</div>
       <h2>Services & Pricing</h2>
-      <p>One‑time, seasonal, and recurring lawn & yard services to keep your property looking its best.</p>
+      <p>One‑time, seasonal, and recurring lawn & yard services to keep your property looking its best. Flat rates — no surprise fees.</p>
       <p class="size-guide">Size guide: Small – up to ~0.25 acre &nbsp;•&nbsp; Medium – ~0.25–0.5 acre &nbsp;•&nbsp; Large – over ~0.5 acre</p>
     </div>
 
@@ -429,55 +443,55 @@
       <!-- Lawn Mowing -->
       <div class="service-card">
         <h3>🌾 Lawn Mowing</h3>
-        <p class="desc">Recurring or one‑time mowing with edging, trimming, and blowing for a clean, even lawn.</p>
+        <p class="desc">Recurring or one‑time mowing with edging, trimming, and blowing. Sharp blades, clean lines, full cleanup before we leave.</p>
         <table>
           <tr><td>Small (up to ~0.25 acre)</td><td>$40</td><td>0.5–1 hr</td></tr>
           <tr><td>Medium (~0.25–0.5 acre)</td><td>$60</td><td>1–1.5 hrs</td></tr>
           <tr><td>Large (over ~0.5 acre)</td><td>$100</td><td>1.5–2.5 hrs</td></tr>
         </table>
-        <p class="note">Suggested: weekly or bi‑weekly during the growing season.</p>
+        <p class="note">Starting at $40–$45 for small yards. Most residential lawns $50–$75. Suggested: weekly or bi‑weekly during the growing season.</p>
       </div>
 
       <!-- Lawn Aeration -->
       <div class="service-card">
         <h3>🌬️ Lawn Aeration</h3>
-        <p class="desc">Core aeration to relieve compaction and help water, air, and nutrients reach the roots.</p>
+        <p class="desc">Core aeration to relieve soil compaction and help water, air, and nutrients reach the roots for a thicker, healthier lawn.</p>
         <table>
           <tr><td>Small (up to ~0.25 acre)</td><td>$90</td><td>1 hr</td></tr>
           <tr><td>Medium (~0.25–0.5 acre)</td><td>$130</td><td>1–1.5 hrs</td></tr>
           <tr><td>Large (over ~0.5 acre)</td><td>$190</td><td>1.5–2 hrs</td></tr>
         </table>
-        <p class="note">Suggested: once per year in spring or fall.</p>
+        <p class="note">Suggested: once per year in spring or fall for best results.</p>
       </div>
 
-      <!-- Lawn Health Care -->
+      <!-- Lawn Health Care (replaces Fertilization) -->
       <div class="service-card">
         <h3>🌿 Lawn Health Care</h3>
-        <p class="desc">Non-chemical maintenance support and general lawn improvement guidance to help your grass grow thicker, greener, and stronger.</p>
+        <p class="desc">Non-chemical maintenance support and general lawn improvement guidance. Helps identify problem areas, improve turf density, and keep your grass looking its best.</p>
         <table>
           <tr><td>Small (up to ~0.25 acre)</td><td>$70</td><td>0.5–1 hr</td></tr>
           <tr><td>Medium (~0.25–0.5 acre)</td><td>$110</td><td>0.5–1 hr</td></tr>
           <tr><td>Large (over ~0.5 acre)</td><td>$170</td><td>1–1.5 hrs</td></tr>
         </table>
-        <p class="note">Suggested: 3–4 visits per year for best results.</p>
+        <p class="note">Pairs well with aeration and regular mowing for the healthiest results.</p>
       </div>
 
-      <!-- Weed Management -->
+      <!-- Weed Management (replaces Weed Control) -->
       <div class="service-card">
-        <h3>🌾 Weed Management</h3>
-        <p class="desc">Manual weed removal and prevention support — hand-pulling weeds from lawns and beds to keep growth clean without chemical sprays.</p>
+        <h3>🌱 Weed Management</h3>
+        <p class="desc">Manual weed removal and prevention support. Hand-pulling weeds from beds and walkways, removing roots to slow regrowth naturally without chemicals.</p>
         <table>
-          <tr><td>Small (up to ~0.25 acre)</td><td>$80</td><td>0.5–1 hr</td></tr>
-          <tr><td>Medium (~0.25–0.5 acre)</td><td>$130</td><td>1–1.5 hrs</td></tr>
-          <tr><td>Large (over ~0.5 acre)</td><td>$190</td><td>1.5–2 hrs</td></tr>
+          <tr><td>Small beds</td><td>$45</td><td>0.5–1 hr</td></tr>
+          <tr><td>Medium beds</td><td>$75</td><td>1–1.5 hrs</td></tr>
+          <tr><td>Large / overgrown beds</td><td>$130</td><td>1.5–3 hrs</td></tr>
         </table>
-        <p class="note">Works best on a regular schedule alongside mowing and lawn health care.</p>
+        <p class="note">Great before mulch installation or seasonal cleanups. Chemical-free approach.</p>
       </div>
 
       <!-- Yard Cleanup -->
       <div class="service-card">
         <h3>🧹 Yard Cleanup</h3>
-        <p class="desc">General yard cleanup including light debris, sticks, branches, and surface clutter.</p>
+        <p class="desc">General yard cleanup including light debris, sticks, branches, and surface clutter. Leave your yard looking clean and ready.</p>
         <table>
           <tr><td>Small yard</td><td>$100</td><td>1–2 hrs</td></tr>
           <tr><td>Medium yard</td><td>$160</td><td>2–3 hrs</td></tr>
@@ -489,19 +503,19 @@
       <!-- Leaf Removal -->
       <div class="service-card">
         <h3>🍂 Leaf Removal</h3>
-        <p class="desc">Seasonal leaf cleanup with blowing, raking, bagging, and optional hauling.</p>
+        <p class="desc">Seasonal leaf cleanup with blowing, raking, and bagging. Optional hauling available for heavily treed properties.</p>
         <table>
           <tr><td>Small yard</td><td>$90</td><td>1–2 hrs</td></tr>
           <tr><td>Medium yard</td><td>$150</td><td>2–3 hrs</td></tr>
           <tr><td>Large yard</td><td>$240</td><td>3–5 hrs</td></tr>
         </table>
-        <p class="note">Ideal for fall cleanup and heavily treed properties.</p>
+        <p class="note">Ideal for fall cleanup. We bag and remove everything.</p>
       </div>
 
       <!-- Outdoor Cleaning -->
       <div class="service-card">
         <h3>🏡 Outdoor Cleaning</h3>
-        <p class="desc">Clean patios, decks, furniture, and outdoor living areas so everything is ready to use.</p>
+        <p class="desc">Clean patios, decks, furniture, and outdoor living areas so everything is ready to use and looks great.</p>
         <table>
           <tr><td>Small area</td><td>$90</td><td>1–2 hrs</td></tr>
           <tr><td>Medium area</td><td>$150</td><td>2–3 hrs</td></tr>
@@ -513,7 +527,7 @@
       <!-- Pressure Washing -->
       <div class="service-card">
         <h3>💧 Pressure Washing</h3>
-        <p class="desc">Pressure wash driveways, walkways, patios, siding, and decks to remove dirt and stains.</p>
+        <p class="desc">Pressure wash driveways, walkways, patios, siding, and decks to remove dirt, grime, and stains.</p>
         <table>
           <tr><td>Small surfaces</td><td>$120</td><td>1–2 hrs</td></tr>
           <tr><td>Medium surfaces</td><td>$190</td><td>2–3 hrs</td></tr>
@@ -525,7 +539,7 @@
       <!-- Hedge Trimming -->
       <div class="service-card">
         <h3>✂️ Hedge Trimming</h3>
-        <p class="desc">Shape and maintain hedges, from neat low borders to tall, overgrown screens.</p>
+        <p class="desc">Shape and maintain hedges of any size — from neat low borders to tall overgrown screens. Debris collected and removed.</p>
         <table>
           <tr><td>Small (under 4 ft)</td><td>$60</td><td>0.5–1 hr</td></tr>
           <tr><td>Medium (4–8 ft)</td><td>$100</td><td>1–1.5 hrs</td></tr>
@@ -537,48 +551,37 @@
       <!-- Small Tree Trimming -->
       <div class="service-card">
         <h3>🌳 Small Tree Trimming</h3>
-        <p class="desc">Trim small trees, remove low branches, and open up canopies for better light and shape.</p>
+        <p class="desc">Trim small trees, remove low branches, and open up canopies for better light and shape. Great for ornamentals and driveway clearance.</p>
         <table>
           <tr><td>Small (under 10 ft)</td><td>$90</td><td>1–1.5 hrs</td></tr>
           <tr><td>Medium</td><td>$150</td><td>1.5–2.5 hrs</td></tr>
           <tr><td>Large / multiple</td><td>$240</td><td>2.5–4 hrs</td></tr>
         </table>
-        <p class="note">Great for overgrown ornamentals, driveway clearance, and shaping.</p>
-      </div>
-
-      <!-- Weed Pulling -->
-      <div class="service-card">
-        <h3>🌱 Weed Pulling (Beds)</h3>
-        <p class="desc">Hand‑pull weeds from beds and walkways, removing roots to slow regrowth.</p>
-        <table>
-          <tr><td>Small beds</td><td>$45</td><td>0.5–1 hr</td></tr>
-          <tr><td>Medium beds</td><td>$75</td><td>1–1.5 hrs</td></tr>
-          <tr><td>Large / overgrown beds</td><td>$130</td><td>1.5–3 hrs</td></tr>
-        </table>
-        <p class="note">Great before mulch installation or seasonal cleanups.</p>
+        <p class="note">Great for overgrown ornamentals and shaping.</p>
       </div>
 
       <!-- Gutter Cleaning -->
       <div class="service-card">
         <h3>🏠 Gutter Cleaning</h3>
-        <p class="desc">Clear gutters and downspouts to prevent clogs, overflow, and water damage.</p>
+        <p class="desc">Clear gutters and downspouts to prevent clogs, overflow, and water damage to your home's foundation.</p>
         <table>
           <tr><td>Small (single story)</td><td>$90</td><td>1–1.5 hrs</td></tr>
           <tr><td>Medium home</td><td>$140</td><td>1.5–2 hrs</td></tr>
           <tr><td>Large / multi‑story</td><td>$220</td><td>2–3 hrs</td></tr>
         </table>
-        <p class="note">Recommended at least once a year, or more for heavily treed lots.</p>
+        <p class="note">Recommended at least once a year, more often for heavily treed lots.</p>
       </div>
-      <!-- Mulch installation -->
+
+      <!-- Mulch Installation -->
       <div class="service-card">
-        <h3>🌱 Mulch installation</h3>
-        <p class="desc">Install mulch into you beds or anywhere else needed.(price varys depending on selected mulch type)</p>
+        <h3>🌱 Mulch Installation</h3>
+        <p class="desc">Install fresh mulch in beds or anywhere else needed. Price varies depending on mulch type and coverage area.</p>
         <table>
-          <tr><td>Small Area</td><td>$65-$95</td><td>1–1.5 hrs</td></tr>
-          <tr><td>Medium Area</td><td>$95-$150</td><td>1.5–2 hrs</td></tr>
-          <tr><td>Large / multi‑Area</td><td>$150-$200</td><td>2–3 hrs</td></tr>
+          <tr><td>Small area</td><td>$65–$95</td><td>1–1.5 hrs</td></tr>
+          <tr><td>Medium area</td><td>$95–$150</td><td>1.5–2 hrs</td></tr>
+          <tr><td>Large / multi‑area</td><td>$150–$200</td><td>2–3 hrs</td></tr>
         </table>
-        <p class="note">Recommended at least once a year in spring for a brand new look, also reccomended with Weed Pulling and Weed Control.</p>
+        <p class="note">Recommended annually in spring. Best paired with Weed Management for long-lasting results.</p>
       </div>
 
     </div><!-- end grid -->
@@ -608,9 +611,9 @@
     <div class="package-card">
       <div class="package-info">
         <h4>Premium Lawn Package</h4>
-        <p class="desc">Full‑service lawn care with mowing, fertilization, weed control, and aeration.</p>
-        <p class="meta"><strong>Frequency:</strong> Weekly mowing, plus treatment visits every 4–6 weeks.</p>
-        <p class="meta"><strong>Includes:</strong> Weekly mowing & cleanup, 3–4 fertilization visits/yr, 2–3 weed control visits, and 1 aeration visit annually.</p>
+        <p class="desc">Full‑service lawn care with mowing, lawn health visits, weed management, and aeration.</p>
+        <p class="meta"><strong>Frequency:</strong> Weekly mowing, plus care visits every 4–6 weeks.</p>
+        <p class="meta"><strong>Includes:</strong> Weekly mowing & cleanup, 3–4 lawn health visits/yr, 2–3 weed management sessions, and 1 aeration visit annually.</p>
       </div>
       <div class="package-table-wrap">
         <table>
@@ -662,9 +665,9 @@
     <div class="package-card orange">
       <div class="package-info">
         <h4>Bed & Border Package</h4>
-        <p class="desc">A focused refresh for flower beds and borders: weed pulling, crisp edging, and new mulch.</p>
+        <p class="desc">A focused refresh for flower beds and borders: manual weed removal, crisp edging, and new mulch.</p>
         <p class="meta"><strong>Frequency:</strong> One detailed visit (can be repeated seasonally as needed).</p>
-        <p class="meta"><strong>Includes:</strong> Bed cleanup, hand‑weeding, edge reshaping, and mulch install.</p>
+        <p class="meta"><strong>Includes:</strong> Bed cleanup, hand‑weeding (weed management), edge reshaping, and mulch install.</p>
       </div>
       <div class="package-table-wrap">
         <table>
@@ -680,9 +683,9 @@
     <div class="package-card">
       <div class="package-info">
         <h4>Total Lawn Health Plan</h4>
-        <p class="desc">Year‑round care combining mowing, fertilization, weed control, and aeration into one custom plan.</p>
-        <p class="meta"><strong>Frequency:</strong> Weekly mowing visits plus scheduled treatment visits across the season.</p>
-        <p class="meta"><strong>Includes:</strong> Weekly mowing, multiple fertilization & weed control applications, and one aeration per year.</p>
+        <p class="desc">Year‑round care combining mowing, lawn health visits, weed management, and aeration into one custom plan.</p>
+        <p class="meta"><strong>Frequency:</strong> Weekly mowing visits plus scheduled care visits across the season.</p>
+        <p class="meta"><strong>Includes:</strong> Weekly mowing, multiple lawn health & weed management sessions, and one aeration per year.</p>
       </div>
       <div class="package-table-wrap">
         <table>
@@ -695,7 +698,7 @@
     </div>
 
     <div class="cta-bar">
-      <p>Not sure which service fits? <strong>Reach out and I'll help you pick the right option.</strong></p>
+      <p>Not sure which service fits? <strong>Reach out and I'll help you pick the right option — free of charge.</strong></p>
       <a href="contact.html" class="btn">Get a Free Quote</a>
       <a href="about.html" class="btn secondary">About Logan</a>
     </div>
@@ -707,15 +710,26 @@
   </footer>
 
   <script>
+    let menuOpen = false;
     function toggleMenu() {
-      document.getElementById('navMenu').classList.toggle('active');
+      const menu = document.getElementById('navMenu');
+      menuOpen = !menuOpen;
+      menu.classList.toggle('active', menuOpen);
+      if (menuOpen) document.body.style.overflow = 'hidden';
+      else document.body.style.overflow = '';
     }
     document.querySelectorAll('#navMenu a').forEach(link => {
-      link.addEventListener('click', () => document.getElementById('navMenu').classList.remove('active'));
+      link.addEventListener('click', () => {
+        menuOpen = false;
+        document.getElementById('navMenu').classList.remove('active');
+        document.body.style.overflow = '';
+      });
     });
     document.addEventListener('click', e => {
-      if (!document.querySelector('.nav-container').contains(e.target)) {
+      if (menuOpen && !document.querySelector('.nav-container').contains(e.target)) {
+        menuOpen = false;
         document.getElementById('navMenu').classList.remove('active');
+        document.body.style.overflow = '';
       }
     });
   </script>
