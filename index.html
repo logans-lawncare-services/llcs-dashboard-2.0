@@ -397,6 +397,46 @@
       margin-bottom: 3rem;
     }
 
+    /* ── Testimonials ── */
+    .testimonials {
+      padding: 4rem 2rem;
+      background: var(--bg-secondary);
+      text-align: center;
+    }
+    .testimonials h2 {
+      font-size: 2rem;
+      margin-bottom: 2rem;
+      color: var(--text);
+    }
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .testimonial-card {
+      background: var(--bg);
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      border: 1px solid var(--border);
+    }
+    .testimonial-stars {
+      color: #fbbf24;
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+    }
+    .testimonial-card p {
+      font-style: italic;
+      margin-bottom: 1rem;
+      color: var(--text);
+    }
+    .testimonial-card cite {
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
     /* ── CTA Banner ── */
     .cta-banner {
       background: linear-gradient(135deg, rgba(102,185,106,0.12) 0%, rgba(29,78,216,0.12) 100%);
@@ -440,7 +480,6 @@
     @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes fadeInDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* ── Mobile ── */
     @media (max-width: 768px) {
       .menu-toggle { display: inline-flex; }
       nav ul {
@@ -465,11 +504,27 @@
       }
       nav ul li { width: 100%; }
       nav ul li a { display: block; border-radius: 10px; padding: 0.8rem 1rem; font-size: 1rem; }
+      .hero { padding: 2rem 1rem; }
+      .hero h2 { font-size: 2.5rem; }
+      .hero p { font-size: 1rem; }
+      .trust-bar { padding: 1rem; gap: 0.5rem 1rem; font-size: 0.8rem; }
+      .why-grid, .services-grid, .gallery-grid { grid-template-columns: 1fr; gap: 1rem; }
+      .service-card, .why-card, .gallery-card { padding: 1rem; }
+      .cta-banner { padding: 1.5rem 1rem; }
+      .testimonials { padding: 3rem 1rem; }
+      .testimonials h2 { font-size: 1.8rem; }
+      .testimonials-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+      .testimonial-card { padding: 1.5rem; }
     }
     @media (max-width: 480px) {
-      .hero-btns .btn, .cta-btns .btn { width: 100%; justify-content: center; }
-      .why-grid, .services-grid { grid-template-columns: 1fr; }
-      .trust-bar { gap: 0.4rem 1rem; font-size: 0.8rem; }
+      .hero-btns .btn, .cta-btns .btn { width: 100%; justify-content: center; font-size: 0.9rem; padding: 0.8rem 1.2rem; }
+      .hero h2 { font-size: 2rem; }
+      .hero p { font-size: 0.95rem; }
+      .trust-bar { gap: 0.4rem 1rem; font-size: 0.75rem; }
+      .section-title { font-size: 1.5rem; }
+      .section-sub { font-size: 0.9rem; }
+      .why-card h3, .service-card h3 { font-size: 0.95rem; }
+      .gallery-card img { height: 160px; }
     }
   </style>
 </head>
@@ -642,6 +697,28 @@
         </div>
       </div>
     </div>
+
+    <!-- Testimonials -->
+    <section class="testimonials">
+      <h2>What Our Customers Say</h2>
+      <div class="testimonials-grid">
+        <div class="testimonial-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <p>"Logan transformed our yard from overgrown mess to neighborhood envy. Professional, reliable, and great value."</p>
+          <cite>- Sarah M., Maplewood</cite>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <p>"Been using Logan's services for 2 years now. Always on time, thorough work, and honest pricing."</p>
+          <cite>- Mike R., Oakridge</cite>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <p>"The team is fantastic! They handled our landscaping project with care and attention to detail."</p>
+          <cite>- Jennifer L., Pinecrest</cite>
+        </div>
+      </div>
+    </section>
 
     <!-- CTA Banner -->
     <div class="cta-banner">

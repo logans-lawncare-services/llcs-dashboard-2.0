@@ -327,6 +327,36 @@
       border-color: rgba(102,185,106,0.35);
     }
 
+    /* ── Trust Indicators ── */
+    .trust-indicators {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .indicator {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    .indicator .icon {
+      font-size: 2rem;
+      flex-shrink: 0;
+    }
+    .indicator strong {
+      color: var(--text);
+      display: block;
+      margin-bottom: 0.25rem;
+    }
+    .indicator small {
+      color: var(--text-muted);
+    }
+
     /* ── Footer ── */
     footer {
       background: var(--card);
@@ -366,12 +396,24 @@
       }
       nav ul li { width: 100%; }
       nav ul li a { display: block; border-radius: 10px; padding: 0.8rem 1rem; font-size: 1rem; }
+      .info-strip { gap: 0.75rem; }
+      .info-tile { padding: 0.9rem 1rem; }
       .form-card { padding: 1.5rem 1.1rem; }
-      .form-grid { grid-template-columns: 1fr; }
-      .form-group.full { grid-column: 1; }
+      .form-grid { grid-template-columns: 1fr; gap: 0.7rem; }
+      .form-group input, .form-group select, .form-group textarea { font-size: 0.95rem; padding: 0.8rem 1rem; }
+      .submit-btn { font-size: 1rem; padding: 0.9rem 1.5rem; }
     }
     @media (max-width: 480px) {
       .info-tile { flex: 1 1 100%; }
+      .form-card h2 { font-size: 1.5rem; }
+      .form-card .subtitle { font-size: 0.9rem; }
+      .form-group label { font-size: 0.8rem; }
+      .form-group input, .form-group select, .form-group textarea { font-size: 0.9rem; }
+      .submit-btn { font-size: 0.95rem; padding: 0.85rem 1.2rem; }
+      .form-note { font-size: 0.75rem; }
+      .trust-indicators { grid-template-columns: 1fr; gap: 1rem; }
+      .indicator { padding: 0.8rem; }
+      .indicator .icon { font-size: 1.5rem; }
     }
   </style>
 </head>
@@ -428,6 +470,31 @@
         <div>
           <div class="tile-label">Response Time</div>
           <div class="tile-value">Typically within 24 hours</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Trust Indicators -->
+    <div class="trust-indicators">
+      <div class="indicator">
+        <span class="icon">⏱️</span>
+        <div>
+          <strong>Quick Response</strong><br>
+          <small>Get a quote within 24 hours</small>
+        </div>
+      </div>
+      <div class="indicator">
+        <span class="icon">💰</span>
+        <div>
+          <strong>No Hidden Fees</strong><br>
+          <small>Clear, flat-rate pricing</small>
+        </div>
+      </div>
+      <div class="indicator">
+        <span class="icon">🛡️</span>
+        <div>
+          <strong>Fully Insured</strong><br>
+          <small>Peace of mind guaranteed</small>
         </div>
       </div>
     </div>
