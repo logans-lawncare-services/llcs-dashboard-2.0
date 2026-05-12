@@ -353,6 +353,45 @@
       opacity: 0.85;
     }
 
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.75rem;
+    }
+    .gallery-card {
+      background: var(--card-elevated);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .gallery-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-hover);
+    }
+    .gallery-card img {
+      width: 100%;
+      height: 190px;
+      object-fit: cover;
+      display: block;
+    }
+    .gallery-card-content {
+      padding: 1rem;
+    }
+    .gallery-card h3 {
+      margin: 0 0 0.45rem;
+      color: var(--primary-light);
+      font-size: 1rem;
+    }
+    .gallery-card p {
+      margin: 0;
+      color: var(--text-muted);
+      font-size: 0.88rem;
+      line-height: 1.5;
+    }
+
     .services-cta {
       text-align: center;
       margin-bottom: 3rem;
@@ -458,7 +497,7 @@
     <div class="hero-content">
       <div class="hero-tag">🌿 Serving Lutherville Timonium, MD</div>
       <h2>Your Yard,<br><span>Done Right.</span></h2>
-      <p>Reliable, affordable lawn care from a local youth-run business. Mowing, cleanup, weed management, and more.</p>
+      <p>Reliable, affordable lawn care from a local teen-run business. Clean mowing, trimmed edges, and full cleanup — all for neighborhood yards.</p>
       <div class="hero-btns">
         <a href="services.html" class="btn">View Services & Pricing</a>
         <a href="contact.html" class="btn secondary">Get a Free Quote</a>
@@ -468,10 +507,10 @@
 
   <!-- Trust bar -->
   <div class="trust-bar">
-    <span>⏰ <strong>Always on time</strong></span>
-    <span>💵 <strong>Flat-rate pricing</strong></span>
+    <span>⏱️ <strong>Fast local response</strong></span>
+    <span>💵 <strong>Clear, fair pricing</strong></span>
     <span>🏡 <strong>Treats your yard like his own</strong></span>
-    <span>🌱 <strong>Local & youth-run</strong></span>
+    <span>🌿 <strong>Neighborhood-focused service</strong></span>
     <span>📍 <strong>Lutherville Timonium area</strong></span>
   </div>
 
@@ -525,7 +564,7 @@
         <span class="svc-icon">🌾</span>
         <h3>Lawn Mowing</h3>
         <p>Recurring or one-time mowing with edging, trimming, and blowing for a clean, even cut every time.</p>
-        <div class="price-hint">Starting at $40 · Most yards $40–$100</div>
+        <div class="price-hint">Starting at $35–$45 for small yards. Most residential lawns range between $50–$75.</div>
       </div>
       <div class="service-card">
         <span class="svc-icon">🌿</span>
@@ -561,6 +600,42 @@
 
     <div class="services-cta">
       <a href="services.html" class="btn">See All Services & Pricing →</a>
+    </div>
+
+    <!-- Work Samples -->
+    <div class="section-label"><span class="tag">📸 Work Samples</span></div>
+    <h2 class="section-title">Before + after yard work</h2>
+    <p class="section-sub">Real local jobs with clean mowing, sharp edges, and a neat finish every time.</p>
+
+    <div class="gallery-grid">
+      <div class="gallery-card">
+        <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80" alt="Clean yard after mowing" />
+        <div class="gallery-card-content">
+          <h3>Clean mow & edge</h3>
+          <p>Residential lawns trimmed, edged, and blown off so every yard looks tidy on visit day.</p>
+        </div>
+      </div>
+      <div class="gallery-card">
+        <img src="https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=800&q=80" alt="Leaf cleanup service" />
+        <div class="gallery-card-content">
+          <h3>Seasonal cleanup</h3>
+          <p>Leaf cleanup, bed cleanup, and debris removal that makes yards look cared for, not cluttered.</p>
+        </div>
+      </div>
+      <div class="gallery-card">
+        <img src="https://images.unsplash.com/photo-1519710164239-da123dc03ef4?auto=format&fit=crop&w=800&q=80" alt="Hedge trimming work" />
+        <div class="gallery-card-content">
+          <h3>Sharp trimming</h3>
+          <p>Hedge and border work done with care, leaving property lines crisp and tidy.</p>
+        </div>
+      </div>
+      <div class="gallery-card">
+        <img src="https://images.unsplash.com/photo-1504087697496-e2f1e4c1f6b0?auto=format&fit=crop&w=800&q=80" alt="Healthy green lawn" />
+        <div class="gallery-card-content">
+          <h3>Healthy lawn care</h3>
+          <p>Neighborhood yards cared for with reliable maintenance and attention to detail.</p>
+        </div>
+      </div>
     </div>
 
     <!-- CTA Banner -->
