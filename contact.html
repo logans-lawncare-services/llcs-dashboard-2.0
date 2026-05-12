@@ -436,9 +436,10 @@
     <div class="form-card">
       <div class="tag">📬 Get a Free Quote</div>
       <h2>Request a Quote</h2>
-      <p class="subtitle">Fill out the form below and I'll get back to you within 24 hours with a clear, flat-rate price — no surprise fees.</p>
+      <p class="subtitle">Fill out the form below and I’ll get back to you within 24 hours with a clear, flat-rate price — no surprise fees. If you’re not sure which service fits, choose Other / Not Sure.</p>
 
       <form action="https://formspree.io/f/xeenpqwj" method="POST" id="contactForm">
+        <input type="hidden" name="source" value="website_form" />
         <div class="form-grid">
           <div class="form-group">
             <label for="name">Full Name *</label>
@@ -456,18 +457,18 @@
             <label for="service">Service Interested In *</label>
             <select id="service" name="service" required>
               <option value="">Select a service</option>
-              <option value="mowing">🌾 Lawn Mowing</option>
-              <option value="aeration">🌬️ Lawn Aeration</option>
+              <option value="lawn-mowing">🌾 Lawn Mowing</option>
+              <option value="lawn-aeration">🌬️ Lawn Aeration</option>
               <option value="lawn-health">🌿 Lawn Health Care</option>
               <option value="weed-management">🌱 Weed Management (manual)</option>
-              <option value="cleanup">🧹 Yard Cleanup</option>
+              <option value="yard-cleanup">🧹 Yard Cleanup</option>
               <option value="leaf-removal">🍂 Leaf Removal</option>
-              <option value="cleaning">🏡 Outdoor Cleaning</option>
+              <option value="outdoor-cleaning">🏡 Outdoor Cleaning</option>
               <option value="pressure-washing">💧 Pressure Washing</option>
               <option value="hedge-trimming">✂️ Hedge Trimming</option>
               <option value="tree-trimming">🌳 Small Tree Trimming</option>
               <option value="gutter-cleaning">🏠 Gutter Cleaning</option>
-              <option value="mulch">🌱 Mulch Installation</option>
+              <option value="mulch-installation">🌱 Mulch Installation</option>
               <option value="package">📦 Service Package</option>
               <option value="other">Other / Not Sure</option>
             </select>
@@ -503,7 +504,7 @@
           </div>
         </div>
         <button type="submit" class="submit-btn">Request My Free Quote →</button>
-        <p class="form-note">* Required fields. I'll respond within 24 hours with a clear quote — no pressure, no obligations.</p>
+        <p class="form-note">* Required fields. Your request is saved for dashboard tracking and will be answered within 24 hours with a clear quote — no pressure, no obligations.</p>
       </form>
 
       <div class="employee-link">
