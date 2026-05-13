@@ -719,6 +719,22 @@
       border:none;
       box-shadow:0 3px 10px rgba(0,0,0,.35);
     }
+    .quick-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      padding: 0.85rem 0.5rem 0.75rem;
+      margin: 0.8rem 0 1.1rem;
+      border-radius: 16px;
+      background: rgba(16, 24, 40, 0.9);
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+    .quick-actions .btn {
+      flex: 1 1 150px;
+      justify-content: center;
+      border-radius: 999px;
+      min-height: 42px;
+    }
 
 
     @media (max-width: 599px) {
@@ -883,6 +899,11 @@
           <p style="font-size:0.82rem;color:#9ca3af;">
             All data is stored locally in this browser for your LLCS GitHub Pages site.
           </p>
+        </div>
+        <div class="quick-actions">
+          <button type="button" class="btn secondary small">Add new job</button>
+          <button type="button" class="btn secondary small">Log new expense</button>
+          <button type="button" class="btn secondary small">Review quotes</button>
         </div>
 
         <div class="card" id="homeAdminCard" style="display:none;">
