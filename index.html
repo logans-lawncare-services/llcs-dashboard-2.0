@@ -878,10 +878,24 @@
 
     function getStoredReviews() {
       try {
-        return JSON.parse(localStorage.getItem('bd_reviews') || '[]');
+        const stored = JSON.parse(localStorage.getItem('bd_reviews') || '[]');
+        if (stored.length) {
+          return stored;
+        }
       } catch (err) {
-        return [];
+        // ignore and fallback
       }
+      if (location.protocol === 'file:') {
+        try {
+          const state = window.name ? JSON.parse(window.name) : null;
+          if (state && Array.isArray(state.bd_reviews)) {
+            return state.bd_reviews;
+          }
+        } catch (err) {
+          return [];
+        }
+      }
+      return [];
     }
 
     function renderHomeReviews() {

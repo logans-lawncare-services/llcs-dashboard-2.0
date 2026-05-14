@@ -820,7 +820,17 @@
       const reviews = getReviews();
       reviews.unshift(review);
       if (reviews.length > 30) reviews.splice(30);
-      localStorage.setItem('bd_reviews', JSON.stringify(reviews));
+      const payload = JSON.stringify(reviews);
+      localStorage.setItem('bd_reviews', payload);
+      if (location.protocol === 'file:') {
+        try {
+          const state = window.name ? JSON.parse(window.name) : {};
+          state.bd_reviews = reviews;
+          window.name = JSON.stringify(state);
+        } catch (err) {
+          window.name = JSON.stringify({ bd_reviews: reviews });
+        }
+      }
     }
 
     function renderRecentReviews() {
