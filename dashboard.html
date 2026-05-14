@@ -1913,6 +1913,19 @@
     const DEFAULT_META = { version: 4 };
     const ROLES = { FOUNDER: 'founder', ADMIN: 'admin', EMPLOYEE: 'employee' };
 
+    // Notification helpers
+    function requestNotificationPermission() {
+      if ('Notification' in window && Notification.permission === 'default') {
+        Notification.requestPermission();
+      }
+    }
+
+    function showNotification(title, body, icon = 'https://i.postimg.cc/3RJNmCnN/Untitled-removebg-preview.png') {
+      if ('Notification' in window && Notification.permission === 'granted') {
+        new Notification(title, { body: body, icon: icon });
+      }
+    }
+
     const DEFAULT_ROLE_PERMISSIONS = {
       [ROLES.FOUNDER]: {
         viewCustomers: true,
@@ -4934,6 +4947,21 @@
         renderReviewsSummary();
         refreshUsersTable();
         renderSubmissionsTable();
+        requestNotificationPermission();
+        // Notify about new submissions
+        const subs = getSubmissions();
+        const newCount = subs.filter(s => s.status === 'new').length;
+        if (newCount > 0) {
+          showNotification('New Inquiries', `You have ${newCount} new contact submission${newCount > 1 ? 's' : ''} waiting for review.`);
+        }
+        // Notify about pending expenses if admin
+        if (isAdmin(u)) {
+          const expenses = readJSON(STORAGE_KEYS.expenses, []);
+          const pendingCount = expenses.filter(e => e.status === 'pending').length;
+          if (pendingCount > 0) {
+            showNotification('Pending Expenses', `You have ${pendingCount} expense${pendingCount > 1 ? 's' : ''} awaiting approval.`);
+          }
+        }
       } else {
         showLogin();
       }

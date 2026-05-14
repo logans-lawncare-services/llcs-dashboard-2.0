@@ -733,6 +733,19 @@
   </footer>
 
   <script>
+    // Notification helpers
+    function requestNotificationPermission() {
+      if ('Notification' in window && Notification.permission === 'default') {
+        Notification.requestPermission();
+      }
+    }
+
+    function showNotification(title, body, icon = 'https://i.postimg.cc/3RJNmCnN/Untitled-removebg-preview.png') {
+      if ('Notification' in window && Notification.permission === 'granted') {
+        new Notification(title, { body: body, icon: icon });
+      }
+    }
+
     let menuOpen = false;
     function toggleMenu() {
       const menu = document.getElementById('navMenu');
@@ -782,6 +795,7 @@
       } catch(err) { submissions = []; }
       submissions.push(submission);
       localStorage.setItem('bd_submissions', JSON.stringify(submissions));
+      showNotification('Quote Request Sent', 'Thank you! Your quote request has been submitted. We\'ll get back to you soon.');
       form.submit();
     });
 
@@ -846,6 +860,7 @@
         source: 'contact_review'
       };
       saveReview(review);
+      showNotification('Review Submitted', 'Thank you for your feedback! Your review has been posted.');
       document.getElementById('reviewForm').reset();
       document.getElementById('reviewSuccess').style.display = 'block';
       setTimeout(() => { document.getElementById('reviewSuccess').style.display = 'none'; }, 4200);
@@ -867,6 +882,8 @@
         if (opt) svc.value = hash;
       }
     }
+
+    requestNotificationPermission();
   </script>
 </body>
 </html>
