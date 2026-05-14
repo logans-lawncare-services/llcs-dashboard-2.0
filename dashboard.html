@@ -719,22 +719,6 @@
       border:none;
       box-shadow:0 3px 10px rgba(0,0,0,.35);
     }
-    .quick-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.75rem;
-      padding: 0.85rem 0.5rem 0.75rem;
-      margin: 0.8rem 0 1.1rem;
-      border-radius: 16px;
-      background: rgba(16, 24, 40, 0.9);
-      border: 1px solid rgba(255,255,255,0.06);
-    }
-    .quick-actions .btn {
-      flex: 1 1 150px;
-      justify-content: center;
-      border-radius: 999px;
-      min-height: 42px;
-    }
 
 
     @media (max-width: 599px) {
@@ -900,10 +884,22 @@
             All data is stored locally in this browser for your LLCS GitHub Pages site.
           </p>
         </div>
-        <div class="quick-actions">
-          <button type="button" class="btn secondary small">Add new job</button>
-          <button type="button" class="btn secondary small">Log new expense</button>
-          <button type="button" class="btn secondary small">Review quotes</button>
+
+        <div class="card">
+          <div class="card-header">Estimate calculator</div>
+          <div class="card-subtitle">Pick a service and size to see the estimated price instantly.</div>
+          <div class="form-actions" style="flex-wrap:wrap;align-items:center;gap:0.65rem;margin-top:0.8rem;">
+            <select id="homeEstimateService" style="min-width:220px;border:1px solid var(--border);background:#020617;color:var(--text);padding:0.4rem 0.7rem;border-radius:999px;"></select>
+            <select id="homeEstimateSize" style="min-width:180px;border:1px solid var(--border);background:#020617;color:var(--text);padding:0.4rem 0.7rem;border-radius:999px;"></select>
+            <div id="homeEstimateResult" style="font-weight:700;color:#aee2b2;">$0.00</div>
+          </div>
+          <div id="homeEstimateDescription" style="margin-top:0.75rem;color:#9ca3af;font-size:0.9rem;">Select a service to see details.</div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">Customer reviews</div>
+          <div class="card-subtitle">Latest feedback submitted from the contact page.</div>
+          <div id="homeReviewsList" style="margin-top:0.8rem;"></div>
         </div>
 
         <div class="card" id="homeAdminCard" style="display:none;">
@@ -4913,6 +4909,7 @@
       refreshCharts();
       refreshMoney();
       updateBadgesAndHomeBanner();
+      renderReviewsSummary();
     }
 
     window.addEventListener('load', () => {
@@ -4933,6 +4930,8 @@
         showDashboard();
         setActiveTab(lastTab in tabs ? lastTab : 'homeTab');
         refreshAllUI();
+        initQuoteServiceListeners();
+        renderReviewsSummary();
         refreshUsersTable();
         renderSubmissionsTable();
       } else {
@@ -5145,6 +5144,10 @@
           actions.appendChild(mkBtn('🏁 Complete', 'secondary', () => updateSubmissionStatus(sub.id, 'completed')));
         }
 
+        if (!['rejected', 'completed'].includes(sub.status || '')) {
+          actions.appendChild(mkBtn('💬 Quote', 'secondary', () => convertSubmissionToQuote(sub)));
+        }
+
         // Convert to Job
         if (['accepted', 'scheduled'].includes(sub.status || '')) {
           actions.appendChild(mkBtn('🔁 → Job', '', () => openConvertJobModal(sub)));
@@ -5216,6 +5219,35 @@
       updateBadgesAndHomeBanner();
       appendAuditLog('submission_added', 'Manual inquiry from ' + sub.name, sub.service || '');
       showToast('Inquiry logged — ' + sub.name);
+    }
+
+    function convertSubmissionToQuote(sub) {
+      if (!sub) return;
+      const service = sub.service || (QUOTE_SERVICES[0] ? QUOTE_SERVICES[0].key : '');
+      const size    = sub.yardSize || 'small';
+      const svc     = getServiceData(service);
+      const price   = svc && svc.sizes[size] ? svc.sizes[size].price : (Number(sub.estimatedPrice) || 0);
+      const quote = {
+        id: nextQuoteNumber(),
+        customer: sub.name || 'Customer',
+        email: sub.email || '',
+        address: sub.address || '',
+        service: service,
+        size: size,
+        price: price,
+        notes: sub.message || '',
+        date: new Date().toLocaleDateString(),
+        status: 'pending',
+        sourceSubmissionId: sub.id
+      };
+      quotes.push(quote);
+      saveQuotes();
+      renderQuotes();
+      if (['new', 'reviewed'].includes(sub.status)) {
+        updateSubmissionStatus(sub.id, 'accepted');
+      }
+      appendAuditLog('submission_to_quote', 'Converted submission to quote: ' + sub.name, sub.service || '');
+      showToast('Submission converted into quote.');
     }
 
     function exportSubmissionsCSV() {
@@ -5582,6 +5614,73 @@
       sel.appendChild(opt);
     });
   })();
+
+  function initQuoteServiceListeners() {
+    const quoteServiceEl = document.getElementById('quoteService');
+    const quoteSizeEl = document.getElementById('quoteSize');
+    if (quoteServiceEl) quoteServiceEl.addEventListener('change', updateServiceInfoAndPrice);
+    if (quoteSizeEl) quoteSizeEl.addEventListener('change', updateServiceInfoAndPrice);
+
+    const homeServiceEl = document.getElementById('homeEstimateService');
+    const homeSizeEl = document.getElementById('homeEstimateSize');
+    if (!homeServiceEl || !homeSizeEl) return;
+    homeServiceEl.innerHTML = QUOTE_SERVICES.map(function(s) {
+      return '<option value="' + s.key + '">' + s.label + '</option>';
+    }).join('');
+    ['small', 'medium', 'large'].forEach(function(sz) {
+      homeSizeEl.insertAdjacentHTML('beforeend', '<option value="' + sz + '">' + sz.charAt(0).toUpperCase() + sz.slice(1) + '</option>');
+    });
+    homeServiceEl.addEventListener('change', updateHomeEstimate);
+    homeSizeEl.addEventListener('change', updateHomeEstimate);
+    homeServiceEl.value = QUOTE_SERVICES.length ? QUOTE_SERVICES[0].key : '';
+    homeSizeEl.value = 'small';
+    updateHomeEstimate();
+  }
+
+  function updateHomeEstimate() {
+    const serviceSelect = document.getElementById('homeEstimateService');
+    const sizeSelect = document.getElementById('homeEstimateSize');
+    const result = document.getElementById('homeEstimateResult');
+    const desc = document.getElementById('homeEstimateDescription');
+    if (!serviceSelect || !sizeSelect || !result || !desc) return;
+    const svc = getServiceData(serviceSelect.value);
+    const sizeKey = sizeSelect.value || 'small';
+    const sizeData = svc ? svc.sizes[sizeKey] : null;
+    if (!svc || !sizeData) {
+      result.textContent = '$0.00';
+      desc.textContent = 'Select a service to see details.';
+      return;
+    }
+    result.textContent = '$' + Number(sizeData.price).toFixed(2);
+    desc.textContent = sizeData.label + ' · ' + sizeData.time;
+  }
+
+  function getReviews() {
+    try {
+      return JSON.parse(localStorage.getItem('bd_reviews') || '[]');
+    } catch (err) {
+      return [];
+    }
+  }
+
+  function renderReviewsSummary() {
+    const host = document.getElementById('homeReviewsList');
+    if (!host) return;
+    const reviews = getReviews();
+    if (!reviews.length) {
+      host.innerHTML = '<div style="color:#9ca3af;font-size:0.9rem;">No customer reviews yet. Reviews submitted from the contact page appear here.</div>';
+      return;
+    }
+    host.innerHTML = reviews.slice(0, 3).map(function(r) {
+      return '<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(148,163,184,0.18);border-radius:14px;padding:0.85rem;">' +
+        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.45rem;color:#e5e7eb;font-weight:700;">' +
+          '<span>' + escapeHtml(r.name || 'Guest') + '</span>' +
+          '<span style="color:#aee2b2;">' + '★'.repeat(Math.min(5, Math.max(0, r.rating || 0))) + '</span>' +
+        '</div>' +
+        '<div style="color:#cbd5e1;font-size:0.92rem;white-space:pre-wrap;line-height:1.6;">' + escapeHtml(r.message || '') + '</div>' +
+      '</div>';
+    }).join('');
+  }
 
   function getServiceData(key) {
     return QUOTE_SERVICES.find(function(s) { return s.key === key; }) || null;

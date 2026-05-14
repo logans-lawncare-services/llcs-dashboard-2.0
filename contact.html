@@ -530,7 +530,7 @@
         <span class="tile-icon">📞</span>
         <div>
           <div class="tile-label">Phone</div>
-          <div class="tile-value"><a href="tel:4103715470">(410) 371-5470</a></div>
+          <div class="tile-value"><a href="tel:4103715470">(410) 371-5470</a> · <a href="sms:+14103715470">Text us</a></div>
         </div>
       </div>
       <div class="info-tile">
@@ -578,21 +578,6 @@
           <strong>Fully Insured</strong><br>
           <small>Peace of mind guaranteed</small>
         </div>
-      </div>
-    </div>
-
-    <div class="path-guide">
-      <div class="guide-step">
-        <strong>1. Choose a service</strong>
-        <p>Select the option that matches your yard: mowing, cleanup, aeration, or a package.</p>
-      </div>
-      <div class="guide-step">
-        <strong>2. Pick a job size</strong>
-        <p>Tell me if the visit is small, medium, or large so I can give an accurate flat-rate estimate.</p>
-      </div>
-      <div class="guide-step">
-        <strong>3. Confirm timing</strong>
-        <p>Choose one-time, weekly, bi-weekly, or seasonal support — whatever fits your school schedule.</p>
       </div>
     </div>
 
@@ -674,6 +659,40 @@
       <div class="employee-link">
         <a href="dashboard.html" class="btn-secondary-link">🔐 Employee Sign In</a>
       </div>
+    </div>
+
+    <div class="form-card">
+      <div class="tag">⭐ Customer Reviews</div>
+      <h2>Leave a Review</h2>
+      <p class="subtitle">Share honest feedback once your yard service is complete. Your review is saved automatically and helps build real local trust.</p>
+      <form id="reviewForm" onsubmit="return false;">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="reviewName">Name *</label>
+            <input type="text" id="reviewName" placeholder="Your name" required autocomplete="name" />
+          </div>
+          <div class="form-group">
+            <label for="reviewRating">Rating *</label>
+            <select id="reviewRating" required>
+              <option value="">Select rating</option>
+              <option value="5">5 stars</option>
+              <option value="4">4 stars</option>
+              <option value="3">3 stars</option>
+              <option value="2">2 stars</option>
+              <option value="1">1 star</option>
+            </select>
+          </div>
+          <div class="form-group full">
+            <label for="reviewMessage">Review *</label>
+            <textarea id="reviewMessage" placeholder="Tell us what went well, and what we can improve..." required></textarea>
+          </div>
+        </div>
+        <button type="submit" class="submit-btn" id="reviewSubmitBtn">Submit Review →</button>
+      </form>
+      <div id="reviewSuccess" style="display:none;margin-top:1rem;padding:0.9rem 1rem;border-radius:14px;background:rgba(34,197,94,0.12);border:1px solid rgba(34,197,94,0.28);color:#d9f99d;">
+        Thanks! Your review has been saved and will show up on the customer feedback list.
+      </div>
+      <div id="recentReviews" style="margin-top:1.25rem;"></div>
     </div>
 
   </main>
@@ -765,6 +784,75 @@
       localStorage.setItem('bd_submissions', JSON.stringify(submissions));
       form.submit();
     });
+
+    function escapeHtml(text) {
+      return String(text || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function getReviews() {
+      try {
+        return JSON.parse(localStorage.getItem('bd_reviews') || '[]');
+      } catch (err) {
+        return [];
+      }
+    }
+
+    function saveReview(review) {
+      const reviews = getReviews();
+      reviews.unshift(review);
+      if (reviews.length > 30) reviews.splice(30);
+      localStorage.setItem('bd_reviews', JSON.stringify(reviews));
+    }
+
+    function renderRecentReviews() {
+      const host = document.getElementById('recentReviews');
+      if (!host) return;
+      const reviews = getReviews();
+      if (!reviews.length) {
+        host.innerHTML = '<div style="color:#9ca3af;font-size:0.9rem;">No reviews yet. Be the first to leave honest feedback.</div>';
+        return;
+      }
+      host.innerHTML = '<div style="display:grid;gap:0.8rem;">' + reviews.slice(0, 3).map(r =>
+        '<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(148,163,184,0.18);border-radius:14px;padding:0.85rem;">' +
+          '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.45rem;color:#e5e7eb;font-weight:700;">' +
+            '<span>' + escapeHtml(r.name) + '</span>' +
+            '<span style="color:#aee2b2;">' + '★'.repeat(r.rating) + '</span>' +
+          '</div>' +
+          '<div style="color:#cbd5e1;font-size:0.92rem;white-space:pre-wrap;line-height:1.6;">' + escapeHtml(r.message) + '</div>' +
+        '</div>'
+      ).join('') + '</div>';
+    }
+
+    document.getElementById('reviewForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const name = (document.getElementById('reviewName').value || '').trim();
+      const rating = document.getElementById('reviewRating').value;
+      const message = (document.getElementById('reviewMessage').value || '').trim();
+      if (!name || !rating || !message) {
+        alert('Please enter your name, rating, and a review message.');
+        return;
+      }
+      const review = {
+        id: 'rev_' + Date.now(),
+        name: name,
+        rating: Number(rating),
+        message: message,
+        date: new Date().toISOString(),
+        source: 'contact_review'
+      };
+      saveReview(review);
+      document.getElementById('reviewForm').reset();
+      document.getElementById('reviewSuccess').style.display = 'block';
+      setTimeout(() => { document.getElementById('reviewSuccess').style.display = 'none'; }, 4200);
+      renderRecentReviews();
+    });
+
+    renderRecentReviews();
 
     if (location.protocol === 'file:') {
       document.getElementById('fileWarning').style.display = 'block';
