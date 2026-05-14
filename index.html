@@ -783,22 +783,8 @@
     <!-- Testimonials -->
     <section class="testimonials">
       <h2>What Our Customers Say</h2>
-      <div class="testimonials-grid">
-        <div class="testimonial-card">
-          <div class="testimonial-stars">★★★★★</div>
-          <p>"Logan transformed our yard from overgrown mess to neighborhood envy. Professional, reliable, and great value."</p>
-          <cite>- Sarah M., Maplewood</cite>
-        </div>
-        <div class="testimonial-card">
-          <div class="testimonial-stars">★★★★★</div>
-          <p>"Been using Logan's services for 2 years now. Always on time, thorough work, and honest pricing."</p>
-          <cite>- Mike R., Oakridge</cite>
-        </div>
-        <div class="testimonial-card">
-          <div class="testimonial-stars">★★★★★</div>
-          <p>"The team is fantastic! They handled our landscaping project with care and attention to detail."</p>
-          <cite>- Jennifer L., Pinecrest</cite>
-        </div>
+      <div class="testimonials-grid" id="reviewsGrid">
+        <!-- Customer reviews are loaded here from local storage. -->
       </div>
     </section>
 
@@ -880,6 +866,68 @@
     document.querySelectorAll('.service-card').forEach((c, i) => {
       c.style.animationDelay = (i * 0.06) + 's';
     });
+
+    function escapeHtml(text) {
+      return String(text || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function getStoredReviews() {
+      try {
+        return JSON.parse(localStorage.getItem('bd_reviews') || '[]');
+      } catch (err) {
+        return [];
+      }
+    }
+
+    function renderHomeReviews() {
+      const host = document.getElementById('reviewsGrid');
+      if (!host) return;
+      const reviews = getStoredReviews();
+      if (!reviews.length) {
+        host.innerHTML = [
+          {
+            stars: '★★★★★',
+            message: '"Logan transformed our yard from overgrown mess to neighborhood envy. Professional, reliable, and great value."',
+            cite: '- Sarah M., Maplewood'
+          },
+          {
+            stars: '★★★★★',
+            message: '"Been using Logan\'s services for 2 years now. Always on time, thorough work, and honest pricing."',
+            cite: '- Mike R., Oakridge'
+          },
+          {
+            stars: '★★★★★',
+            message: '"The team is fantastic! They handled our landscaping project with care and attention to detail."',
+            cite: '- Jennifer L., Pinecrest'
+          }
+        ].map(review =>
+          `<div class="testimonial-card">
+            <div class="testimonial-stars">${review.stars}</div>
+            <p>${review.message}</p>
+            <cite>${review.cite}</cite>
+          </div>`
+        ).join('');
+        return;
+      }
+
+      host.innerHTML = reviews.slice(0, 3).map(review => {
+        const stars = '★'.repeat(Math.min(5, Math.max(0, review.rating || 5))) + '☆'.repeat(Math.max(0, 5 - (review.rating || 5)));
+        return `
+          <div class="testimonial-card">
+            <div class="testimonial-stars">${stars}</div>
+            <p>"${escapeHtml(review.message || '')}"</p>
+            <cite>- ${escapeHtml(review.name || 'Customer')}</cite>
+          </div>
+        `;
+      }).join('');
+    }
+
+    document.addEventListener('DOMContentLoaded', renderHomeReviews);
   </script>
 </body>
 </html>
