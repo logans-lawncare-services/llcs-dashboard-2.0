@@ -928,6 +928,12 @@
     }
 
     document.addEventListener('DOMContentLoaded', renderHomeReviews);
+
+    window.addEventListener('storage', event => {
+      if (!event.key || event.key === 'bd_reviews') {
+        renderHomeReviews();
+      }
+    });
   </script>
 </body>
 </html>

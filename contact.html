@@ -869,6 +869,12 @@
 
     renderRecentReviews();
 
+    window.addEventListener('storage', event => {
+      if (!event.key || event.key === 'bd_reviews') {
+        renderRecentReviews();
+      }
+    });
+
     if (location.protocol === 'file:') {
       document.getElementById('fileWarning').style.display = 'block';
     }

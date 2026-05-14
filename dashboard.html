@@ -5039,6 +5039,13 @@
         });
       }
 
+      window.addEventListener('storage', event => {
+        if (!event.key || event.key === 'bd_reviews') {
+          if (typeof renderReviewsTable === 'function') renderReviewsTable();
+          if (typeof renderReviewsSummary === 'function') renderReviewsSummary();
+        }
+      });
+
       showFileProtocolWarning();
     });
 
@@ -5352,6 +5359,7 @@
       const reviews = getReviews().filter(r => r.id !== id);
       localStorage.setItem('bd_reviews', JSON.stringify(reviews));
       renderReviewsTable();
+      renderReviewsSummary();
       showToast('Review deleted');
     }
 
