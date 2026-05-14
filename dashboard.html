@@ -2678,6 +2678,9 @@
       navLinks.forEach(a => {
         a.classList.toggle('active', a.dataset.tab === id);
       });
+      if (id === 'reviewsTab') {
+        renderReviewsTable();
+      }
       const prefs = getPrefs();
       prefs.lastTab = id;
       savePrefs(prefs);
@@ -4964,6 +4967,9 @@
       refreshMoney();
       updateBadgesAndHomeBanner();
       renderReviewsSummary();
+      if (typeof renderReviewsTable === 'function') {
+        renderReviewsTable();
+      }
     }
 
     window.addEventListener('load', () => {
@@ -5292,7 +5298,18 @@
         const cell = document.createElement('td');
         cell.colSpan = 6;
         cell.style.cssText = 'text-align:center;color:#6b7280;padding:1rem;';
-        cell.textContent = reviews.length ? 'No reviews match your search.' : 'No reviews have been submitted yet.';
+        if (reviews.length) {
+          cell.textContent = 'No reviews match your search.';
+        } else {
+          cell.textContent = 'No reviews have been submitted yet.';
+          if (location.protocol === 'file:') {
+            const note = document.createElement('div');
+            note.style.cssText = 'margin-top:0.6rem;color:#94a3b8;font-size:0.85rem;';
+            note.textContent = 'If you are viewing this dashboard locally via file://, browser storage may not be shared across separate pages. Use a local server or same origin to share reviews between pages.';
+            cell.appendChild(document.createElement('br'));
+            cell.appendChild(note);
+          }
+        }
         row.appendChild(cell);
         body.appendChild(row);
         return;
