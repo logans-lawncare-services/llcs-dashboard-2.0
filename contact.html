@@ -662,6 +662,47 @@
       </div>
     </div>
 
+    <!-- Review section -->
+    <div class="form-card" style="margin-top: 1.5rem;">
+      <div class="tag">⭐ Leave a Review</div>
+      <h2>Share Your Experience</h2>
+      <p class="subtitle">Had a visit? Leave honest feedback to help others know what to expect.</p>
+
+      <div id="reviewSuccess" style="display:none; margin-bottom:1rem; padding:0.75rem 1rem; background:rgba(102,185,106,0.12); border:1px solid rgba(102,185,106,0.35); border-radius:12px; color:#aee2b2; font-size:0.9rem;">
+        Thank you! Your review has been posted.
+      </div>
+
+      <form id="reviewForm">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="reviewName">Your Name *</label>
+            <input type="text" id="reviewName" name="reviewName" placeholder="First name or initials" required />
+          </div>
+          <div class="form-group">
+            <label for="reviewRating">Rating *</label>
+            <select id="reviewRating" name="reviewRating" required>
+              <option value="">Select rating</option>
+              <option value="5">⭐⭐⭐⭐⭐ — Excellent</option>
+              <option value="4">⭐⭐⭐⭐ — Good</option>
+              <option value="3">⭐⭐⭐ — Average</option>
+              <option value="2">⭐⭐ — Below average</option>
+              <option value="1">⭐ — Poor</option>
+            </select>
+          </div>
+          <div class="form-group full">
+            <label for="reviewMessage">Your Review *</label>
+            <textarea id="reviewMessage" name="reviewMessage" placeholder="Tell us about your experience..." required></textarea>
+          </div>
+        </div>
+        <button type="submit" class="submit-btn">Submit Review</button>
+      </form>
+
+      <div style="margin-top: 1.5rem;">
+        <p style="font-size:0.85rem; color:#9ca3af; margin-bottom:0.75rem; font-weight:600; text-transform:uppercase; letter-spacing:0.05em;">Recent Reviews</p>
+        <div id="recentReviews"></div>
+      </div>
+    </div>
+
   </main>
 
   <footer>
