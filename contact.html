@@ -778,34 +778,38 @@
       }
     });
 
-    // Save contact form submissions to localStorage for dashboard tracking
+    // Save contact form submissions to localStorage for dashboard tracking, then submit to Formspree
     document.getElementById('contactForm').addEventListener('submit', function(e) {
       e.preventDefault();
       const form = this;
       const formData = new FormData(form);
-      const submission = {
-        id: 'sub_' + Date.now(),
-        name: formData.get('name'),
-        email: formData.get('email') || '',
-        phone: formData.get('phone') || '',
-        address: formData.get('address') || '',
-        service: formData.get('service') || '',
-        yardSize: formData.get('yard_size') || '',
-        frequency: formData.get('frequency') || '',
-        message: formData.get('message'),
-        date: new Date().toISOString(),
-        source: 'website_form',
-        status: 'new'
-      };
-      let submissions = [];
+      // Save to localStorage (best-effort — never blocks form submission)
       try {
-        const stored = localStorage.getItem('bd_submissions');
-        submissions = stored ? JSON.parse(stored) : [];
-      } catch(err) { submissions = []; }
-      submissions.push(submission);
-      localStorage.setItem('bd_submissions', JSON.stringify(submissions));
+        const submission = {
+          id: 'sub_' + Date.now(),
+          name: formData.get('name'),
+          email: formData.get('email') || '',
+          phone: formData.get('phone') || '',
+          address: formData.get('address') || '',
+          service: formData.get('service') || '',
+          yardSize: formData.get('yard_size') || '',
+          frequency: formData.get('frequency') || '',
+          message: formData.get('message'),
+          date: new Date().toISOString(),
+          source: 'website_form',
+          status: 'new'
+        };
+        let submissions = [];
+        try {
+          const stored = localStorage.getItem('bd_submissions');
+          submissions = stored ? JSON.parse(stored) : [];
+          if (!Array.isArray(submissions)) submissions = [];
+        } catch(_) { submissions = []; }
+        submissions.push(submission);
+        localStorage.setItem('bd_submissions', JSON.stringify(submissions));
+      } catch(_) { /* localStorage unavailable — ignore */ }
       showNotification('Quote Request Sent', 'Thank you! Your quote request has been submitted. We\'ll get back to you soon.');
-      form.submit();
+      form.submit(); // Always fires — localStorage errors can't block this
     });
 
     function escapeHtml(text) {
@@ -879,6 +883,18 @@
         source: 'contact_review'
       };
       saveReview(review);
+      // Also send to Formspree so Logan gets an email notification of new reviews
+      fetch('https://formspree.io/f/xeenpqwj', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({
+          _subject: '⭐ New Review (' + rating + '/5) from ' + name,
+          reviewer_name: name,
+          rating: rating + ' / 5 stars',
+          review_message: message,
+          source: 'website_review_form'
+        })
+      }).catch(function() { /* silent fail — local save already done */ });
       showNotification('Review Submitted', 'Thank you for your feedback! Your review has been posted.');
       document.getElementById('reviewForm').reset();
       document.getElementById('reviewSuccess').style.display = 'block';

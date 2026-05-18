@@ -3,6 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Learn about Logan, a 13-year-old running Logan's Lawncare Services in Lutherville-Timonium, MD. Honest, dependable, manual lawn care for your neighborhood." />
+  <meta name="theme-color" content="#0b1728" />
+  <meta property="og:title" content="About - Logan's Lawncare Services" />
+  <meta property="og:description" content="Meet Logan — a local teen providing reliable, product-free lawn care in Lutherville-Timonium, MD. School-friendly schedules, flat-rate pricing." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="https://i.postimg.cc/3RJNmCnN/Untitled-removebg-preview.png" />
+  <meta name="twitter:card" content="summary_large_image" />
   <title>About - Logan's Lawncare Services</title>
   <link rel="icon" type="image/png" href="https://i.postimg.cc/3RJNmCnN/Untitled-removebg-preview.png" />
   <style>
@@ -124,13 +131,14 @@
       color: var(--primary-light);
     }
 
-    /* ── Main Content ── */
+    /* ── Main ── */
     main {
       max-width: 860px;
       margin: 2rem auto;
       padding: 0 1rem 3rem;
     }
 
+    /* ── About Card ── */
     .about-card {
       background: var(--card-elevated);
       border: 1px solid var(--border);
@@ -168,11 +176,27 @@
     }
     .about-card p:last-of-type { margin-bottom: 0; }
 
+    /* ── Section label (FIX: was used but CSS never defined) ── */
+    .section-label {
+      margin: 1.75rem 0 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+      margin-left: 0.5rem;
+    }
+
+    /* ── Highlight items ── */
     .highlight-row {
       display: flex;
       flex-wrap: wrap;
       gap: 1rem;
-      margin-top: 1.75rem;
+      margin-top: 1.5rem;
     }
     .highlight-item {
       flex: 1 1 180px;
@@ -186,7 +210,7 @@
     .highlight-item:hover { transform: translateY(-3px); box-shadow: var(--shadow-hover); }
     .highlight-item .icon { font-size: 1.8rem; margin-bottom: 0.4rem; display: block; }
     .highlight-item strong { display: block; color: var(--primary-light); font-size: 0.9rem; margin-bottom: 0.2rem; }
-    .highlight-item span { color: var(--text-muted); font-size: 0.82rem; }
+    .highlight-item span { color: var(--text-muted); font-size: 0.82rem; line-height: 1.5; }
 
     .equip-item {
       flex: 1 1 100%;
@@ -194,6 +218,7 @@
       padding: 1.25rem 1.4rem;
     }
 
+    /* ── CTA row ── */
     .cta-row {
       margin-top: 1.75rem;
       display: flex;
@@ -233,37 +258,83 @@
       background: var(--card);
       border-top: 1px solid var(--border);
       color: var(--text-muted);
-      text-align: center;
-      padding: 1.5rem 1rem;
-      font-size: 0.88rem;
+      padding: 2rem 1rem 1.2rem;
+      font-size: 0.9rem;
+    }
+    .footer-content {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(170px, 1fr));
+      gap: 1rem;
+      max-width: 1200px;
+      margin: 0 auto 1rem;
+      text-align: left;
+    }
+    .footer-section h4 { color: var(--text); margin-bottom: 0.6rem; font-size: 1rem; }
+    .footer-section p { color: var(--text-muted); margin-bottom: 0.5rem; line-height: 1.6; }
+    .social-links { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 0.4rem; }
+    .social-links a {
+      color: var(--text);
+      text-decoration: none;
+      background: rgba(102,185,106,0.12);
+      padding: 0.45rem 0.8rem;
+      border-radius: 999px;
+      transition: transform 0.15s ease, background 0.15s ease;
+    }
+    .social-links a:hover { transform: translateY(-1px); background: rgba(102,185,106,0.2); }
+    .newsletter-form { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.4rem; }
+    .newsletter-form input {
+      flex: 1 1 150px; min-width: 0;
+      padding: 0.75rem 0.9rem;
+      border: 1px solid rgba(148,163,184,0.3);
+      border-radius: 999px;
+      background: rgba(255,255,255,0.05);
+      color: #f8fafc; outline: none;
+    }
+    .newsletter-form button {
+      padding: 0.75rem 1rem;
+      border-radius: 999px; border: none;
+      background: var(--primary); color: #0b1728;
+      cursor: pointer; font-weight: 600;
+      transition: transform 0.15s ease, filter 0.15s ease;
+    }
+    .newsletter-form button:hover { filter: brightness(1.05); transform: translateY(-1px); }
+    .footer-bottom {
+      display: flex;
+      justify-content: center;
+      border-top: 1px solid rgba(148,163,184,0.12);
+      padding-top: 1rem;
+      color: var(--text-muted);
+      font-size: 0.85rem;
     }
 
     /* ── Animations ── */
     @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes fadeInDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* ── Mobile ── */
+    /* ── Responsive ── */
+    @media (max-width: 900px) { .footer-content { grid-template-columns: repeat(2, minmax(200px, 1fr)); } }
     @media (max-width: 768px) {
       .menu-toggle { display: inline-flex; }
       nav ul {
         display: none;
         position: absolute;
-        top: 100%;
-        left: 0; right: 0;
+        top: 100%; left: 0; right: 0;
         background: rgba(11,23,40,0.99);
         flex-direction: column;
         padding: 0.75rem 1rem 1rem;
         border-bottom: 1px solid var(--border);
         box-shadow: 0 8px 20px rgba(0,0,0,0.5);
-        max-height: 0;
-        overflow: hidden;
-        opacity: 0;
+        max-height: 0; overflow: hidden; opacity: 0;
         transition: max-height 0.3s ease, opacity 0.25s ease;
       }
       nav ul.active { display: flex; max-height: 320px; opacity: 1; }
       nav ul li { width: 100%; }
       nav ul li a { display: block; border-radius: 10px; padding: 0.8rem 1rem; font-size: 1rem; }
       .about-card { padding: 1.5rem 1.1rem; }
+    }
+    @media (max-width: 620px) {
+      .footer-content { grid-template-columns: 1fr; text-align: center; }
+      .newsletter-form { justify-content: center; }
     }
     @media (max-width: 480px) {
       .highlight-item { flex: 1 1 140px; }
@@ -293,10 +364,10 @@
   <main>
     <div class="about-card">
       <div class="tag">🌿 About Logan</div>
-      <h2>Hi, I’m Logan — a local teen running a small yard care business.</h2>
-      <p>I’m 13 years old and I started Logan’s Lawncare Services to help neighbors in Lutherville Timonium with honest, dependable lawn work. I focus on a small local area so I can respond quickly and keep quality high.</p>
-      <p>I only serve Lutherville Timonium, MD 21093 and nearby neighborhoods. That local focus means your yard gets more attention and less travel time, and I can work around local schedules the way a bigger company can’t.</p>
-      <p>My work is manual and straightforward: clean mowing, edging, yard cleanup, hand‑pulling weeds, pressure washing, gutter cleaning, and small tree or hedge trimming. I do not use sprays, powders, or other store-bought lawn-care products.</p>
+      <h2>Hi, I'm Logan — a local teen running a small yard care business.</h2>
+      <p>I'm 13 years old and I started Logan's Lawncare Services to help neighbors in Lutherville Timonium with honest, dependable lawn work. I focus on a small local area so I can respond quickly and keep quality high.</p>
+      <p>I only serve Lutherville Timonium, MD 21093 and nearby neighborhoods. That local focus means your yard gets more attention and less travel time, and I can work around local schedules the way a bigger company can't.</p>
+      <p>My work is manual and straightforward: clean mowing, edging, yard cleanup, hand-pulling weeds, pressure washing, gutter cleaning, and small tree or hedge trimming. I do not use sprays, powders, or other store-bought lawn-care products.</p>
 
       <div class="highlight-row">
         <div class="highlight-item">
@@ -316,16 +387,16 @@
         </div>
         <div class="highlight-item">
           <span class="icon">🌱</span>
-          <strong>Youth-Run</strong>
-          <span>Supporting a local teen business</span>
+          <strong>Youth-Run Business</strong>
+          <span>Supporting a local teen entrepreneur</span>
         </div>
         <div class="highlight-item equip-item">
           <span class="icon">🛠️</span>
           <strong style="display:block; color:#aee2b2; font-size:1rem; margin-bottom:0.5rem;">My Current Equipment</strong>
           <span style="display:block; color:#9ca3af; font-size:0.9rem; line-height:1.8;">• Self-propelled push mower</span>
-          <span style="display:block; color:#9ca3af; font-size:0.9rem; line-height:1.8;">• Electric powered weed wacker</span>
-          <span style="display:block; color:#9ca3af; font-size:0.9rem; line-height:1.8;">• Electric powered leaf blower</span>
-          <span style="display:block; color:#9ca3af; font-size:0.9rem; line-height:1.8;">• Electric powered pressure washer</span>
+          <span style="display:block; color:#9ca3af; font-size:0.9rem; line-height:1.8;">• Electric-powered weed wacker</span>
+          <span style="display:block; color:#9ca3af; font-size:0.9rem; line-height:1.8;">• Electric-powered leaf blower</span>
+          <span style="display:block; color:#9ca3af; font-size:0.9rem; line-height:1.8;">• Electric-powered pressure washer</span>
           <span style="display:block; color:#9ca3af; font-size:0.9rem; line-height:1.8;">• An assortment of hand tools (shovels, rakes, etc.)</span>
         </div>
       </div>
@@ -335,12 +406,12 @@
         <div class="highlight-item">
           <span class="icon">👋</span>
           <strong>I introduce myself</strong>
-          <span>If you’re home, I’ll walk the yard with you and talk through the work before I start.</span>
+          <span>If you're home, I'll walk the yard with you and talk through the work before I start.</span>
         </div>
         <div class="highlight-item">
           <span class="icon">✅</span>
           <strong>I confirm the job</strong>
-          <span>I’ll confirm the mowing, trimming, cleanup, or service details before I begin.</span>
+          <span>I'll confirm the mowing, trimming, cleanup, or service details before I begin.</span>
         </div>
         <div class="highlight-item">
           <span class="icon">🛠️</span>
@@ -350,7 +421,7 @@
         <div class="highlight-item">
           <span class="icon">📢</span>
           <strong>I let you know</strong>
-          <span>When I’m finished, I’ll let you know and make sure the yard looks ready to enjoy.</span>
+          <span>When I'm finished, I'll let you know and make sure the yard looks ready to enjoy.</span>
         </div>
       </div>
 
@@ -364,11 +435,11 @@
         <div class="highlight-item">
           <span class="icon">🐾</span>
           <strong>I watch for pets and toys</strong>
-          <span>I keep gates closed and pay attention to kids’ toys, garden beds, and furniture.</span>
+          <span>I keep gates closed and pay attention to kids' toys, garden beds, and furniture.</span>
         </div>
         <div class="highlight-item">
           <span class="icon">🌱</span>
-          <strong>No sprays or lawn products used</strong>
+          <strong>No sprays or lawn products</strong>
           <span>My services are manual and mechanical only — no sprays, powders, or store-bought lawn products.</span>
         </div>
         <div class="highlight-item">
@@ -380,13 +451,45 @@
 
       <div class="cta-row">
         <a href="contact.html" class="btn">Request a Quote</a>
-        <a href="services.html" class="btn secondary">See Services</a>
+        <a href="services.html" class="btn secondary">See Services & Pricing</a>
       </div>
     </div>
   </main>
 
   <footer>
-    <p>&copy; 2025 Logan's Lawncare Services. All rights reserved.</p>
+    <div class="footer-content">
+      <div class="footer-section">
+        <h4>Logan's Lawncare Services</h4>
+        <p>Reliable, affordable lawn care from a local teen-run business. Serving neighborhoods with care and attention to detail.</p>
+        <div class="social-links">
+          <a href="https://instagram.com/loganslawncare" target="_blank" rel="noreferrer" aria-label="Follow on Instagram">📷 Instagram</a>
+          <a href="https://facebook.com/loganslawncare" target="_blank" rel="noreferrer" aria-label="Follow on Facebook">📘 Facebook</a>
+        </div>
+      </div>
+      <div class="footer-section">
+        <h4>Contact</h4>
+        <p>📧 <a href="mailto:LogansLawncareServicesMD@gmail.com" style="color:var(--primary-light);text-decoration:none;">LogansLawncareServicesMD@gmail.com</a></p>
+        <p>📞 <a href="tel:4103715470" style="color:var(--primary-light);text-decoration:none;">(410) 371-5470</a></p>
+        <p>📍 Lutherville Timonium, MD 21093 & nearby neighborhoods</p>
+      </div>
+      <div class="footer-section">
+        <h4>Hours</h4>
+        <p>Mon–Fri: 8am – 6pm</p>
+        <p>Sat: 9am – 4pm</p>
+        <p>Sun: By appointment</p>
+      </div>
+      <div class="footer-section">
+        <h4>Stay Updated</h4>
+        <p>Get seasonal lawn care tips and updates.</p>
+        <form class="newsletter-form" action="https://formspree.io/f/xeenpqwj" method="POST">
+          <input type="email" name="email" placeholder="Your email" required>
+          <button type="submit">Subscribe</button>
+        </form>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 Logan's Lawncare Services. All rights reserved. | Trusted local care for your yard.</p>
+    </div>
   </footer>
 
   <script>
@@ -395,8 +498,7 @@
       const menu = document.getElementById('navMenu');
       menuOpen = !menuOpen;
       menu.classList.toggle('active', menuOpen);
-      if (menuOpen) document.body.style.overflow = 'hidden';
-      else document.body.style.overflow = '';
+      document.body.style.overflow = menuOpen ? 'hidden' : '';
     }
     document.querySelectorAll('#navMenu a').forEach(link => {
       link.addEventListener('click', () => {
